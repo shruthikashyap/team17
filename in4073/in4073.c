@@ -14,50 +14,7 @@
  */
 
 #include "in4073.h"
-
-/*------------------------------------------------------------------
- * process_key -- process command keys
- *------------------------------------------------------------------
- */
-void process_key(uint8_t c) 
-{
-	switch (c) 
-	{
-		case 'q':
-			ae[0] += 10;
-			break;
-		case 'a':
-			ae[0] -= 10;
-			if (ae[0] < 0) ae[0] = 0;
-			break;
-		case 'w':
-			ae[1] += 10;
-			break;
-		case 's':
-			ae[1] -= 10;
-			if (ae[1] < 0) ae[1] = 0;
-			break;
-		case 'e':
-			ae[2] += 10;
-			break;
-		case 'd':
-			ae[2] -= 10;
-			if (ae[2] < 0) ae[2] = 0;
-			break;
-		case 'r':
-			ae[3] += 10;
-			break;
-		case 'f':
-			ae[3] -= 10;
-			if (ae[3] < 0) ae[3] = 0;
-			break;
-		case 27:
-			demo_done = true;
-			break;
-		default:
-			nrf_gpio_pin_toggle(RED);
-	}
-}
+#include "process_packet.h"
 
 /*------------------------------------------------------------------
  * main -- do the test
@@ -75,6 +32,7 @@ int main(void)
 	spi_flash_init();
 //	ble_init();
 
+#if 0
 	uint32_t counter = 0;
 	demo_done = false;
 
@@ -106,7 +64,8 @@ int main(void)
 			clear_sensor_int_flag();
 		}
 	}	
-	
+#endif
+
 	printf("\n\t Goodbye \n\n");
 	nrf_delay_ms(100);
 
