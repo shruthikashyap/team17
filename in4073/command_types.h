@@ -24,5 +24,5 @@ struct packet_t
 {
 	// XXX: Add check bytes
 	char command;
-	int value;
+	int16_t value;
 };

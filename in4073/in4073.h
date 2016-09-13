@@ -116,6 +116,18 @@ struct qr_t
 	bool change_mode;	// Flag to indicate change of mode
 	bool stop;			// Flag to stop QR
 	int16_t ae[4];		// Current ae[] values
+	
+	// Keyboard lift, roll, pitch and yaw values
+	int16_t key_lift;
+	int16_t key_roll;
+	int16_t key_pitch;
+	int16_t key_yaw;
+	
+	// Joystick lift, roll, pitch and yaw values
+	int16_t joy_lift;
+	int16_t joy_roll;
+	int16_t joy_pitch;
+	int16_t joy_yaw;
 };
 
 extern struct qr_t drone;

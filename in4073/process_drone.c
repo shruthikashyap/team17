@@ -62,11 +62,12 @@ void process_drone()
 	// XXX: Interrupt test
 	while (drone.stop == false)
 	{
-		printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
+		printf("\nDrone motor values: %3d %3d %3d %3d, size = %d\n", ae[0], ae[1], ae[2], ae[3], sizeof(int16_t));
 		nrf_delay_ms(1000);
 	}
 #endif
 
+#if 1
 	// Set defaults for the drone
 	reset_drone();
 	
@@ -108,4 +109,5 @@ void process_drone()
 					break;
 		}
 	}
+#endif
 }

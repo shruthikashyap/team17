@@ -192,7 +192,7 @@ sq                  0x2               _build/in4073.o
 D2                  0x4               _build/baro.o
 bat_volt            0x2               _build/in4073.o
 ble_rx_queue        0x83              _build/in4073.o
-drone               0xc               _build/in4073.o
+drone               0x1c              _build/in4073.o
 sp                  0x2               _build/in4073.o
 ble_tx_queue        0x83              _build/in4073.o
 ae                  0x8               _build/in4073.o
@@ -356,15 +356,15 @@ Discarded input sections
                 0x00000000      0x1ec _build/ble.o
  .data.m_adv_uuids
                 0x00000000        0x4 _build/ble.o
- .bss.APP_TIMER_BUF.8457
+ .bss.APP_TIMER_BUF.8465
                 0x00000000      0x1c8 _build/ble.o
- .bss.BLE_EVT_BUFFER.8423
-                0x00000000       0x48 _build/ble.o
  .data.m_conn_handle
                 0x00000000        0x2 _build/ble.o
  .rodata.str1.4
                 0x00000000       0x12 _build/ble.o
  .bss.m_nus     0x00000000       0x1c _build/ble.o
+ .bss.BLE_EVT_BUFFER.8431
+                0x00000000       0x48 _build/ble.o
  .comment       0x00000000       0x6f _build/ble.o
  .ARM.attributes
                 0x00000000       0x31 _build/ble.o
@@ -1807,7 +1807,7 @@ END GROUP
                 0x20002064                txd_available
  *fill*         0x20002065        0x3 
  .data.st       0x20002068       0x2c _build/inv_mpu.o
- .data.gyro_orientation.6678
+ .data.gyro_orientation.6686
                 0x20002094        0x9 _build/mpu_wrapper.o
                 0x200020a0                . = ALIGN (0x4)
  *fill*         0x2000209d        0x3 
@@ -1834,7 +1834,7 @@ END GROUP
 .igot.plt       0x200020a8        0x0 load address 0x0001d794
  .igot.plt      0x200020a8        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
 
-.bss            0x200020a8      0x2ec load address 0x0001d794
+.bss            0x200020a8      0x2fc load address 0x0001d794
                 0x200020a8                . = ALIGN (0x4)
                 0x200020a8                __bss_start__ = .
  *(.bss*)
@@ -1850,7 +1850,7 @@ END GROUP
  .bss.read      0x200020cd        0x1 _build/twi.o
  *fill*         0x200020ce        0x2 
  .bss.prom      0x200020d0       0x10 _build/baro.o
- .bss.data.6670
+ .bss.data.6678
                 0x200020e0        0x2 _build/baro.o
  *fill*         0x200020e2        0x2 
  .bss.spi_config_table
@@ -1899,7 +1899,7 @@ END GROUP
  .bss.heap_end.4167
                 0x20002140        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(sbrk.o)
  *(COMMON)
- COMMON         0x20002144      0x24b _build/in4073.o
+ COMMON         0x20002144      0x25b _build/in4073.o
                 0x20002144                say
                 0x20002146                psi
                 0x20002148                sensor_fifo_count
@@ -1915,28 +1915,28 @@ END GROUP
                 0x20002268                bat_volt
                 0x2000226c                ble_rx_queue
                 0x200022f0                drone
-                0x200022fc                sp
-                0x20002300                ble_tx_queue
-                0x20002384                ae
-                0x2000238c                sr
-                0x2000238e                demo_done
- *fill*         0x2000238f        0x1 
- COMMON         0x20002390        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-reent.o)
-                0x20002390                errno
-                0x20002394                . = ALIGN (0x4)
-                0x20002394                __bss_end__ = .
+                0x2000230c                sp
+                0x20002310                ble_tx_queue
+                0x20002394                ae
+                0x2000239c                sr
+                0x2000239e                demo_done
+ *fill*         0x2000239f        0x1 
+ COMMON         0x200023a0        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-reent.o)
+                0x200023a0                errno
+                0x200023a4                . = ALIGN (0x4)
+                0x200023a4                __bss_end__ = .
 
-.heap           0x20002398      0x800
-                0x20002398                __end__ = .
-                0x20002398                end = __end__
+.heap           0x200023a8      0x800
+                0x200023a8                __end__ = .
+                0x200023a8                end = __end__
  *(.heap*)
- .heap          0x20002398      0x800 _build/gcc_startup_nrf51.o
-                0x20002398                __HeapBase
-                0x20002b98                __HeapLimit = .
+ .heap          0x200023a8      0x800 _build/gcc_startup_nrf51.o
+                0x200023a8                __HeapBase
+                0x20002ba8                __HeapLimit = .
 
-.stack_dummy    0x20002398      0x800
+.stack_dummy    0x200023a8      0x800
  *(.stack*)
- .stack         0x20002398      0x800 _build/gcc_startup_nrf51.o
+ .stack         0x200023a8      0x800 _build/gcc_startup_nrf51.o
                 0x20004000                __StackTop = (ORIGIN (RAM) + LENGTH (RAM))
                 0x20003800                __StackLimit = (__StackTop - SIZEOF (.stack_dummy))
                 0x20004000                PROVIDE (__stack, __StackTop)
