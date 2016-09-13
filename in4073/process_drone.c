@@ -44,6 +44,10 @@ void calibration_mode()
 {
 }
 
+void raw_mode()
+{
+}
+
 void height_control_mode()
 {
 }
@@ -89,6 +93,9 @@ void process_drone()
 					break;
 			case CALIBRATION_MODE:
 					calibration_mode();
+					break;
+			case RAW_MODE:
+					raw_mode();
 					break;
 			case HEIGHT_CONTROL_MODE:
 					height_control_mode();

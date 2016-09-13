@@ -10,14 +10,15 @@
 #define JOY_YAW		0x09
 
 /* Mode Types */
-#define SAFE_MODE		0x20
-#define PANIC_MODE		0x21
-#define MANUAL_MODE		0x22
+#define SAFE_MODE			0x20
+#define PANIC_MODE			0x21
+#define MANUAL_MODE			0x22
 #define YAW_CONTROL_MODE	0x23
 #define FULL_CONTROL_MODE	0x24
 #define CALIBRATION_MODE	0x25
 #define HEIGHT_CONTROL_MODE	0x26
 #define WIRELESS_MODE		0x27
+#define RAW_MODE			0x28
 
 struct packet_t
 {

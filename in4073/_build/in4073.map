@@ -264,6 +264,8 @@ Discarded input sections
                 0x00000000        0x4 _build/process_drone.o
  .text.calibration_mode
                 0x00000000        0x4 _build/process_drone.o
+ .text.raw_mode
+                0x00000000        0x4 _build/process_drone.o
  .text.height_control_mode
                 0x00000000        0x4 _build/process_drone.o
  .text.wireless_mode
