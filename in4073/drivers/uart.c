@@ -9,6 +9,7 @@
  */
 
 #include "in4073.h"
+#include "process_packet.h"
 
 bool txd_available = true;
 
@@ -29,33 +30,35 @@ int _write(int file, const char * p_char, int len)
 
 	for (i = 0; i < len; i++)
 	{
-     		uart_put(*p_char++);
-    	}
+		uart_put(*p_char++);
+	}
 
-    	return len;
+	return len;
 }
-
 
 void UART0_IRQHandler(void)
 {
 	if (NRF_UART0->EVENTS_RXDRDY != 0)
-    	{
+	{
 		NRF_UART0->EVENTS_RXDRDY  = 0;
 		enqueue( &rx_queue, NRF_UART0->RXD);
 	}
-    
-    	if (NRF_UART0->EVENTS_TXDRDY != 0)
-    	{
-    		NRF_UART0->EVENTS_TXDRDY = 0;
+
+	if (NRF_UART0->EVENTS_TXDRDY != 0)
+	{
+		NRF_UART0->EVENTS_TXDRDY = 0;
 		if (tx_queue.count) NRF_UART0->TXD = dequeue(&tx_queue);
 		else txd_available = true;
 	}
-    
+
 	if (NRF_UART0->EVENTS_ERROR != 0)
 	{
-        	NRF_UART0->EVENTS_ERROR = 0;
-        	printf("uart error: %lu\n", NRF_UART0->ERRORSRC);
-    	}
+		NRF_UART0->EVENTS_ERROR = 0;
+		printf("uart error: %lu\n", NRF_UART0->ERRORSRC);
+	}
+	
+	// XXX: Receive in struct order and handle acknowledgement
+	if (rx_queue.count) process_key( dequeue(&rx_queue) );
 }
 
 void uart_init(void)
@@ -77,8 +80,8 @@ void uart_init(void)
 
 	NRF_UART0->INTENCLR = 0xffffffffUL;
 	NRF_UART0->INTENSET = 	(UART_INTENSET_RXDRDY_Set << UART_INTENSET_RXDRDY_Pos) |
-                          	(UART_INTENSET_TXDRDY_Set << UART_INTENSET_TXDRDY_Pos) |
-                          	(UART_INTENSET_ERROR_Set << UART_INTENSET_ERROR_Pos);
+		(UART_INTENSET_TXDRDY_Set << UART_INTENSET_TXDRDY_Pos) |
+		(UART_INTENSET_ERROR_Set << UART_INTENSET_ERROR_Pos);
 
 	NVIC_ClearPendingIRQ(UART0_IRQn);
 	NVIC_SetPriority(UART0_IRQn, 3); // either 1 or 3, 3 being low. (sd present)

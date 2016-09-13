@@ -33,16 +33,16 @@
 int main(int argc, char **argv)
 {
 	char	c;
-
+/*
 	int axis[6];
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
 	}
-
+*/
 	/* non-blocking mode
  	*/
-	fcntl(fd, F_SETFL, O_NONBLOCK);
+//	fcntl(fd, F_SETFL, O_NONBLOCK);
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 			term_putchar(c);
 
 		// Joystick read
-		joystick_read(axis);
+		//joystick_read(axis);
 	}
 
 	term_exitio();

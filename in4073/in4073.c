@@ -14,7 +14,10 @@
  */
 
 #include "in4073.h"
-#include "process_packet.h"
+#include "process_drone.h"
+
+// Drone object
+struct qr_t drone;
 
 /*------------------------------------------------------------------
  * main -- do the test
@@ -31,13 +34,15 @@ int main(void)
 	baro_init();
 	spi_flash_init();
 //	ble_init();
+	
+	process_drone();
 
 #if 0
 	uint32_t counter = 0;
 	demo_done = false;
 
 	while (!demo_done)
-	{	
+	{		
 		if (rx_queue.count) process_key( dequeue(&rx_queue) ); 
 
 		if (check_timer_flag()) 
@@ -65,7 +70,7 @@ int main(void)
 		}
 	}	
 #endif
-
+	
 	printf("\n\t Goodbye \n\n");
 	nrf_delay_ms(100);
 

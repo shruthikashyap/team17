@@ -33,6 +33,7 @@
 bool demo_done;
 
 // Control
+// XXX: Is ae[] required?
 int16_t ae[4];
 void run_filters_and_control();
 
@@ -107,5 +108,16 @@ queue ble_rx_queue;
 queue ble_tx_queue;
 void ble_init(void);
 void ble_send(void);
+
+// QR object
+struct qr_t
+{
+	char current_mode;	// Current mode of QR
+	bool change_mode;	// Flag to indicate change of mode
+	bool stop;			// Flag to stop QR
+	int16_t ae[4];		// Current ae[] values
+};
+
+extern struct qr_t drone;
 
 #endif // IN4073_H__

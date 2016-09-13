@@ -1,0 +1,10 @@
+void process_drone();
+void reset_drone();
+void safe_mode();
+void panic_mode();
+void manual_mode();
+void yaw_control_mode();
+void full_control_mode();
+void calibration_mode();
+void height_control_mode();
+void wireless_mode();
