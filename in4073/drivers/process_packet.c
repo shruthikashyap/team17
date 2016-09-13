@@ -8,6 +8,14 @@
  */
 void process_key(uint8_t c) 
 {
+	if(drone.current_mode == SAFE_MODE)
+	{
+		printf("\nIgnoring drone control commands in SAFE_MODE");
+		return;
+	}
+	else
+		printf("\nIn process_key");
+	
 	switch (c) 
 	{
 		case 'q':
@@ -84,6 +92,12 @@ void set_joy_yaw()
 
 void process_packet(struct packet_t packet)
 {
+	if(drone.current_mode == SAFE_MODE && packet.command != MODE_TYPE)
+	{
+		printf("\nIgnoring drone control commands in SAFE_MODE");
+		return;
+	}
+		
 	switch (packet.command)
 	{
 		case MODE_TYPE:

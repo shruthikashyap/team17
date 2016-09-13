@@ -18,10 +18,60 @@ void reset_drone()
 	drone.current_mode = SAFE_MODE;
 	drone.stop = false;
 	drone.change_mode = false;
+	
+	// Reset drone control variables
+	drone.key_lift = 0;
+	drone.key_roll = 0;
+	drone.key_pitch = 0;
+	drone.key_yaw = 0;
+	drone.joy_lift = 0;
+	drone.joy_roll = 0;
+	drone.joy_pitch = 0;
+	drone.joy_yaw = 0;
 }
 
 void safe_mode()
 {
+	printf("\nIn SAFE_MODE");
+	
+	// Don't read lift/roll/pitch/yaw data from PC link.
+	// Reset drone control variables
+	drone.key_lift = 0;
+	drone.key_roll = 0;
+	drone.key_pitch = 0;
+	drone.key_yaw = 0;
+	drone.joy_lift = 0;
+	drone.joy_roll = 0;
+	drone.joy_pitch = 0;
+	drone.joy_yaw = 0;
+	
+#if 0
+		// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
+		while(ae[0] || ae[1] || ae[2] || ae[3])
+		{
+			ae[0] = (ae[0]) < 10? 0 : ae[0] - 10;
+			ae[1] = (ae[1]) < 10? 0 : ae[1] - 10;
+			ae[2] = (ae[2]) < 10? 0 : ae[2] - 10;
+			ae[3] = (ae[3]) < 10? 0 : ae[3] - 10;
+			printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
+			nrf_delay_ms(1000);
+		}
+#endif
+		
+#if 1
+		// Gradually reduce RPM of the motors to 0.
+		while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
+		{
+			drone.ae[0] = (drone.ae[0]) < 10? 0 : drone.ae[0] - 10;
+			drone.ae[1] = (drone.ae[1]) < 10? 0 : drone.ae[1] - 10;
+			drone.ae[2] = (drone.ae[2]) < 10? 0 : drone.ae[2] - 10;
+			drone.ae[3] = (drone.ae[3]) < 10? 0 : drone.ae[3] - 10;
+			
+			nrf_delay_ms(500);
+		}
+#endif
+
+	while(drone.change_mode == false && drone.stop == false);
 }
 
 void panic_mode()
@@ -63,7 +113,7 @@ void process_drone()
 	while (drone.stop == false)
 	{
 		printf("\nDrone motor values: %3d %3d %3d %3d, size = %d\n", ae[0], ae[1], ae[2], ae[3], sizeof(int16_t));
-		nrf_delay_ms(1000);
+		nrf_delay_ms(500);
 	}
 #endif
 
@@ -78,6 +128,8 @@ void process_drone()
 		switch (drone.current_mode)
 		{
 			case SAFE_MODE:
+					// XXX: Test
+					//ae[0] = ae[1] = ae[2] = ae[3] = 100;
 					safe_mode();
 					break;
 			case PANIC_MODE:
