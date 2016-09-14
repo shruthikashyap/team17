@@ -20,6 +20,10 @@
 #define WIRELESS_MODE		0x27
 #define RAW_MODE			0x28
 
+/* RPMs */
+#define RPM_STEP		10
+#define HOVER_RPM		250 // XXX: Find out the right value
+
 struct packet_t
 {
 	// XXX: Add check bytes
