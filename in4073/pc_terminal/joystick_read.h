@@ -3,4 +3,5 @@
 extern int fd;
 extern struct js_event js;
 
-void joystick_read (int axis[6]);
+void sendJsPacket();
+void scale_joystick_values(int axis[6]);

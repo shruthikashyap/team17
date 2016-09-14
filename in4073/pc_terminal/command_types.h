@@ -18,6 +18,7 @@
 #define CALIBRATION_MODE	0x25
 #define HEIGHT_CONTROL_MODE	0x26
 #define WIRELESS_MODE		0x27
+#define RAW_MODE		0x28
 
 /* Start and Stop Bytes */
 #define START_BYTE	'?'

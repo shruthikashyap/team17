@@ -24,6 +24,7 @@
 #include <pthread.h>
 
 #include "command_types.h"
+#include "joystick_read.h"
 #include "queue.h"
 #include "rs232_com.h"
 #include "term_io.h"
@@ -80,7 +81,6 @@ int main(int argc, char **argv)
 	
 	/* send & receive
 	 */
-
 	for (;;) 
 	{
 		usleep(1000);
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 			sendKeyPacket(c);		
 		}
 
-		//js_read(&axis, &button);
+		//sendJsPacket();
 
 		if ((c = rs232_getchar_nb()) != -1) 
 			term_putchar(c);
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 
 	term_exitio();
 	rs232_close();
-	free(queue->packet);
+	free(queue->elements);
 	free(queue);
 	pthread_join(pthread_dequeue, NULL);
 	term_puts("\n<exit>\n");
