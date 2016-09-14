@@ -1,7 +1,7 @@
 #include "command_types.h"
 
 void process_packet(struct packet_t packet);
-void process_key(uint8_t c);
+void process_key(struct packet_t packet);
 void set_mode_type();
 void set_key_lift();
 void set_key_roll();

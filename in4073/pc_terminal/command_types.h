@@ -19,9 +19,17 @@
 #define HEIGHT_CONTROL_MODE	0x26
 #define WIRELESS_MODE		0x27
 
+/* Start and Stop Bytes */
+#define START_BYTE	'?'
+#define	STOP_BYTE	'!'
+
+/* Increase or Decrease */
+#define	INCREASE	1
+#define DECREASE	0
+
 struct packet_t
 {
 	// XXX: Add check bytes
 	char command;
-	int16_t value;
+	char value;
 };

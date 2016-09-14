@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS = -g -Wall -lm
+CFLAGS = -g -Wall -lm -pthread
 EXEC = ./pc-terminal
 
 all:

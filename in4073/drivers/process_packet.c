@@ -6,17 +6,18 @@
  * process_key -- process command keys
  *------------------------------------------------------------------
  */
-void process_key(uint8_t c) 
+void process_key(struct packet_t p) 
 {
-	if(drone.current_mode == SAFE_MODE)
+	printf("Received byte:%d, %d\n", p.command, p.value);
+	/*if(drone.current_mode == SAFE_MODE)
 	{
 		printf("\nIgnoring drone control commands in SAFE_MODE");
 		return;
 	}
 	else
-		printf("\nIn process_key");
+		printf("\nIn process_key");*/
 	
-	switch (c) 
+	/*switch (c) 
 	{
 		case 'q':
 				ae[0] += 10;
@@ -51,7 +52,7 @@ void process_key(uint8_t c)
 				break;
 		default:
 				nrf_gpio_pin_toggle(RED);
-	}
+	}*/
 }
 
 void set_mode_type()

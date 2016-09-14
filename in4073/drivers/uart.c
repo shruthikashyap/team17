@@ -12,6 +12,18 @@
 #include "process_packet.h"
 
 bool txd_available = true;
+struct store_packet_t
+{
+	char start;
+	char command;
+	char value;
+	char stop;
+};
+
+struct store_packet_t st_p;
+struct packet_t p;
+int packet_flag = 0;
+int rcv_byte_count = 0;
 
 void uart_put(uint8_t byte)
 {
@@ -58,7 +70,49 @@ void UART0_IRQHandler(void)
 	}
 	
 	// XXX: Receive in struct order and handle acknowledgement
-	if (rx_queue.count) process_key( dequeue(&rx_queue) );
+	if (rx_queue.count)
+	{
+		char ch = dequeue(&rx_queue);
+
+		if(ch == '?')
+		{
+			st_p.start = ch;
+
+			// Start receiving
+			packet_flag = 1;
+			rcv_byte_count = 1;
+		}
+		else if(ch == '!')
+		{
+			st_p.stop = ch;
+
+			// Reset flags
+			rcv_byte_count = 0;
+			packet_flag = 0;
+		}
+		else
+		{
+			if(rcv_byte_count == 1)
+			{
+				st_p.command = ch;
+				rcv_byte_count++;
+			}
+			else if(rcv_byte_count == 2)
+			{
+				st_p.value = ch;
+				rcv_byte_count++;
+				printf("command = %d, value = %d\n", st_p.command, (unsigned char)st_p.value);
+			}
+		}
+
+		if(rcv_byte_count == 4)
+		{
+			rcv_byte_count = 0;
+			packet_flag = 0;
+		}
+
+		//process_key(p);
+	}
 }
 
 void uart_init(void)
