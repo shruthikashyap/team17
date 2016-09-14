@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <math.h>
 #include "command_types.h"
 #include "in4073.h"
+#include "process_drone.h"
 
 /* XXX: 
 1. No args for process_drone().
@@ -109,8 +111,65 @@ void panic_mode()
 	NVIC_EnableIRQ(UART0_IRQn);
 }
 
+// Scales numbers from a range into another range
+int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
+{
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 void manual_mode()
 {
+	int ae_[4]; // motor rpm values
+	int min_max_joystick = 255;
+
+	drone.joy_lift = ae[0];
+	drone.key_lift = 100;
+
+	drone.joy_roll = ae[1];
+	drone.key_roll = 0;
+
+	drone.joy_pitch = ae[2];
+	drone.key_pitch = 0;
+
+	drone.joy_yaw = ae[3];
+	drone.key_yaw = 0;
+
+	// rescaling joystick values to usefull stuff
+	int lift_force   = scale_number(drone.joy_lift,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_lift;
+	int roll_moment  = scale_number(drone.joy_roll,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_roll;
+	int pitch_moment = scale_number(drone.joy_pitch,-255,255,-min_max_joystick,min_max_joystick) + drone.key_pitch;
+	int yaw_moment   = scale_number(drone.joy_yaw,-255,255,-min_max_joystick,min_max_joystick)   + drone.key_yaw;
+
+	int lift  = DRONE_LIFT_CONSTANT * lift_force;
+	int pitch = DRONE_PITCH_CONSTANT * pitch_moment;
+	int roll  = DRONE_ROLL_CONSTANT * roll_moment;
+	int yaw   = DRONE_YAW_CONSTANT * yaw_moment;
+
+	// solving drone rotor dynamics equations
+	ae_[0] = sqrt(0.25*(lift + 2*roll  - yaw));
+	ae_[1] = sqrt(0.25*(lift - 2*pitch + yaw));
+	ae_[2] = sqrt(0.25*(lift - 2*pitch - yaw));
+	ae_[3] = sqrt(0.25*(lift + 2*roll  + yaw));
+
+	/*
+	ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+	ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+	ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+	ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+	*/
+	
+	ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
+	ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
+	ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
+	ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
+
+	drone.ae[0] = ae_[0];
+	drone.ae[1] = ae_[1];
+	drone.ae[2] = ae_[2];
+	drone.ae[3] = ae_[3];
+
+	printf("%3d %3d %3d %3d %3d \n",ae[0], ae_[0],ae_[1],ae_[2],ae_[3]);
+	//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 }
 
 void yaw_control_mode()
