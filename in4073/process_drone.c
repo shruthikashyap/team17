@@ -15,7 +15,7 @@
 void reset_drone()
 {
 	// XXX: Set mode as SAFE_MODE and clear all flags
-	drone.current_mode = SAFE_MODE;
+	drone.current_mode = SAFE_MODE; // XXX: Test
 	drone.stop = false;
 	drone.change_mode = false;
 	
@@ -49,25 +49,25 @@ void safe_mode()
 		// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
 		while(ae[0] || ae[1] || ae[2] || ae[3])
 		{
-			ae[0] = (ae[0]) < 10? 0 : ae[0] - 10;
-			ae[1] = (ae[1]) < 10? 0 : ae[1] - 10;
-			ae[2] = (ae[2]) < 10? 0 : ae[2] - 10;
-			ae[3] = (ae[3]) < 10? 0 : ae[3] - 10;
+			ae[0] = (ae[0]) < RPM_STEP? 0 : ae[0] - 10;
+			ae[1] = (ae[1]) < RPM_STEP? 0 : ae[1] - 10;
+			ae[2] = (ae[2]) < RPM_STEP? 0 : ae[2] - 10;
+			ae[3] = (ae[3]) < RPM_STEP? 0 : ae[3] - 10;
 			printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 			nrf_delay_ms(1000);
 		}
 #endif
-		
+
 #if 1
 		// Gradually reduce RPM of the motors to 0.
 		while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
 		{
-			drone.ae[0] = (drone.ae[0]) < 10? 0 : drone.ae[0] - 10;
-			drone.ae[1] = (drone.ae[1]) < 10? 0 : drone.ae[1] - 10;
-			drone.ae[2] = (drone.ae[2]) < 10? 0 : drone.ae[2] - 10;
-			drone.ae[3] = (drone.ae[3]) < 10? 0 : drone.ae[3] - 10;
-			
-			nrf_delay_ms(500);
+			drone.ae[0] = (drone.ae[0]) < RPM_STEP? 0 : drone.ae[0] - 10;
+			drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
+			drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
+			drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
+			printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+			nrf_delay_ms(1000);
 		}
 #endif
 
@@ -76,6 +76,37 @@ void safe_mode()
 
 void panic_mode()
 {
+	printf("\nIn PANIC_MODE");
+	
+	// Disable UART interrupts
+	NVIC_DisableIRQ(UART0_IRQn);
+	
+#if 0
+	// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
+	ae[0] = HOVER_RPM;
+	ae[1] = HOVER_RPM;
+	ae[2] = HOVER_RPM;
+	ae[3] = HOVER_RPM;
+#endif
+
+#if 1
+	// Set moderate RPM values to the motors for hovering
+	drone.ae[0] = HOVER_RPM;
+	drone.ae[1] = HOVER_RPM;
+	drone.ae[2] = HOVER_RPM;
+	drone.ae[3] = HOVER_RPM;
+	printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+#endif
+	
+	// Stay in this mode for a few seconds
+	nrf_delay_ms(5000);
+	
+	// Go to Safe mode
+	drone.current_mode = SAFE_MODE;
+	drone.change_mode = true; // XXX: Is this needed?
+	
+	// Enable UART interrupts
+	NVIC_EnableIRQ(UART0_IRQn);
 }
 
 void manual_mode()
@@ -133,7 +164,12 @@ void process_drone()
 					safe_mode();
 					break;
 			case PANIC_MODE:
+					// XXX: Test
+					//ae[0] = ae[1] = ae[2] = ae[3] = 500;
+					//printf("\nDrone motor values before: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					panic_mode();
+					// XXX: Test
+					//printf("\nDrone motor values after: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					break;
 			case MANUAL_MODE:
 					manual_mode();
