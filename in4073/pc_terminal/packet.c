@@ -11,55 +11,55 @@ void sendKeyPacket(char key)
 
 	switch(key)
 	{
-		case 0:
+		case '0':
 			p.command = MODE_TYPE;
 			p.value = SAFE_MODE;
 			p_flag = 1;
 			break;
 
-		case 1:
+		case '1':
 			p.command = MODE_TYPE;
 			p.value = PANIC_MODE;
 			p_flag = 1;
 			break;
 
-		case 2:
+		case '2':
 			p.command = MODE_TYPE;
 			p.value = MANUAL_MODE;
 			p_flag = 1;
 			break;
 
-		case 3:
+		case '3':
 			p.command = MODE_TYPE;
 			p.value = YAW_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
-		case 4:
+		case '4':
 			p.command = MODE_TYPE;
 			p.value = FULL_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
-		case 5:
+		case '5':
 			p.command = MODE_TYPE;
 			p.value = CALIBRATION_MODE;
 			p_flag = 1;
 			break;
 
-		case 6:
+		case '6':
 			p.command = MODE_TYPE;
 			p.value = HEIGHT_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
-		case 7:
+		case '7':
 			p.command = MODE_TYPE;
 			p.value = WIRELESS_MODE;
 			p_flag = 1;
 			break;
 
-		case 8:
+		case '8':
 			p.command = MODE_TYPE;
 			p.value = RAW_MODE;
 			p_flag = 1;

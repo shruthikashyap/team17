@@ -12,16 +12,8 @@
 #include "process_packet.h"
 
 bool txd_available = true;
-struct store_packet_t
-{
-	char start;
-	char command;
-	char value;
-	char stop;
-};
 
 struct store_packet_t st_p;
-struct packet_t p;
 int packet_flag = 0;
 int rcv_byte_count = 0;
 
@@ -102,6 +94,7 @@ void UART0_IRQHandler(void)
 				st_p.value = ch;
 				rcv_byte_count++;
 				printf("command = %d, value = %d\n", st_p.command, (unsigned char)st_p.value);
+				process_packet(st_p);
 			}
 		}
 
@@ -110,8 +103,6 @@ void UART0_IRQHandler(void)
 			rcv_byte_count = 0;
 			packet_flag = 0;
 		}
-
-		//process_key(p);
 	}
 }
 

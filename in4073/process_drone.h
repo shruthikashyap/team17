@@ -1,5 +1,6 @@
+// XXX: Need to change the values
 #define MIN_RPM 120 // Minimal speed to let the rotor turn due to internal friction
-#define MAX_RPM 1000 
+#define MAX_RPM	1000 
 
 // Drone specific constants for lift roll yaw pitch
 #define DRONE_LIFT_CONSTANT 50

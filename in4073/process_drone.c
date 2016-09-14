@@ -34,7 +34,7 @@ void reset_drone()
 
 void safe_mode()
 {
-	printf("\nIn SAFE_MODE");
+	printf("In SAFE_MODE\n");
 	
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
@@ -78,7 +78,7 @@ void safe_mode()
 
 void panic_mode()
 {
-	printf("\nIn PANIC_MODE");
+	printf("In PANIC_MODE\n");
 	
 	// Disable UART interrupts
 	NVIC_DisableIRQ(UART0_IRQn);
@@ -97,7 +97,7 @@ void panic_mode()
 	drone.ae[1] = HOVER_RPM;
 	drone.ae[2] = HOVER_RPM;
 	drone.ae[3] = HOVER_RPM;
-	printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+	printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 #endif
 	
 	// Stay in this mode for a few seconds
@@ -119,9 +119,13 @@ int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
 
 void manual_mode()
 {
-	int ae_[4]; // motor rpm values
+	printf("In MANUAL_MODE\n");
+	
+	int ae_[4]; // Motor rpm values
 	int min_max_joystick = 255;
 
+#if 0
+	// XXX: Test
 	drone.joy_lift = ae[0];
 	drone.key_lift = 100;
 
@@ -133,19 +137,26 @@ void manual_mode()
 
 	drone.joy_yaw = ae[3];
 	drone.key_yaw = 0;
+#endif
 
-	// rescaling joystick values to usefull stuff
+	// Disable UART interrupts
+	NVIC_DisableIRQ(UART0_IRQn);
+	
+	// Rescaling joystick values to useful stuff
 	int lift_force   = scale_number(drone.joy_lift,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_lift;
 	int roll_moment  = scale_number(drone.joy_roll,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_roll;
 	int pitch_moment = scale_number(drone.joy_pitch,-255,255,-min_max_joystick,min_max_joystick) + drone.key_pitch;
 	int yaw_moment   = scale_number(drone.joy_yaw,-255,255,-min_max_joystick,min_max_joystick)   + drone.key_yaw;
+	
+	// Enable UART interrupts
+	NVIC_EnableIRQ(UART0_IRQn);
 
 	int lift  = DRONE_LIFT_CONSTANT * lift_force;
 	int pitch = DRONE_PITCH_CONSTANT * pitch_moment;
 	int roll  = DRONE_ROLL_CONSTANT * roll_moment;
 	int yaw   = DRONE_YAW_CONSTANT * yaw_moment;
 
-	// solving drone rotor dynamics equations
+	// Solving drone rotor dynamics equations
 	ae_[0] = sqrt(0.25*(lift + 2*roll  - yaw));
 	ae_[1] = sqrt(0.25*(lift - 2*pitch + yaw));
 	ae_[2] = sqrt(0.25*(lift - 2*pitch - yaw));
@@ -174,26 +185,32 @@ void manual_mode()
 
 void yaw_control_mode()
 {
+	printf("In YAW_CONTROL_MODE\n");
 }
 
 void full_control_mode()
 {
+	printf("In FULL_CONTROL_MODE\n");
 }
 
 void calibration_mode()
 {
+	printf("In CALIBRATION_MODE\n");
 }
 
 void raw_mode()
 {
+	printf("In RAW_MODE\n");
 }
 
 void height_control_mode()
 {
+	printf("In HEIGHT_CONTROL_MODE\n");
 }
 
 void wireless_mode()
 {
+	printf("In WIRELESS_MODE\n");
 }
 
 void process_drone()
