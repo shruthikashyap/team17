@@ -128,36 +128,20 @@ int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
 
 void manual_mode()
 {
-	printf("In MANUAL_MODE\n");
+	//printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
-	int min_max_joystick = 255;
-
-#if 0
-	// XXX: Test
-	drone.joy_lift = ae[0];
-	drone.key_lift = 100;
-
-	drone.joy_roll = ae[1];
-	drone.key_roll = 0;
-
-	drone.joy_pitch = ae[2];
-	drone.key_pitch = 0;
-
-	drone.joy_yaw = ae[3];
-	drone.key_yaw = 0;
-#endif
 
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
 	__disable_irq();
 	
-	// Rescaling joystick values to useful stuff
-	int lift_force   = scale_number(drone.joy_lift,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_lift;
-	int roll_moment  = scale_number(drone.joy_roll,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_roll;
-	int pitch_moment = scale_number(drone.joy_pitch,-255,255,-min_max_joystick,min_max_joystick) + drone.key_pitch;
-	int yaw_moment   = scale_number(drone.joy_yaw,-255,255,-min_max_joystick,min_max_joystick)   + drone.key_yaw;
-	
+	// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
+	int lift_force   = drone.joy_lift  + drone.key_lift;
+	int roll_moment  = drone.joy_roll  + drone.key_roll;
+	int pitch_moment = drone.joy_pitch + drone.key_pitch;
+	int yaw_moment   = drone.joy_yaw   + drone.key_yaw;
+
 	// Enable UART interrupts
 	//NVIC_EnableIRQ(UART0_IRQn);
 	__enable_irq();
@@ -167,30 +151,41 @@ void manual_mode()
 	int roll  = DRONE_ROLL_CONSTANT * roll_moment;
 	int yaw   = DRONE_YAW_CONSTANT * yaw_moment;
 
-	// Solving drone rotor dynamics equations
-	ae_[0] = sqrt(0.25*(lift + 2*roll  - yaw));
-	ae_[1] = sqrt(0.25*(lift - 2*pitch + yaw));
-	ae_[2] = sqrt(0.25*(lift - 2*pitch - yaw));
-	ae_[3] = sqrt(0.25*(lift + 2*roll  + yaw));
+	// no need to do this, rotor speeds are getting maxed/mined a few lines later
+	lift  = lift  < MIN_LIFT  ? MIN_LIFT  : lift;
+	roll  = roll  < MIN_ROLL  ? MIN_ROLL  : roll;
+	pitch = pitch < MIN_PITCH ? MIN_PITCH : pitch;
+	yaw   = yaw   < MIN_YAW   ? MIN_YAW   : yaw;
 
-	/*
+	lift  = lift  > MAX_LIFT  ? MAX_LIFT  : lift;
+	roll  = roll  > MAX_ROLL  ? MAX_ROLL  : roll;
+	pitch = pitch > MAX_PITCH ? MAX_PITCH : pitch;
+	yaw   = yaw   > MAX_YAW   ? MAX_YAW   : yaw;
+
+	// Solving drone rotor dynamics equations
+	ae_[0] = (int)sqrt(0.25*(lift + 2*pitch - yaw));
+	ae_[1] = (int)sqrt(0.25*(lift - 2*roll  + yaw));
+	ae_[2] = (int)sqrt(0.25*(lift - 2*pitch - yaw));
+	ae_[3] = (int)sqrt(0.25*(lift + 2*roll  + yaw));
+
+	// checking min/max	
 	ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
 	ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
 	ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
 	ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-	*/
 	
 	ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
 	ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
 	ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
 	ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
 
+	// setting drone rotor speeds
 	drone.ae[0] = ae_[0];
 	drone.ae[1] = ae_[1];
 	drone.ae[2] = ae_[2];
 	drone.ae[3] = ae_[3];
 
-	printf("%3d %3d %3d %3d %3d \n",ae[0], ae_[0],ae_[1],ae_[2],ae_[3]);
+	printf("%3d %3d %3d %3d \n", ae_[0], ae_[1], ae_[2], ae_[3]);
 	//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 }
 
@@ -223,7 +218,7 @@ void full_control_mode()
 void calibration_mode()
 {
 	printf("In CALIBRATION_MODE\n");
-	
+
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		printf("CALIBRATION_ - drone.change_mode = %d\n", drone.change_mode);
@@ -266,7 +261,7 @@ void process_drone()
 	while (drone.stop == 0)
 	{
 		drone.change_mode = 0;
-		
+
 		switch (drone.current_mode)
 		{
 			case SAFE_MODE:

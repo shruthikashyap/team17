@@ -119,13 +119,13 @@ void set_key_lift(char value)
 	
 	if(value == 1)
 	{
-		drone.key_lift += RPM_STEP;
+		drone.key_lift += KEYBOARD_STEP;
 		if(drone.key_lift > MAX_LIFT)
 			drone.key_lift = MAX_LIFT;
 	}
 	else if(value == 0)
 	{
-		drone.key_lift -= RPM_STEP;
+		drone.key_lift -= KEYBOARD_STEP;
 		if(drone.key_lift < MIN_LIFT)
 			drone.key_lift = MIN_LIFT;
 	}
@@ -137,13 +137,13 @@ void set_key_roll(char value)
 	
 	if(value == 1)
 	{
-		drone.key_roll += RPM_STEP;
+		drone.key_roll += KEYBOARD_STEP;
 		if(drone.key_roll > MAX_ROLL)
 			drone.key_roll = MAX_ROLL;
 	}
 	else if(value == 0)
 	{
-		drone.key_roll -= RPM_STEP;
+		drone.key_roll -= KEYBOARD_STEP;
 		if(drone.key_roll < MIN_ROLL)
 			drone.key_roll = MIN_ROLL;
 	}
@@ -155,13 +155,13 @@ void set_key_pitch(char value)
 	
 	if(value == 1)
 	{
-		drone.key_pitch += RPM_STEP;
+		drone.key_pitch += KEYBOARD_STEP;
 		if(drone.key_pitch > MAX_PITCH)
 			drone.key_pitch = MAX_PITCH;
 	}
 	else if(value == 0)
 	{
-		drone.key_pitch -= RPM_STEP;
+		drone.key_pitch -= KEYBOARD_STEP;
 		if(drone.key_pitch < MIN_PITCH)
 			drone.key_pitch = MIN_PITCH;
 	}
@@ -173,13 +173,13 @@ void set_key_yaw(char value)
 	
 	if(value == 1)
 	{
-		drone.key_yaw += RPM_STEP;
+		drone.key_yaw += KEYBOARD_STEP;
 		if(drone.key_yaw > MAX_YAW)
 			drone.key_yaw = MAX_YAW;
 	}
 	else if(value == 0)
 	{
-		drone.key_yaw -= RPM_STEP;
+		drone.key_yaw -= KEYBOARD_STEP;
 		if(drone.key_yaw < MIN_YAW)
 			drone.key_yaw = MIN_YAW;
 	}

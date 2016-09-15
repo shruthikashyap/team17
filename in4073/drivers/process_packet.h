@@ -1,14 +1,16 @@
 #include "command_types.h"
 
 // XXX: Need to change the values
-#define MAX_LIFT	1000
-#define MAX_PITCH	1000
-#define MAX_ROLL	1000
-#define MAX_YAW		1000
-#define MIN_LIFT	120
-#define MIN_PITCH	120
-#define MIN_ROLL	120
-#define MIN_YAW		120
+#define MAX_LIFT	128
+#define MAX_PITCH	128
+#define MAX_ROLL	128
+#define MAX_YAW		128
+#define MIN_LIFT	-127
+#define MIN_PITCH	-127
+#define MIN_ROLL	-127
+#define MIN_YAW		-127
+
+#define KEYBOARD_STEP 2
 
 struct store_packet_t
 {

@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
-	queue = createQueue(100);
+	queue = createQueue(10);
 	
 	pthread_create(&pthread_dequeue, NULL, process_dequeue, NULL);
  	if (ret_1 )
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		usleep(100);
+		usleep(10);
 
 		if ((c = term_getchar_nb()) != -1) 
 		{
