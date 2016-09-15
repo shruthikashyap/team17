@@ -279,8 +279,6 @@ void process_drone()
 					//ae[0] = ae[1] = ae[2] = ae[3] = 500;
 					//printf("\nDrone motor values before: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					panic_mode();
-						drone.current_mode = SAFE_MODE;
-						drone.change_mode = 1; // XXX: Is this needed?
 					// XXX: Test
 					//printf("\nDrone motor values after: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					break;
