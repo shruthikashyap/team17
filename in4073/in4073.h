@@ -113,8 +113,8 @@ void ble_send(void);
 struct qr_t
 {
 	char current_mode;	// Current mode of QR
-	bool change_mode;	// Flag to indicate change of mode
-	bool stop;			// Flag to stop QR
+	int16_t change_mode;	// Flag to indicate change of mode
+	int16_t stop;			// Flag to stop QR
 	int16_t ae[4];		// Current ae[] values
 	
 	// Keyboard lift, roll, pitch and yaw values

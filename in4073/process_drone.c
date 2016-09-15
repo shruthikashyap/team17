@@ -18,8 +18,8 @@ void reset_drone()
 {
 	// XXX: Set mode as SAFE_MODE and clear all flags
 	drone.current_mode = SAFE_MODE; // XXX: Test
-	drone.stop = false;
-	drone.change_mode = false;
+	drone.stop = 0;
+	drone.change_mode = 0;
 	
 	// Reset drone control variables
 	drone.key_lift = 0;
@@ -68,12 +68,17 @@ void safe_mode()
 			drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
 			drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
 			drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
-			printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+			//printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 			nrf_delay_ms(1000);
 		}
 #endif
 
-	while(drone.change_mode == false && drone.stop == false);
+	while(drone.change_mode == 0 && drone.stop == 0)
+	{
+		printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
+		nrf_delay_ms(1000);
+	}
+	printf("Exit SAFE_MODE\n");
 }
 
 void panic_mode()
@@ -81,7 +86,8 @@ void panic_mode()
 	printf("In PANIC_MODE\n");
 	
 	// Disable UART interrupts
-	NVIC_DisableIRQ(UART0_IRQn);
+	//NVIC_DisableIRQ(UART0_IRQn);
+	__disable_irq();
 	
 #if 0
 	// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
@@ -105,10 +111,13 @@ void panic_mode()
 	
 	// Go to Safe mode
 	drone.current_mode = SAFE_MODE;
-	drone.change_mode = true; // XXX: Is this needed?
+	drone.change_mode = 1; // XXX: Is this needed?
+	
+	printf("Exit PANIC_MODE\n");
 	
 	// Enable UART interrupts
-	NVIC_EnableIRQ(UART0_IRQn);
+	//NVIC_EnableIRQ(UART0_IRQn);
+	__enable_irq();
 }
 
 // Scales numbers from a range into another range
@@ -140,7 +149,8 @@ void manual_mode()
 #endif
 
 	// Disable UART interrupts
-	NVIC_DisableIRQ(UART0_IRQn);
+	//NVIC_DisableIRQ(UART0_IRQn);
+	__disable_irq();
 	
 	// Rescaling joystick values to useful stuff
 	int lift_force   = scale_number(drone.joy_lift,-255,255,-min_max_joystick,min_max_joystick)  + drone.key_lift;
@@ -149,7 +159,8 @@ void manual_mode()
 	int yaw_moment   = scale_number(drone.joy_yaw,-255,255,-min_max_joystick,min_max_joystick)   + drone.key_yaw;
 	
 	// Enable UART interrupts
-	NVIC_EnableIRQ(UART0_IRQn);
+	//NVIC_EnableIRQ(UART0_IRQn);
+	__enable_irq();
 
 	int lift  = DRONE_LIFT_CONSTANT * lift_force;
 	int pitch = DRONE_PITCH_CONSTANT * pitch_moment;
@@ -186,16 +197,40 @@ void manual_mode()
 void yaw_control_mode()
 {
 	printf("In YAW_CONTROL_MODE\n");
+	
+	while(drone.change_mode == 0 && drone.stop == 0)
+	{
+		printf("YAW - drone.change_mode = %d\n", drone.change_mode);
+		nrf_delay_ms(1000);
+	}
+	
+	printf("Exit YAW_CONTROL_MODE\n");
 }
 
 void full_control_mode()
 {
 	printf("In FULL_CONTROL_MODE\n");
+	
+	while(drone.change_mode == 0 && drone.stop == 0)
+	{
+		printf("FULL - drone.change_mode = %d\n", drone.change_mode);
+		nrf_delay_ms(1000);
+	}
+	
+	printf("Exit FULL_CONTROL_MODE\n");
 }
 
 void calibration_mode()
 {
 	printf("In CALIBRATION_MODE\n");
+	
+	while(drone.change_mode == 0 && drone.stop == 0)
+	{
+		printf("CALIBRATION_ - drone.change_mode = %d\n", drone.change_mode);
+		nrf_delay_ms(1000);
+	}
+	
+	printf("Exit CALIBRATION_MODE\n");
 }
 
 void raw_mode()
@@ -217,7 +252,7 @@ void process_drone()
 {
 #if 0
 	// XXX: Interrupt test
-	while (drone.stop == false)
+	while (drone.stop == 0)
 	{
 		printf("\nDrone motor values: %3d %3d %3d %3d, size = %d\n", ae[0], ae[1], ae[2], ae[3], sizeof(int16_t));
 		nrf_delay_ms(500);
@@ -228,9 +263,9 @@ void process_drone()
 	// Set defaults for the drone
 	reset_drone();
 	
-	while (drone.stop == false)
+	while (drone.stop == 0)
 	{
-		drone.change_mode = false;
+		drone.change_mode = 0;
 		
 		switch (drone.current_mode)
 		{
@@ -244,6 +279,8 @@ void process_drone()
 					//ae[0] = ae[1] = ae[2] = ae[3] = 500;
 					//printf("\nDrone motor values before: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					panic_mode();
+						drone.current_mode = SAFE_MODE;
+						drone.change_mode = 1; // XXX: Is this needed?
 					// XXX: Test
 					//printf("\nDrone motor values after: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					break;

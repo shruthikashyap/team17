@@ -118,7 +118,7 @@ void sendKeyPacket(char key)
 	}
 	if (p_flag == 1)
 	{	
-		printf("Packet values from keyboard: %d, %d\n", p.command, p.value);
+		//printf("\n\nPacket values from keyboard: %d, %d\n", p.command, p.value);
 		enqueue(p);
 	}
 }

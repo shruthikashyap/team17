@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		usleep(10);
+		usleep(100);
 
 		if ((c = term_getchar_nb()) != -1) 
 		{

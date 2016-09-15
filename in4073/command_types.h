@@ -11,7 +11,7 @@
 
 /* Mode Types */
 #define SAFE_MODE			0x20
-#define PANIC_MODE			0x21
+#define PANIC_MODE			0x29
 #define MANUAL_MODE			0x22
 #define YAW_CONTROL_MODE	0x23
 #define FULL_CONTROL_MODE	0x24
@@ -20,9 +20,17 @@
 #define WIRELESS_MODE		0x27
 #define RAW_MODE			0x28
 
+/* Start and Stop Bytes */
+#define START_BYTE	'?'
+#define	STOP_BYTE	'!'
+
 /* RPMs */
 #define RPM_STEP		10
 #define HOVER_RPM		250 // XXX: Find out the right value
+
+/* Increase or Decrease */
+#define	INCREASE	1
+#define DECREASE	0
 
 struct packet_t
 {

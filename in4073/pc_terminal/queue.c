@@ -36,7 +36,7 @@ void enqueue(struct packet_t p)
         queue->elements[queue->last].command = p.command;
         queue->elements[queue->last].value = p.value;
 
-        printf("Enqueued Packet values : %d, %d\n", queue->elements[queue->last].command, queue->elements[queue->last].value);
+        //printf("Enqueued Packet values : %d, %d\n", queue->elements[queue->last].command, queue->elements[queue->last].value);
     }
     pthread_mutex_unlock(&mutex);
 }
@@ -65,7 +65,7 @@ void * process_dequeue( void * thread)
         		rs232_putchar(p->value);
         		rs232_putchar('!');
 
-                printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
+                //printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
         }
 
 		pthread_mutex_unlock(&mutex);
