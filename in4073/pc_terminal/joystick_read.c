@@ -20,17 +20,36 @@ char scale_axis[6];
 
 void scale_joystick_values(int axis[6])
 {
+	//printf("In scale_joystick_values\n");
 	int i;
+	int OldRange = 65535;
+	int NewRange = 255;
+	int OldMax = 32767;
+	int OldMin = -32768;
+	//int NewMax = 127;
+	int NewMin = -128;
+	
 	for(i = 0; i < 6; i++)
 	{
-		scale_axis[i] = (axis[i] + 32768) * 255 / 65535;
+		//scale_axis[i] = (axis[i] + 32768) * 255 / 65535;
+		
+		if(axis[i] >= OldMin && axis[i] <= OldMax)
+		{
+			scale_axis[i] = (((axis[i] - OldMin) * NewRange) / OldRange) + NewMin;
+			//printf("scale_axis[%d] is %d, axis[%d] = %d\n", i, scale_axis[i], i, axis[i]);
+		}
 	}
 }
 
 void sendJsPacket()
 {
-	unsigned int	i;
+	unsigned int i;
 	int axis[6];
+	
+	// XXX: Test
+	//int axis[6] = {32767, -32768, 30689, 258, 0, 7778787};
+	//scale_joystick_values(&axis[0]);
+	
 	struct packet_t p;
 	/* check up on JS
  	*/
@@ -94,5 +113,4 @@ void sendJsPacket()
 				break;
 		}
 	}
-	
 }

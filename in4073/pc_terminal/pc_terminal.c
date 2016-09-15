@@ -40,17 +40,11 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
  */
 int main(int argc, char **argv)
 {
-	char	c;//, key;
-	//int 	axis[6];
-	//int 	button[12];
-	struct  packet_t *p;
-	struct  packet_t packet;
-	int 	ret_1=0;
+	char c;
+	int ret_1=0;
 	pthread_t pthread_dequeue;
 
-	p = &packet;
 /*
-	int axis[6];
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
@@ -64,7 +58,7 @@ int main(int argc, char **argv)
 
 	queue = createQueue(100);
 	
-	pthread_create(&pthread_dequeue, NULL, process_dequeue, (void*)p);
+	pthread_create(&pthread_dequeue, NULL, process_dequeue, NULL);
  	if (ret_1 )
  		printf("Dequeue error\n");
  	pthread_mutex_init(&mutex, NULL);
@@ -83,7 +77,8 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		usleep(1000);
+		usleep(10);
+
 		if ((c = term_getchar_nb()) != -1) 
 		{
 			sendKeyPacket(c);		
@@ -93,7 +88,6 @@ int main(int argc, char **argv)
 
 		if ((c = rs232_getchar_nb()) != -1) 
 			term_putchar(c);
-
 	}
 
 	term_exitio();
