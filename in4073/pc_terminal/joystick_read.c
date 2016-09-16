@@ -12,7 +12,7 @@
 #include "joystick_read.h"
 #include "packet.h"
 #include "queue.h"
-#include "command_types.h"
+#include "../command_types.h"
 
 int fd;
 struct js_event js;

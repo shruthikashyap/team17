@@ -62,6 +62,7 @@ void safe_mode()
 
 #if 1
 		// Gradually reduce RPM of the motors to 0.
+		__disable_irq();
 		while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
 		{
 			drone.ae[0] = (drone.ae[0]) < RPM_STEP? 0 : drone.ae[0] - 10;
@@ -71,11 +72,12 @@ void safe_mode()
 			//printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 			nrf_delay_ms(1000);
 		}
+		__enable_irq();
 #endif
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
+		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(1000);
 	}
 	printf("Exit SAFE_MODE\n");
@@ -128,7 +130,7 @@ int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
 
 void manual_mode()
 {
-	//printf("In MANUAL_MODE\n");
+	printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
 
@@ -195,7 +197,7 @@ void yaw_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		printf("YAW - drone.change_mode = %d\n", drone.change_mode);
+		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(1000);
 	}
 	
@@ -208,7 +210,7 @@ void full_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		printf("FULL - drone.change_mode = %d\n", drone.change_mode);
+		//printf("FULL - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(1000);
 	}
 	
@@ -221,7 +223,7 @@ void calibration_mode()
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		printf("CALIBRATION_ - drone.change_mode = %d\n", drone.change_mode);
+		//printf("CALIBRATION - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(1000);
 	}
 	

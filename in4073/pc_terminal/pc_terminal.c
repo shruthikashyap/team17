@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <pthread.h>
 
-#include "command_types.h"
+#include "../command_types.h"
 #include "joystick_read.h"
 #include "queue.h"
 #include "rs232_com.h"
@@ -81,7 +81,8 @@ int main(int argc, char **argv)
 
 		if ((c = term_getchar_nb()) != -1) 
 		{
-			sendKeyPacket(c);		
+			// XXX: To be Done: Check for NACK after every byte. If NACK - Resend from beginning
+			sendKeyPacket(c);
 		}
 
 		//sendJsPacket();

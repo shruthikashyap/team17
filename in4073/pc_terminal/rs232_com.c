@@ -17,8 +17,8 @@ int fd_RS232;
 
 void rs232_open(void)
 {
-  	char 		*name;
-  	int 		result;  
+  	char *name;
+  	int result;  
   	struct termios	tty;
 
        	fd_RS232 = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY);  // Hardcode your serial port here, or request it as an argument at runtime
@@ -55,9 +55,9 @@ void rs232_open(void)
 }
 
 
-void 	rs232_close(void)
+void rs232_close(void)
 {
-  	int 	result;
+  	int result;
 
   	result = close(fd_RS232);
   	assert (result==0);
@@ -66,7 +66,7 @@ void 	rs232_close(void)
 
 int	rs232_getchar_nb()
 {
-	int 		result;
+	int result;
 	unsigned char 	c;
 
 	result = read(fd_RS232, &c, 1);
@@ -82,17 +82,15 @@ int	rs232_getchar_nb()
 }
 
 
-int 	rs232_getchar()
+int rs232_getchar()
 {
-	int 	c;
+	int c;
 
-	while ((c = rs232_getchar_nb()) == -1) 
-		;
+	while ((c = rs232_getchar_nb()) == -1);
 	return c;
 }
 
-
-int 	rs232_putchar(char c)
+int rs232_putchar(char c)
 { 
 	int result;
 

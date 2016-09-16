@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "packet.h"
 #include "queue.h"
-#include "command_types.h"
+#include "../command_types.h"
 
 void sendKeyPacket(char key)
 {

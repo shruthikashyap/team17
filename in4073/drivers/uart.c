@@ -13,9 +13,9 @@
 
 bool txd_available = true;
 
-struct store_packet_t st_p;
-int packet_flag = 0;
+struct packet_t p;
 int rcv_byte_count = 0;
+int nack_flag = 0;
 
 void uart_put(uint8_t byte)
 {
@@ -60,50 +60,84 @@ void UART0_IRQHandler(void)
 		NRF_UART0->EVENTS_ERROR = 0;
 		printf("uart error: %lu\n", NRF_UART0->ERRORSRC);
 	}
-	
+
 	// XXX: Receive in struct order and handle acknowledgement
-	if (rx_queue.count)
+	if(rx_queue.count)
 	{
 		char ch = dequeue(&rx_queue);
 
 		if(ch == START_BYTE)
 		{
-			st_p.start = ch;
-
-			// Start receiving
-			packet_flag = 1;
-			rcv_byte_count = 1;
+			if(nack_flag == 1)
+			{
+				nack_flag = 0;
+			}
+			
+			if(rcv_byte_count == 0)
+			{
+				p.start = ch;
+				
+				// Start receiving
+				rcv_byte_count = 1;
+			}
+			else
+			{
+				// XXX: Packet error - Send NACK
+				nack_flag = 1;
+				send_packet_ack(ACK_FAILURE);
+				//printf("Send NACK %d!\n", ch);
+				
+				// Reset flags
+				rcv_byte_count = 0;
+			}
 		}
 		else if(ch == STOP_BYTE)
 		{
-			st_p.stop = ch;
+			if(rcv_byte_count == 3)
+			{
+				p.stop = ch;
+				
+				// Process packet
+				printf("Packet received - command = %d, value = %d\n", p.command, p.value);
+				//if(drone.current_mode != PANIC_MODE)
+					process_packet(p);
+			}
+			else
+			{
+				// XXX: Packet error - Send NACK
+				if(nack_flag == 0)
+				{
+					nack_flag = 1;
+					send_packet_ack(ACK_FAILURE);
+					//printf("Send NACK %d!\n", ch);
+				}
+			}
 
-			// Reset flags
+			// Reset flag
 			rcv_byte_count = 0;
-			packet_flag = 0;
+		}
+		else if(rcv_byte_count == 1)
+		{
+			p.command = ch;
+			rcv_byte_count++;
+		}
+		else if(rcv_byte_count == 2)
+		{
+			p.value = ch;
+			rcv_byte_count++;
 		}
 		else
 		{
-			if(rcv_byte_count == 1)
+			// XXX: Packet error - Send NACK
+			if(nack_flag == 0)
 			{
-				st_p.command = ch;
-				rcv_byte_count++;
+				nack_flag = 1;
+				send_packet_ack(ACK_FAILURE);
+				//printf("Send NACK %d!\n", ch);
 			}
-			else if(rcv_byte_count == 2)
-			{
-				st_p.value = ch;
-				rcv_byte_count++;
-				//printf("command = %d, value = %d\n", st_p.command, (unsigned char)st_p.value);
-				
-				if(drone.current_mode != PANIC_MODE )
-					process_packet(st_p);
-			}
-		}
-
-		if(rcv_byte_count == 4)
-		{
+			
+			// Reset flag
 			rcv_byte_count = 0;
-			packet_flag = 0;
 		}
 	}
 }

@@ -35,6 +35,8 @@
 struct packet_t
 {
 	// XXX: Add check bytes
+	char start;
 	char command;
 	char value;
+	char stop;
 };

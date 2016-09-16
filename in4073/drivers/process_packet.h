@@ -12,17 +12,7 @@
 
 #define KEYBOARD_STEP 2
 
-struct store_packet_t
-{
-	char start;
-	char command;
-	char value;
-	char stop;
-};
-
-extern struct store_packet_t st_p;
-
-void process_packet(struct store_packet_t packet);
+void process_packet(struct packet_t packet);
 void process_key(struct packet_t packet);
 void set_mode_type(char value);
 void set_key_lift(char value);
@@ -33,3 +23,10 @@ void set_joy_lift(char value);
 void set_joy_roll(char value);
 void set_joy_pitch(char value);
 void set_joy_yaw(char value);
+
+/* Acknowledgement type */
+#define	ACK_SUCCESS	0
+#define	ACK_FAILURE	1
+
+/* Send acknowledgement */
+void send_packet_ack(int);

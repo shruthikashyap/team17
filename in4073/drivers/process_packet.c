@@ -55,6 +55,12 @@ void process_key(struct packet_t p)
 	}*/
 }
 
+void send_packet_ack(int ack)
+{
+	// XXX: Send ack to PC
+	printf("Ack value = %d\n", ack);
+}
+
 void set_mode_type(char value)
 {
 	printf("In set_mode_type - %d\n", value);
@@ -75,28 +81,34 @@ void set_mode_type(char value)
 			case SAFE_MODE:
 						drone.current_mode = SAFE_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case PANIC_MODE:
 						if(drone.current_mode == SAFE_MODE)
 							break;
 						drone.current_mode = PANIC_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case MANUAL_MODE:
 						drone.current_mode = MANUAL_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case YAW_CONTROL_MODE:
 						drone.current_mode = YAW_CONTROL_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case FULL_CONTROL_MODE:
 						drone.current_mode = FULL_CONTROL_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case CALIBRATION_MODE:
 						drone.current_mode = CALIBRATION_MODE;
 						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
 						break;
 			case HEIGHT_CONTROL_MODE:
 						// XXX: Not considered a mode. Needs to be handled.
@@ -109,6 +121,8 @@ void set_mode_type(char value)
 						break;
 			default:
 						printf("Invalid mode\n");
+						// XXX: Send NACK
+						send_packet_ack(ACK_FAILURE);
 		}
 	}
 }
@@ -122,12 +136,21 @@ void set_key_lift(char value)
 		drone.key_lift += KEYBOARD_STEP;
 		if(drone.key_lift > MAX_LIFT)
 			drone.key_lift = MAX_LIFT;
+		
+		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_lift -= KEYBOARD_STEP;
 		if(drone.key_lift < MIN_LIFT)
 			drone.key_lift = MIN_LIFT;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
 	}
 }
 
@@ -140,12 +163,21 @@ void set_key_roll(char value)
 		drone.key_roll += KEYBOARD_STEP;
 		if(drone.key_roll > MAX_ROLL)
 			drone.key_roll = MAX_ROLL;
+		
+		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_roll -= KEYBOARD_STEP;
 		if(drone.key_roll < MIN_ROLL)
 			drone.key_roll = MIN_ROLL;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
 	}
 }
 
@@ -158,12 +190,21 @@ void set_key_pitch(char value)
 		drone.key_pitch += KEYBOARD_STEP;
 		if(drone.key_pitch > MAX_PITCH)
 			drone.key_pitch = MAX_PITCH;
+		
+		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_pitch -= KEYBOARD_STEP;
 		if(drone.key_pitch < MIN_PITCH)
 			drone.key_pitch = MIN_PITCH;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
 	}
 }
 
@@ -176,12 +217,21 @@ void set_key_yaw(char value)
 		drone.key_yaw += KEYBOARD_STEP;
 		if(drone.key_yaw > MAX_YAW)
 			drone.key_yaw = MAX_YAW;
+		
+		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_yaw -= KEYBOARD_STEP;
 		if(drone.key_yaw < MIN_YAW)
 			drone.key_yaw = MIN_YAW;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
 	}
 }
 
@@ -190,6 +240,8 @@ void set_joy_lift(char value)
 	printf("In set_joy_lift - %d\n", value);
 	
 	drone.joy_lift = value;
+	
+	send_packet_ack(ACK_SUCCESS);
 }
 
 void set_joy_roll(char value)
@@ -197,6 +249,8 @@ void set_joy_roll(char value)
 	printf("In set_joy_roll - %d\n", value);
 	
 	drone.joy_lift = value;
+	
+	send_packet_ack(ACK_SUCCESS);
 }
 
 void set_joy_pitch(char value)
@@ -204,6 +258,8 @@ void set_joy_pitch(char value)
 	printf("In set_joy_pitch - %d\n", value);
 	
 	drone.joy_lift = value;
+	
+	send_packet_ack(ACK_SUCCESS);
 }
 
 void set_joy_yaw(char value)
@@ -211,13 +267,16 @@ void set_joy_yaw(char value)
 	printf("In set_joy_yaw - %d\n", value);
 	
 	drone.joy_lift = value;
+	
+	send_packet_ack(ACK_SUCCESS);
 }
 
-void process_packet(struct store_packet_t packet)
+void process_packet(struct packet_t packet)
 {
-	printf("Received byte:%d, %d\n", packet.command, packet.value);
-	
-#if 1
+	//printf("Received byte:%d, %d\n", packet.command, packet.value);
+
+// XXX: Test
+#if 0
 	if(drone.current_mode == SAFE_MODE && packet.command != MODE_TYPE)
 	{
 		printf("\nIgnoring drone control commands in SAFE_MODE");
@@ -228,7 +287,6 @@ void process_packet(struct store_packet_t packet)
 	switch (packet.command)
 	{
 		case MODE_TYPE:
-				printf("drone.current_mode = %d\n", drone.current_mode);
 				set_mode_type(packet.value);
 				break;
 		case KEY_LIFT:
@@ -257,6 +315,8 @@ void process_packet(struct store_packet_t packet)
 				break;
 		default :
 				// XXX: Packet error. Needs to be handled
+				// XXX: Send NACK
+				send_packet_ack(ACK_FAILURE);
 				break;
 	}
 }
