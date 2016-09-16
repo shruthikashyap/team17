@@ -59,6 +59,14 @@ void send_packet_ack(int ack)
 {
 	// XXX: Send ack to PC
 	printf("Ack value = %d\n", ack);
+	
+/*	struct packet_t p;
+	p.start = START_BYTE;
+	p.command = ACK;
+	p.value = ack;
+	p.stop = STOP_BYTE;
+*/	
+	// XXX: Send p to PC
 }
 
 void set_mode_type(char value)

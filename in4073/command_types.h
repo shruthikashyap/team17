@@ -24,9 +24,12 @@
 #define START_BYTE	'?'
 #define	STOP_BYTE	'!'
 
+/* ACK */
+#define	ACK	0x50
+
 /* RPMs */
-#define RPM_STEP		10
-#define HOVER_RPM		250 // XXX: Find out the right value
+#define RPM_STEP	10
+#define HOVER_RPM	250 // XXX: Find out the right value
 
 /* Increase or Decrease */
 #define	INCREASE	1
