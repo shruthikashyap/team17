@@ -43,25 +43,31 @@ int main(int argc, char **argv)
 	char c;
 	int ret_1=0;
 	pthread_t pthread_dequeue;
+	pthread_t pthread_receive;
 
-
+/*
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
 	}
-
+*/
 	/* non-blocking mode
  	*/
-	fcntl(fd, F_SETFL, O_NONBLOCK);
+//	fcntl(fd, F_SETFL, O_NONBLOCK);
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
 	queue = createQueue(100);
 	
 	pthread_create(&pthread_dequeue, NULL, process_dequeue, NULL);
- 	if (ret_1 )
- 		printf("Dequeue error\n");
+ 	if (ret_1)
+ 		printf("Dequeue thread error\n");
+	
  	pthread_mutex_init(&mutex, NULL);
+	
+	pthread_create(&pthread_receive, NULL, process_receive_packets, NULL);
+ 	if (ret_1)
+ 		printf("Receive thread error\n");
 
 	term_initio();
 	rs232_open();
@@ -77,7 +83,7 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		//usleep(10);
+		usleep(100);
 
 		if ((c = term_getchar_nb()) != -1) 
 		{
@@ -85,12 +91,10 @@ int main(int argc, char **argv)
 			sendKeyPacket(c);
 		}
 
-		sendJsPacket();
+		//sendJsPacket();
 
-		usleep(50000);
-
-		if ((c = rs232_getchar_nb()) != -1) 
-			term_putchar(c);
+		//if ((c = rs232_getchar_nb()) != -1) 
+		//	term_putchar(c);
 	}
 
 	term_exitio();
@@ -98,6 +102,7 @@ int main(int argc, char **argv)
 	free(queue->elements);
 	free(queue);
 	pthread_join(pthread_dequeue, NULL);
+	pthread_join(pthread_receive, NULL);
 	term_puts("\n<exit>\n");
   	
 	return 0;

@@ -34,7 +34,7 @@ void reset_drone()
 
 void safe_mode()
 {
-	printf("In SAFE_MODE\n");
+	//printf("In SAFE_MODE\n");
 	
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
@@ -80,12 +80,12 @@ void safe_mode()
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(1000);
 	}
-	printf("Exit SAFE_MODE\n");
+	//printf("Exit SAFE_MODE\n");
 }
 
 void panic_mode()
 {
-	printf("In PANIC_MODE\n");
+	//printf("In PANIC_MODE\n");
 	
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
@@ -105,7 +105,7 @@ void panic_mode()
 	drone.ae[1] = HOVER_RPM;
 	drone.ae[2] = HOVER_RPM;
 	drone.ae[3] = HOVER_RPM;
-	printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+	//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 #endif
 	
 	// Stay in this mode for a few seconds
@@ -115,7 +115,7 @@ void panic_mode()
 	drone.current_mode = SAFE_MODE;
 	drone.change_mode = 1; // XXX: Is this needed?
 	
-	printf("Exit PANIC_MODE\n");
+	//printf("Exit PANIC_MODE\n");
 	
 	// Enable UART interrupts
 	//NVIC_EnableIRQ(UART0_IRQn);
@@ -130,7 +130,7 @@ int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
 
 void manual_mode()
 {
-	printf("In MANUAL_MODE\n");
+	//printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
 
@@ -187,13 +187,13 @@ void manual_mode()
 	drone.ae[2] = ae_[2];
 	drone.ae[3] = ae_[3];
 
-	printf("%3d %3d %3d %3d \n", ae_[0], ae_[1], ae_[2], ae_[3]);
+	//printf("%3d %3d %3d %3d \n", ae_[0], ae_[1], ae_[2], ae_[3]);
 	//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 }
 
 void yaw_control_mode()
 {
-	printf("In YAW_CONTROL_MODE\n");
+	//printf("In YAW_CONTROL_MODE\n");
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -201,12 +201,12 @@ void yaw_control_mode()
 		nrf_delay_ms(1000);
 	}
 	
-	printf("Exit YAW_CONTROL_MODE\n");
+	//printf("Exit YAW_CONTROL_MODE\n");
 }
 
 void full_control_mode()
 {
-	printf("In FULL_CONTROL_MODE\n");
+	//printf("In FULL_CONTROL_MODE\n");
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -214,12 +214,12 @@ void full_control_mode()
 		nrf_delay_ms(1000);
 	}
 	
-	printf("Exit FULL_CONTROL_MODE\n");
+	//printf("Exit FULL_CONTROL_MODE\n");
 }
 
 void calibration_mode()
 {
-	printf("In CALIBRATION_MODE\n");
+	//printf("In CALIBRATION_MODE\n");
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -227,22 +227,22 @@ void calibration_mode()
 		nrf_delay_ms(1000);
 	}
 	
-	printf("Exit CALIBRATION_MODE\n");
+	//printf("Exit CALIBRATION_MODE\n");
 }
 
 void raw_mode()
 {
-	printf("In RAW_MODE\n");
+	//printf("In RAW_MODE\n");
 }
 
 void height_control_mode()
 {
-	printf("In HEIGHT_CONTROL_MODE\n");
+	//printf("In HEIGHT_CONTROL_MODE\n");
 }
 
 void wireless_mode()
 {
-	printf("In WIRELESS_MODE\n");
+	//printf("In WIRELESS_MODE\n");
 }
 
 void process_drone()
@@ -251,7 +251,7 @@ void process_drone()
 	// XXX: Interrupt test
 	while (drone.stop == 0)
 	{
-		printf("\nDrone motor values: %3d %3d %3d %3d, size = %d\n", ae[0], ae[1], ae[2], ae[3], sizeof(int16_t));
+		//printf("\nDrone motor values: %3d %3d %3d %3d, size = %d\n", ae[0], ae[1], ae[2], ae[3], sizeof(int16_t));
 		nrf_delay_ms(500);
 	}
 #endif

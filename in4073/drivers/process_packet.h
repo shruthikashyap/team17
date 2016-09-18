@@ -24,9 +24,5 @@ void set_joy_roll(char value);
 void set_joy_pitch(char value);
 void set_joy_yaw(char value);
 
-/* Acknowledgement type */
-#define	ACK_SUCCESS	0
-#define	ACK_FAILURE	1
-
 /* Send acknowledgement */
 void send_packet_ack(int);

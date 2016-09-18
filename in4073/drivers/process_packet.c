@@ -58,25 +58,29 @@ void process_key(struct packet_t p)
 void send_packet_ack(int ack)
 {
 	// XXX: Send ack to PC
-	printf("Ack value = %d\n", ack);
+	//printf("Ack value = %d\n", ack);
 	
-/*	struct packet_t p;
+	struct packet_t p;
 	p.start = START_BYTE;
 	p.command = ACK;
 	p.value = ack;
 	p.stop = STOP_BYTE;
-*/	
+	
 	// XXX: Send p to PC
+	uart_put(p.start);
+	uart_put(p.command);
+	uart_put(p.value);
+	uart_put(p.stop);
 }
 
 void set_mode_type(char value)
 {
-	printf("In set_mode_type - %d\n", value);
+	//printf("In set_mode_type - %d\n", value);
 	
 	// Return if drone is already in this mode
 	if(drone.current_mode == value)
 	{
-		printf("Already in %d mode\n", value);
+		//printf("Already in %d mode\n", value);
 		return;
 	}
 	
@@ -137,7 +141,7 @@ void set_mode_type(char value)
 
 void set_key_lift(char value)
 {
-	printf("In set_key_lift - %d\n", value);
+	//printf("In set_key_lift - %d\n", value);
 	
 	if(value == 1)
 	{
@@ -164,7 +168,7 @@ void set_key_lift(char value)
 
 void set_key_roll(char value)
 {
-	printf("In set_key_roll - %d\n", value);
+	//printf("In set_key_roll - %d\n", value);
 	
 	if(value == 1)
 	{
@@ -191,7 +195,7 @@ void set_key_roll(char value)
 
 void set_key_pitch(char value)
 {
-	printf("In set_key_pitch - %d\n", value);
+	//printf("In set_key_pitch - %d\n", value);
 	
 	if(value == 1)
 	{
@@ -218,7 +222,7 @@ void set_key_pitch(char value)
 
 void set_key_yaw(char value)
 {
-	printf("In set_key_yaw - %d\n", value);
+	//printf("In set_key_yaw - %d\n", value);
 	
 	if(value == 1)
 	{
@@ -245,7 +249,7 @@ void set_key_yaw(char value)
 
 void set_joy_lift(char value)
 {
-	printf("In set_joy_lift - %d\n", value);
+	//printf("In set_joy_lift - %d\n", value);
 	
 	drone.joy_lift = value;
 	
@@ -254,7 +258,7 @@ void set_joy_lift(char value)
 
 void set_joy_roll(char value)
 {
-	printf("In set_joy_roll - %d\n", value);
+	//printf("In set_joy_roll - %d\n", value);
 	
 	drone.joy_lift = value;
 	
@@ -263,7 +267,7 @@ void set_joy_roll(char value)
 
 void set_joy_pitch(char value)
 {
-	printf("In set_joy_pitch - %d\n", value);
+	//printf("In set_joy_pitch - %d\n", value);
 	
 	drone.joy_lift = value;
 	
@@ -272,7 +276,7 @@ void set_joy_pitch(char value)
 
 void set_joy_yaw(char value)
 {
-	printf("In set_joy_yaw - %d\n", value);
+	//printf("In set_joy_yaw - %d\n", value);
 	
 	drone.joy_lift = value;
 	

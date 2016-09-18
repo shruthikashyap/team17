@@ -22,10 +22,15 @@
 
 /* Start and Stop Bytes */
 #define START_BYTE	250
-#define	STOP_BYTE	251
+#define	STOP_BYTE	240
 
 /* ACK */
-#define	ACK	0x50
+#define	ACK		0x50
+
+/* Acknowledgement type */
+#define	ACK_SUCCESS	0
+#define	ACK_FAILURE	1
+#define ACK_INVALID	2
 
 /* RPMs */
 #define RPM_STEP	10
