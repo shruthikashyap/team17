@@ -7,7 +7,7 @@
 #include "../command_types.h"
 #include "rs232_com.h"
 
-struct queue_t* createQueue(int numelements)
+struct queue_t * createQueue(int numelements)
 {
 	struct queue_t * q = (struct queue_t *)malloc(sizeof(struct queue_t));
 	q->elements = (struct packet_t *)malloc(sizeof(struct packet_t)*numelements);
@@ -23,7 +23,6 @@ struct queue_t* createQueue(int numelements)
 void enqueue(struct packet_t p)
 {	
 	pthread_mutex_lock(&mutex);
-
 	if(queue->size < queue->capacity)
 	{
 		queue->size++;

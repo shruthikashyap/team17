@@ -44,19 +44,19 @@ int main(int argc, char **argv)
 	int ret_1=0;
 	pthread_t pthread_dequeue;
 
-/*
+
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
 	}
-*/
+
 	/* non-blocking mode
  	*/
-//	fcntl(fd, F_SETFL, O_NONBLOCK);
+	fcntl(fd, F_SETFL, O_NONBLOCK);
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
-	queue = createQueue(10);
+	queue = createQueue(100);
 	
 	pthread_create(&pthread_dequeue, NULL, process_dequeue, NULL);
  	if (ret_1 )
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		usleep(10);
+		//usleep(10);
 
 		if ((c = term_getchar_nb()) != -1) 
 		{
@@ -85,7 +85,9 @@ int main(int argc, char **argv)
 			sendKeyPacket(c);
 		}
 
-		//sendJsPacket();
+		sendJsPacket();
+
+		usleep(50000);
 
 		if ((c = rs232_getchar_nb()) != -1) 
 			term_putchar(c);

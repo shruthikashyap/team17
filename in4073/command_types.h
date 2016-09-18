@@ -21,8 +21,8 @@
 #define RAW_MODE		0x28
 
 /* Start and Stop Bytes */
-#define START_BYTE	'?'
-#define	STOP_BYTE	'!'
+#define START_BYTE	250
+#define	STOP_BYTE	251
 
 /* ACK */
 #define	ACK	0x50

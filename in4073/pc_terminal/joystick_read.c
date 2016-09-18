@@ -17,6 +17,7 @@
 int fd;
 struct js_event js;
 char scale_axis[6];
+int axis[6];
 
 void scale_joystick_values(int axis[6])
 {
@@ -44,7 +45,6 @@ void scale_joystick_values(int axis[6])
 void sendJsPacket()
 {
 	unsigned int i;
-	int axis[6];
 	
 	// XXX: Test
 	//int axis[6] = {32767, -32768, 30689, 258, 0, 7778787};
@@ -70,12 +70,6 @@ void sendJsPacket()
 		exit (1);
 	}
 
-	printf("\n");
-
-	for (i = 0; i < 6; i++) {
-		printf("%6d ", axis[i]);
-	}
-
 	// Scale joystick axis values
 	scale_joystick_values(&axis[0]);
 
@@ -87,25 +81,25 @@ void sendJsPacket()
 		{
 			case 0:
 				p.command = JOY_LIFT;
-				p.value = axis[i];
+				p.value = scale_axis[i];
 				enqueue(p);
 				break;
 
 			case 1:
 				p.command = JOY_ROLL;
-				p.value = axis[i];
+				p.value = scale_axis[i];
 				enqueue(p);
 				break;
 
 			case 2:
 				p.command = JOY_PITCH;
-				p.value = axis[i];
+				p.value = scale_axis[i];
 				enqueue(p);
 				break;
 
 			case 3:
 				p.command = JOY_YAW;
-				p.value = axis[i];
+				p.value = scale_axis[i];
 				enqueue(p);
 				break;
 
