@@ -1,4 +1,4 @@
-#include "command_types.h"
+#include "../command_types.h"
 
 // XXX: Need to change the values
 #define MAX_LIFT	128

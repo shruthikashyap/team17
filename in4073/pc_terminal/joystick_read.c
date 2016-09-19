@@ -13,6 +13,7 @@
 #include "packet.h"
 #include "queue.h"
 #include "../command_types.h"
+#include "../crc.h"
 
 int fd;
 struct js_event js;
@@ -82,24 +83,28 @@ void sendJsPacket()
 			case 0:
 				p.command = JOY_LIFT;
 				p.value = scale_axis[i];
+				compute_crc(&p);
 				enqueue(p);
 				break;
 
 			case 1:
 				p.command = JOY_ROLL;
 				p.value = scale_axis[i];
+				compute_crc(&p);
 				enqueue(p);
 				break;
 
 			case 2:
 				p.command = JOY_PITCH;
 				p.value = scale_axis[i];
+				compute_crc(&p);
 				enqueue(p);
 				break;
 
 			case 3:
 				p.command = JOY_YAW;
 				p.value = scale_axis[i];
+				compute_crc(&p);
 				enqueue(p);
 				break;
 

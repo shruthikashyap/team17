@@ -3,7 +3,7 @@ CFLAGS = -g -Wall -lm -pthread
 EXEC = ./pc-terminal
 
 all:
-	$(CC) $(CFLAGS) *.c -o $(EXEC)
+	$(CC) $(CFLAGS) *.c ../crc.c -o $(EXEC)
 
 run: all
 	$(EXEC)

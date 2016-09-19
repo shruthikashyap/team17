@@ -40,6 +40,7 @@ void enqueue(struct packet_t p)
 		queue->elements[queue->last].start = START_BYTE;
 		queue->elements[queue->last].command = p.command;
 		queue->elements[queue->last].value = p.value;
+		queue->elements[queue->last].crc = p.crc;
 		queue->elements[queue->last].stop = STOP_BYTE;
 
 		//printf("Enqueued Packet values : %d, %d\n", queue->elements[queue->last].command, queue->elements[queue->last].value);
@@ -73,6 +74,7 @@ void* process_dequeue(void* thread)
 			rs232_putchar(p->start);
 			rs232_putchar(p->command);
 			rs232_putchar(p->value);
+			rs232_putchar(p->crc);
 			rs232_putchar(p->stop);
 			
 			//printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
@@ -96,6 +98,7 @@ void* process_dequeue(void* thread)
 						rs232_putchar(p->start);
 						rs232_putchar(p->command);
 						rs232_putchar(p->value);
+						rs232_putchar(p->crc);
 						rs232_putchar(p->stop);
 				}
 			}
@@ -138,7 +141,7 @@ void* process_receive_packets(void* thread)
 			}
 			else if((unsigned char)ch == STOP_BYTE)
 			{
-				if(rcv_byte_count == 3)
+				if(rcv_byte_count == 4)
 				{
 					p.stop = ch;
 
@@ -172,6 +175,11 @@ void* process_receive_packets(void* thread)
 			else if(rcv_byte_count == 2)
 			{
 				p.value = ch;
+				rcv_byte_count++;
+			}
+			else if(rcv_byte_count == 3)
+			{
+				p.crc = ch;
 				rcv_byte_count++;
 			}
 			else

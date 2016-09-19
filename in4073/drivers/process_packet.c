@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "process_packet.h"
 #include "in4073.h"
+#include "../crc.h"
 
 /*------------------------------------------------------------------
  * process_key -- process command keys
@@ -295,6 +296,12 @@ void process_packet(struct packet_t packet)
 		return;
 	}
 #endif
+
+	if (check_crc(packet))
+	{
+		send_packet_ack(ACK_FAILURE);
+		return;
+	}
 	
 	switch (packet.command)
 	{

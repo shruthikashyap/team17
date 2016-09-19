@@ -93,7 +93,7 @@ void UART0_IRQHandler(void)
 		}
 		else if((unsigned char)ch == STOP_BYTE)
 		{
-			if(rcv_byte_count == 3)
+			if(rcv_byte_count == 4)
 			{
 				p.stop = ch;
 				
@@ -124,6 +124,11 @@ void UART0_IRQHandler(void)
 		else if(rcv_byte_count == 2)
 		{
 			p.value = ch;
+			rcv_byte_count++;
+		}
+		else if(rcv_byte_count == 3)
+		{
+			p.crc = ch;
 			rcv_byte_count++;
 		}
 		else

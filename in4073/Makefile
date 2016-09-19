@@ -40,6 +40,7 @@ C_SOURCE_FILES += \
 $(abspath ../components/toolchain/system_nrf51.c) \
 $(abspath ../components/drivers_nrf/delay/nrf_delay.c) \
 $(abspath ./in4073.c) \
+$(abspath ./crc.c) \
 $(abspath ./control.c) \
 $(abspath ./process_drone.c) \
 $(abspath ./drivers/process_packet.c) \

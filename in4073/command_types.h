@@ -21,8 +21,8 @@
 #define RAW_MODE		0x28
 
 /* Start and Stop Bytes */
-#define START_BYTE	250
-#define	STOP_BYTE	240
+#define START_BYTE	0xFA    //250
+#define	STOP_BYTE	0xF0 	//240
 
 /* ACK */
 #define	ACK		0x50
@@ -40,11 +40,17 @@
 #define	INCREASE	1
 #define DECREASE	0
 
+/* Cyclic Redundancy Check */
+#define MSB 		0x80
+#define CRC_POLY	0xC8 
+#define MASK		0xF0
+
 struct packet_t
 {
 	// XXX: Add check bytes
-	char start;
+	unsigned char start;
 	char command;
 	char value;
-	char stop;
+	char crc;
+	unsigned char stop;
 };

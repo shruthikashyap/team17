@@ -3,6 +3,7 @@
 #include "packet.h"
 #include "queue.h"
 #include "../command_types.h"
+#include "../crc.h"
 
 void sendKeyPacket(char key)
 {
@@ -119,6 +120,7 @@ void sendKeyPacket(char key)
 	if (p_flag == 1)
 	{	
 		//printf("\n\nPacket values from keyboard: %d, %d\n", p.command, p.value);
+		compute_crc(&p);
 		enqueue(p);
 	}
 }
