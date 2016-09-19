@@ -65,12 +65,14 @@ void send_packet_ack(int ack)
 	p.start = START_BYTE;
 	p.command = ACK;
 	p.value = ack;
+	compute_crc(&p);
 	p.stop = STOP_BYTE;
 	
 	// XXX: Send p to PC
 	uart_put(p.start);
 	uart_put(p.command);
 	uart_put(p.value);
+	uart_put(p.crc);
 	uart_put(p.stop);
 }
 

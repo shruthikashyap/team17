@@ -7,6 +7,7 @@
 #include "queue.h"
 #include "../command_types.h"
 #include "rs232_com.h"
+#include "../crc.h"
 
 int ack_received = 0;
 
@@ -146,16 +147,22 @@ void* process_receive_packets(void* thread)
 					p.stop = ch;
 
 					// Process packet
-					printf("Packet received from QR - command = %d, value = %d\n", p.command, p.value);
-					
-					if(p.command == ACK)
+					if (!check_crc(p))
 					{
-						// Update a ack_received global variable
-						ack_received = p.value;
+						printf("Packet received from QR - command = %d, value = %d\n", p.command, p.value);
+						if(p.command == ACK)
+						{
+							// Update a ack_received global variable
+							ack_received = p.value;
+						}
+						else
+						{
+							// XXX: Need to handle other packets
+						}
 					}
 					else
 					{
-						// XXX: Need to handle other packets
+						printf("Packet error due to incorrect CRC\n");
 					}
 				}
 				else
