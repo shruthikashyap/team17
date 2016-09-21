@@ -72,22 +72,11 @@ void* process_dequeue(void* thread)
 			}
 
 			// Send data
-			if(p->value == PANIC_MODE)
-			{
-				rs232_putchar(p->start);
-				rs232_putchar(p->command);
-				rs232_putchar(p->value);
-				rs232_putchar(10);
-				rs232_putchar(p->stop);
-			}
-			else
-			{
-				rs232_putchar(p->start);
-				rs232_putchar(p->command);
-				rs232_putchar(p->value);
-				rs232_putchar(p->crc);
-				rs232_putchar(p->stop);	
-			}
+			rs232_putchar(p->start);
+			rs232_putchar(p->command);
+			rs232_putchar(p->value);
+			rs232_putchar(p->crc);
+			rs232_putchar(p->stop);	
 			
 			// Reset ack_received
 			ack_received = 2;
