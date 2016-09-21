@@ -22,7 +22,7 @@
 
 /* Start and Stop Bytes */
 #define START_BYTE	0xFA    //250
-#define	STOP_BYTE	0xF0 	//240
+#define	STOP_BYTE	0xF5	//245
 
 /* ACK */
 #define	ACK		0x50
@@ -34,7 +34,7 @@
 
 /* RPMs */
 #define RPM_STEP	10
-#define HOVER_RPM	250 // XXX: Find out the right value
+#define HOVER_RPM	150 // XXX: Find out the right value
 
 /* Increase or Decrease */
 #define	INCREASE	1

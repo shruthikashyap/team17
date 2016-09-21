@@ -35,7 +35,8 @@ void reset_drone()
 void safe_mode()
 {
 	//printf("In SAFE_MODE\n");
-	
+
+	__disable_irq();
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
 	drone.key_lift = 0;
@@ -47,6 +48,7 @@ void safe_mode()
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
 	
+
 #if 0
 		// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
 		while(ae[0] || ae[1] || ae[2] || ae[3])
@@ -62,18 +64,17 @@ void safe_mode()
 
 #if 1
 		// Gradually reduce RPM of the motors to 0.
-		__disable_irq();
 		while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
 		{
 			drone.ae[0] = (drone.ae[0]) < RPM_STEP? 0 : drone.ae[0] - 10;
 			drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
 			drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
 			drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
-			//printf("\nDrone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+			//printf("\nDrone decreasing motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 			nrf_delay_ms(1000);
 		}
-		__enable_irq();
 #endif
+	__enable_irq();
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -108,6 +109,9 @@ void panic_mode()
 	//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 #endif
 	
+	//printf("\nDrone panic motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+
+	
 	// Stay in this mode for a few seconds
 	nrf_delay_ms(5000);
 	
@@ -133,62 +137,79 @@ void manual_mode()
 	//printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
+	int lift_force;
+	int roll_moment;
+	int pitch_moment;
+	int yaw_moment;
+	int lift;
+	int pitch;
+	int roll;
+	int yaw;	
 
-	// Disable UART interrupts
-	//NVIC_DisableIRQ(UART0_IRQn);
-	__disable_irq();
+	while(drone.change_mode == 0 && drone.stop == 0)
+	{
+		// Disable UART interrupts
+		//NVIC_DisableIRQ(UART0_IRQn);
+		__disable_irq();
+
+		// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
+		lift_force   = drone.joy_lift  + drone.key_lift;
+		roll_moment  = drone.joy_roll  + drone.key_roll;
+		pitch_moment = drone.joy_pitch + drone.key_pitch;
+		yaw_moment   = drone.joy_yaw   + drone.key_yaw;
+
+		// Enable UART interrupts
+		//NVIC_EnableIRQ(UART0_IRQn);
+		__enable_irq();
+
+		lift  = DRONE_LIFT_CONSTANT * lift_force;
+		pitch = DRONE_PITCH_CONSTANT * pitch_moment;
+		roll  = DRONE_ROLL_CONSTANT * roll_moment;
+		yaw   = DRONE_YAW_CONSTANT * yaw_moment;
+
+		// no need to do this, rotor speeds are getting maxed/mined a few lines later
+		lift  = lift  < MIN_LIFT  ? MIN_LIFT  : lift;
+		roll  = roll  < MIN_ROLL  ? MIN_ROLL  : roll;
+		pitch = pitch < MIN_PITCH ? MIN_PITCH : pitch;
+		yaw   = yaw   < MIN_YAW   ? MIN_YAW   : yaw;
+
+		lift  = lift  > MAX_LIFT  ? MAX_LIFT  : lift;
+		roll  = roll  > MAX_ROLL  ? MAX_ROLL  : roll;
+		pitch = pitch > MAX_PITCH ? MAX_PITCH : pitch;
+		yaw   = yaw   > MAX_YAW   ? MAX_YAW   : yaw;
+
+		// Solving drone rotor dynamics equations
+		ae_[0] = (int)sqrt(0.25*(lift + 2*pitch - yaw));
+		ae_[1] = (int)sqrt(0.25*(lift - 2*roll  + yaw));
+		ae_[2] = (int)sqrt(0.25*(lift - 2*pitch - yaw));
+		ae_[3] = (int)sqrt(0.25*(lift + 2*roll  + yaw));
+
+		// checking min/max	
+		ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+		ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+		ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+		ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+
+		ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
+		ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
+		ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
+		ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
+
+		// setting drone rotor speeds
+		drone.ae[0] = ae_[0];
+		drone.ae[1] = ae_[1];
+		drone.ae[2] = ae_[2];
+		drone.ae[3] = ae_[3];
+
+		//printf("%3d %3d %3d %3d %3d\n", ae_[0], ae_[1], ae_[2], ae_[3], lift_force);
+		//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+		
+		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
+		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
+		nrf_delay_ms(10);
+	}
 	
-	// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
-	int lift_force   = drone.joy_lift  + drone.key_lift;
-	int roll_moment  = drone.joy_roll  + drone.key_roll;
-	int pitch_moment = drone.joy_pitch + drone.key_pitch;
-	int yaw_moment   = drone.joy_yaw   + drone.key_yaw;
-
-	// Enable UART interrupts
-	//NVIC_EnableIRQ(UART0_IRQn);
-	__enable_irq();
-
-	int lift  = DRONE_LIFT_CONSTANT * lift_force;
-	int pitch = DRONE_PITCH_CONSTANT * pitch_moment;
-	int roll  = DRONE_ROLL_CONSTANT * roll_moment;
-	int yaw   = DRONE_YAW_CONSTANT * yaw_moment;
-
-	// no need to do this, rotor speeds are getting maxed/mined a few lines later
-	lift  = lift  < MIN_LIFT  ? MIN_LIFT  : lift;
-	roll  = roll  < MIN_ROLL  ? MIN_ROLL  : roll;
-	pitch = pitch < MIN_PITCH ? MIN_PITCH : pitch;
-	yaw   = yaw   < MIN_YAW   ? MIN_YAW   : yaw;
-
-	lift  = lift  > MAX_LIFT  ? MAX_LIFT  : lift;
-	roll  = roll  > MAX_ROLL  ? MAX_ROLL  : roll;
-	pitch = pitch > MAX_PITCH ? MAX_PITCH : pitch;
-	yaw   = yaw   > MAX_YAW   ? MAX_YAW   : yaw;
-
-	// Solving drone rotor dynamics equations
-	ae_[0] = (int)sqrt(0.25*(lift + 2*pitch - yaw));
-	ae_[1] = (int)sqrt(0.25*(lift - 2*roll  + yaw));
-	ae_[2] = (int)sqrt(0.25*(lift - 2*pitch - yaw));
-	ae_[3] = (int)sqrt(0.25*(lift + 2*roll  + yaw));
-
-	// checking min/max	
-	ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-	ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-	ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-	ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-	
-	ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-	ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-	ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-	ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
-
-	// setting drone rotor speeds
-	drone.ae[0] = ae_[0];
-	drone.ae[1] = ae_[1];
-	drone.ae[2] = ae_[2];
-	drone.ae[3] = ae_[3];
-
-	//printf("%3d %3d %3d %3d \n", ae_[0], ae_[1], ae_[2], ae_[3]);
-	//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
+	//printf("Exit MANUAL_MODE\n");
 }
 
 void yaw_control_mode()

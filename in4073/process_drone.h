@@ -13,7 +13,7 @@
 #define MAX_YAW   25000000 // 2 500 000
 
 // Drone specific constants for lift roll yaw pitch
-#define DRONE_LIFT_CONSTANT 20000 // 1 280 000
+#define DRONE_LIFT_CONSTANT 10000 // 1 280 000
 #define DRONE_ROLL_CONSTANT 1000
 #define DRONE_PITCH_CONSTANT 1000
 #define DRONE_YAW_CONSTANT 1000 // 10000*128 = 12800000 = 12 800 000

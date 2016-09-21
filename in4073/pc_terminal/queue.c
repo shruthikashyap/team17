@@ -9,7 +9,7 @@
 #include "rs232_com.h"
 #include "../crc.h"
 
-int ack_received = 0;
+int ack_received = 2;
 
 struct queue_t* createQueue(int numelements)
 {
@@ -72,40 +72,74 @@ void* process_dequeue(void* thread)
 			}
 
 			// Send data
-			rs232_putchar(p->start);
-			rs232_putchar(p->command);
-			rs232_putchar(p->value);
-			rs232_putchar(p->crc);
-			rs232_putchar(p->stop);
+			if(p->value == PANIC_MODE)
+			{
+				rs232_putchar(p->start);
+				rs232_putchar(p->command);
+				rs232_putchar(p->value);
+				rs232_putchar(10);
+				rs232_putchar(p->stop);
+			}
+			else
+			{
+				rs232_putchar(p->start);
+				rs232_putchar(p->command);
+				rs232_putchar(p->value);
+				rs232_putchar(p->crc);
+				rs232_putchar(p->stop);	
+			}
+			
+			// Reset ack_received
+			ack_received = 2;
 			
 			//printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
 
 			// XXX: To be Done: Check for ACK. If NACK - Resend from beginning. Timeout if nothing is received and retry again.
 			// XXX: Retry for PANIC_MODE - ack_received
+			// ACK SUCCESS = 0, FAILURE = 1
+			#if 1
 			if(p->command == MODE_TYPE && p->value == PANIC_MODE)
 			{
-				for(retry_count = 0; retry_count < 3; retry_count++)
+				//printf("Inside panic mode retry logic!\n");
+				usleep(100000);
+				if(ack_received != ACK_SUCCESS)
 				{
-					for(time_out = 0; time_out < 10 && ack_received == ACK_INVALID; time_out++);
+					for(retry_count = 0; retry_count < 3; retry_count++)
 					{
-						usleep(100);
-					}
-					printf("Ack received = %d\n", ack_received);
+						for(time_out = 0; time_out < 10 && ack_received == ACK_INVALID; time_out++);
+						{
+							usleep(200);
+						}
+						printf("Retry Ack for PANIC command received = %d\n", ack_received);
 
-					if(ack_received == ACK_SUCCESS)
-						break;
-					else
-						// Send data
-						rs232_putchar(p->start);
-						rs232_putchar(p->command);
-						rs232_putchar(p->value);
-						rs232_putchar(p->crc);
-						rs232_putchar(p->stop);
+						if(ack_received == ACK_SUCCESS)
+							break;
+						else
+						{
+							// Send data
+							rs232_putchar(p->start);
+							rs232_putchar(p->command);
+							rs232_putchar(p->value);
+							rs232_putchar(p->crc);
+							rs232_putchar(p->stop);
+							
+							// Reset ack_received
+							ack_received = 2;
+						}
+						usleep(100000);
+					}
+				}
+				else
+				{
+					printf("Ack for PANIC command received = %d\n", ack_received);
 				}
 			}
+			#endif
 		}
 
 		pthread_mutex_unlock(&mutex);
+		
+		//usleep(1000);
 	}
 	
 	free(p);
@@ -113,6 +147,7 @@ void* process_dequeue(void* thread)
 
 void* process_receive_packets(void* thread)
 {
+	#if 1
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	char ch;
@@ -154,6 +189,7 @@ void* process_receive_packets(void* thread)
 						{
 							// Update a ack_received global variable
 							ack_received = p.value;
+							//printf("Updating global ack = %d\n", ack_received);
 						}
 						else
 						{
@@ -199,6 +235,7 @@ void* process_receive_packets(void* thread)
 			}
 		}
 		
-		usleep(1000);
+		usleep(100); //(10000);
 	}
+	#endif
 }

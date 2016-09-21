@@ -68,12 +68,14 @@ void send_packet_ack(int ack)
 	compute_crc(&p);
 	p.stop = STOP_BYTE;
 	
+	#if 1
 	// XXX: Send p to PC
 	uart_put(p.start);
 	uart_put(p.command);
 	uart_put(p.value);
 	uart_put(p.crc);
 	uart_put(p.stop);
+	#endif
 }
 
 void set_mode_type(char value)
@@ -100,7 +102,11 @@ void set_mode_type(char value)
 						break;
 			case PANIC_MODE:
 						if(drone.current_mode == SAFE_MODE)
+						{
+							send_packet_ack(ACK_SUCCESS);
 							break;
+						}
+				
 						drone.current_mode = PANIC_MODE;
 						drone.change_mode = 1;
 						send_packet_ack(ACK_SUCCESS);
@@ -135,7 +141,7 @@ void set_mode_type(char value)
 						// XXX: Not considered a mode. Needs to be handled.
 						break;
 			default:
-						printf("Invalid mode\n");
+						//printf("Invalid mode\n");
 						// XXX: Send NACK
 						send_packet_ack(ACK_FAILURE);
 		}
@@ -294,13 +300,14 @@ void process_packet(struct packet_t packet)
 #if 0
 	if(drone.current_mode == SAFE_MODE && packet.command != MODE_TYPE)
 	{
-		printf("\nIgnoring drone control commands in SAFE_MODE");
+		//printf("\nIgnoring drone control commands in SAFE_MODE");
 		return;
 	}
 #endif
 
-	if (check_crc(packet))
+	if(check_crc(packet))
 	{
+		//printf("CRC check failed = %d\n", packet.crc);
 		send_packet_ack(ACK_FAILURE);
 		return;
 	}

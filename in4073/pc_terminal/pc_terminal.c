@@ -83,8 +83,6 @@ int main(int argc, char **argv)
 	 */
 	for (;;) 
 	{
-		usleep(100);
-
 		if ((c = term_getchar_nb()) != -1) 
 		{
 			// XXX: To be Done: Check for NACK after every byte. If NACK - Resend from beginning
@@ -92,8 +90,10 @@ int main(int argc, char **argv)
 		}
 
 		//sendJsPacket();
+		
+		//usleep(1000);
 
-		//if ((c = rs232_getchar_nb()) != -1) 
+		//if((c = rs232_getchar_nb()) != -1) 
 		//	term_putchar(c);
 	}
 
@@ -107,5 +107,3 @@ int main(int argc, char **argv)
   	
 	return 0;
 }
-
-

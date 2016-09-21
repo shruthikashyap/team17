@@ -65,6 +65,7 @@ void UART0_IRQHandler(void)
 	if(rx_queue.count)
 	{
 		char ch = dequeue(&rx_queue);
+		//printf("Received byte = %d\n", ch);
 
 		if((unsigned char)ch == START_BYTE)
 		{
@@ -99,7 +100,7 @@ void UART0_IRQHandler(void)
 				
 				// Process packet
 				//printf("Packet received from PC - command = %d, value = %d\n", p.command, p.value);
-				//if(drone.current_mode != PANIC_MODE)
+				if(drone.current_mode != PANIC_MODE)
 					process_packet(p);
 			}
 			else
