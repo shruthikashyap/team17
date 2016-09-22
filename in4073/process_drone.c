@@ -79,7 +79,7 @@ void safe_mode()
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(1000);
+		nrf_delay_ms(500);
 	}
 	//printf("Exit SAFE_MODE\n");
 }
@@ -205,7 +205,7 @@ void manual_mode()
 		//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 		
 		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
-		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
+		printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(10);
 	}
 	
@@ -219,7 +219,7 @@ void yaw_control_mode()
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(1000);
+		nrf_delay_ms(500);
 	}
 	
 	//printf("Exit YAW_CONTROL_MODE\n");
@@ -232,7 +232,7 @@ void full_control_mode()
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("FULL - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(1000);
+		nrf_delay_ms(500);
 	}
 	
 	//printf("Exit FULL_CONTROL_MODE\n");
@@ -245,7 +245,7 @@ void calibration_mode()
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("CALIBRATION - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(1000);
+		nrf_delay_ms(500);
 	}
 	
 	//printf("Exit CALIBRATION_MODE\n");

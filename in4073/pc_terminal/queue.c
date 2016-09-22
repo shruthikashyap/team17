@@ -128,7 +128,7 @@ void* process_dequeue(void* thread)
 
 		pthread_mutex_unlock(&mutex);
 		
-		//usleep(1000);
+		usleep(20000);
 	}
 	
 	free(p);
@@ -198,6 +198,8 @@ void* process_receive_packets(void* thread)
 
 				// Reset flag
 				rcv_byte_count = 0;
+
+				usleep(100000);
 			}
 			else if(rcv_byte_count == 1)
 			{
@@ -223,8 +225,10 @@ void* process_receive_packets(void* thread)
 				rcv_byte_count = 0;
 			}
 		}
-		
-		usleep(100); //(10000);
+		else
+		{
+			usleep(100000);
+		}
 	}
 	#endif
 }

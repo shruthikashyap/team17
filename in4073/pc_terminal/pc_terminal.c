@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
 		//sendJsPacket();
 		
-		//usleep(1000);
+		usleep(20000);
 
 		//if((c = rs232_getchar_nb()) != -1) 
 		//	term_putchar(c);
