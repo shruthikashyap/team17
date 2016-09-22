@@ -166,7 +166,7 @@ void manual_mode()
 		pitch = DRONE_PITCH_CONSTANT * pitch_moment;
 		roll  = DRONE_ROLL_CONSTANT * roll_moment;
 		yaw   = DRONE_YAW_CONSTANT * yaw_moment;
-
+#if 0
 		// no need to do this, rotor speeds are getting maxed/mined a few lines later
 		lift  = lift  < MIN_LIFT  ? MIN_LIFT  : lift;
 		roll  = roll  < MIN_ROLL  ? MIN_ROLL  : roll;
@@ -177,13 +177,18 @@ void manual_mode()
 		roll  = roll  > MAX_ROLL  ? MAX_ROLL  : roll;
 		pitch = pitch > MAX_PITCH ? MAX_PITCH : pitch;
 		yaw   = yaw   > MAX_YAW   ? MAX_YAW   : yaw;
-
-		// Solving drone rotor dynamics equations
-		ae_[0] = (int)sqrt(0.25*(lift + 2*pitch - yaw));
-		ae_[1] = (int)sqrt(0.25*(lift - 2*roll  + yaw));
-		ae_[2] = (int)sqrt(0.25*(lift - 2*pitch - yaw));
-		ae_[3] = (int)sqrt(0.25*(lift + 2*roll  + yaw));
-
+#endif
+		
+		ae_[0] = 0.25*(lift + 2*pitch - yaw);
+		ae_[1] = 0.25*(lift - 2*roll  + yaw);
+		ae_[2] = 0.25*(lift - 2*pitch - yaw);
+		ae_[3] = 0.25*(lift + 2*roll  + yaw);
+		
+		ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
+		ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
+		ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
+		ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
+		
 		// checking min/max	
 		ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
 		ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
