@@ -29,4 +29,4 @@ void calibration_mode();
 void raw_mode();
 void height_control_mode();
 void wireless_mode();
-int scale_number();
+//int scale_number();

@@ -35,7 +35,7 @@ Archive member included to satisfy reference by file (symbol)
 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_udivsi3.o)
                               _build/inv_mpu.o (__aeabi_uidiv)
 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_divsi3.o)
-                              _build/process_drone.o (__aeabi_idiv)
+                              _build/inv_mpu.o (__aeabi_idiv)
 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_dvmd_tls.o)
                               /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_udivsi3.o) (__aeabi_idiv0)
 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_arm_cmpdf2.o)
@@ -262,8 +262,6 @@ Discarded input sections
                 0x00000000       0x24 _build/process_drone.o
  .text.panic_mode
                 0x00000000       0x2c _build/process_drone.o
- .text.scale_number
-                0x00000000       0x18 _build/process_drone.o
  .text.yaw_control_mode
                 0x00000000       0x2c _build/process_drone.o
  .text.full_control_mode
