@@ -4,10 +4,10 @@
 #define KEY_ROLL	0x03
 #define KEY_PITCH	0x04
 #define KEY_YAW		0x05
-#define JOY_LIFT	0x06
-#define JOY_ROLL	0x07
-#define JOY_PITCH	0x08
-#define JOY_YAW		0x09
+#define JOY_ROLL	0x06
+#define JOY_PITCH	0x07
+#define JOY_YAW		0x08
+#define JOY_LIFT	0x09
 
 /* Mode Types */
 #define SAFE_MODE		0x20
@@ -34,7 +34,7 @@
 
 /* RPMs */
 #define RPM_STEP	10
-#define HOVER_RPM	150 // XXX: Find out the right value
+#define HOVER_RPM	250 // XXX: Find out the right value
 
 /* Increase or Decrease */
 #define	INCREASE	1
@@ -50,7 +50,7 @@ struct packet_t
 	// XXX: Add check bytes
 	unsigned char start;
 	char command;
-	char value;
+	signed char value;
 	char crc;
 	unsigned char stop;
 };

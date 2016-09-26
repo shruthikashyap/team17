@@ -14,10 +14,10 @@
 
 void update_motors(void)
 {								
-	NRF_TIMER1->CC[0] = 1000 + ae[0];			
-	NRF_TIMER1->CC[1] = 1000 + ae[1];			
-	NRF_TIMER1->CC[2] = 1000 + ae[2];			
-	NRF_TIMER1->CC[3] = 1000 + ae[3];		
+	NRF_TIMER1->CC[0] = 1000 + drone.ae[0];			
+	NRF_TIMER1->CC[1] = 1000 + drone.ae[1];			
+	NRF_TIMER1->CC[2] = 1000 + drone.ae[2];			
+	NRF_TIMER1->CC[3] = 1000 + drone.ae[3];		
 }
 
 void run_filters_and_control()

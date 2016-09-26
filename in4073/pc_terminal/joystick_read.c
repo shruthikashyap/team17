@@ -81,28 +81,28 @@ void sendJsPacket()
 		switch (i)
 		{
 			case 0:
-				p.command = JOY_LIFT;
-				p.value = scale_axis[i];
-				compute_crc(&p);
-				enqueue(p);
-				break;
-
-			case 1:
 				p.command = JOY_ROLL;
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
 
-			case 2:
+			case 1:
 				p.command = JOY_PITCH;
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
 
-			case 3:
+			case 2:
 				p.command = JOY_YAW;
+				p.value = scale_axis[i];
+				compute_crc(&p);
+				enqueue(p);
+				break;
+
+			case 3:
+				p.command = JOY_LIFT;
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
@@ -111,5 +111,8 @@ void sendJsPacket()
 			default:
 				break;
 		}
+		usleep(20000);
+		//printf("Values from joystick: %d , %d\n", p.command, p.value);
 	}
+	//usleep(20000);
 }

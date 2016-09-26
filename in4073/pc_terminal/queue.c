@@ -136,7 +136,16 @@ void* process_dequeue(void* thread)
 
 void* process_receive_packets(void* thread)
 {
-	#if 1
+	char c;
+	while(1)
+	{
+		if((c = rs232_getchar_nb()) != -1) 
+			term_putchar(c);
+
+		//usleep(250);
+	}
+
+	#if 0
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	char ch;

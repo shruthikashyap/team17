@@ -97,11 +97,12 @@ void UART0_IRQHandler(void)
 			if(rcv_byte_count == 4)
 			{
 				p.stop = ch;
-				
+
 				// Process packet
-				//printf("Packet received from PC - command = %d, value = %d\n", p.command, p.value);
+				//printf("Packet received from PC - command = %d, value = %d\n", p.command, (signed char)p.value);
 				if(drone.current_mode != PANIC_MODE)
 					process_packet(p);
+
 			}
 			else
 			{

@@ -269,7 +269,7 @@ void set_joy_roll(char value)
 {
 	//printf("In set_joy_roll - %d\n", value);
 	
-	drone.joy_lift = value;
+	drone.joy_roll = value;
 	
 	send_packet_ack(ACK_SUCCESS);
 }
@@ -278,7 +278,7 @@ void set_joy_pitch(char value)
 {
 	//printf("In set_joy_pitch - %d\n", value);
 	
-	drone.joy_lift = value;
+	drone.joy_pitch = value;
 	
 	send_packet_ack(ACK_SUCCESS);
 }
@@ -287,7 +287,7 @@ void set_joy_yaw(char value)
 {
 	//printf("In set_joy_yaw - %d\n", value);
 	
-	drone.joy_lift = value;
+	drone.joy_yaw = value;
 	
 	send_packet_ack(ACK_SUCCESS);
 }

@@ -30,12 +30,18 @@ void reset_drone()
 	drone.joy_roll = 0;
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
+	drone.offset_sp = 0;
+    drone.offset_sq = 0;
+    drone.offset_sr = 0;
+	drone.offset_pressure = 0;
 }
 
 void safe_mode()
 {
-	//printf("In SAFE_MODE\n");
-
+	printf("In SAFE_MODE\n");
+	
+	//uint32_t counter = 0;
+	
 	__disable_irq();
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
@@ -57,7 +63,7 @@ void safe_mode()
 			ae[1] = (ae[1]) < RPM_STEP? 0 : ae[1] - 10;
 			ae[2] = (ae[2]) < RPM_STEP? 0 : ae[2] - 10;
 			ae[3] = (ae[3]) < RPM_STEP? 0 : ae[3] - 10;
-			printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
+			//printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 			nrf_delay_ms(1000);
 		}
 #endif
@@ -80,8 +86,29 @@ void safe_mode()
 	{
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		nrf_delay_ms(500);
+		
+		#if 0
+		if (check_timer_flag()) 
+		{
+			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
+
+			adc_request_sample();
+			read_baro();
+			nrf_delay_ms(1);
+
+			clear_timer_flag();
+		}
+ 
+		if (check_sensor_int_flag()) 
+		{
+			get_dmp_data();
+			run_filters_and_control();
+
+			clear_sensor_int_flag();
+		}
+		#endif
 	}
-	//printf("Exit SAFE_MODE\n");
+	printf("Exit SAFE_MODE\n");
 }
 
 void panic_mode()
@@ -155,14 +182,17 @@ void manual_mode()
 		__disable_irq();
 
 		// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
-		lift_force   = drone.joy_lift  + drone.key_lift;
-		roll_moment  = drone.joy_roll  + drone.key_roll;
-		pitch_moment = drone.joy_pitch + drone.key_pitch;
-		yaw_moment   = drone.joy_yaw   + drone.key_yaw;
+		lift_force   = (signed char)drone.joy_lift+1  + (signed char)drone.key_lift;
+		roll_moment  = (signed char)drone.joy_roll+1  + (signed char)drone.key_roll;
+		pitch_moment = (signed char)drone.joy_pitch+1 + (signed char)drone.key_pitch;
+		yaw_moment   = (signed char)drone.joy_yaw+1   + (signed char)drone.key_yaw;
 
 		// Enable UART interrupts
 		//NVIC_EnableIRQ(UART0_IRQn);
 		__enable_irq();
+
+		//printf("%d, %d, %d, %d\n", (signed char)drone.joy_roll, (signed char)drone.joy_pitch, (signed char)drone.joy_yaw, (signed int)drone.joy_lift);
+		//printf("%d, %d, %d, %d\n", lift_force, roll_moment, pitch_moment, yaw_moment);
 
 		lift  = DRONE_LIFT_CONSTANT * lift_force;
 		pitch = DRONE_PITCH_CONSTANT * pitch_moment;
@@ -209,11 +239,13 @@ void manual_mode()
 		drone.ae[3] = ae_[3];
 
 		//printf("%3d %3d %3d %3d %3d\n", ae_[0], ae_[1], ae_[2], ae_[3], lift_force);
-		//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+		//printf("%3d, %3d, %3d, %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 		
 		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
-		printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(10);
+		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
+		//nrf_delay_ms(10);
+
+		run_filters_and_control();
 	}
 	
 	//printf("Exit MANUAL_MODE\n");
@@ -226,6 +258,8 @@ void yaw_control_mode()
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);
+				//printf("Drone: %d, %d , %d, %d\n",(signed char)drone.joy_roll, (signed char)drone.joy_pitch, (signed char)drone.joy_yaw, (signed char)drone.joy_lift);
+
 		nrf_delay_ms(500);
 	}
 	
@@ -247,15 +281,96 @@ void full_control_mode()
 
 void calibration_mode()
 {
-	//printf("In CALIBRATION_MODE\n");
-
-	while(drone.change_mode == 0 && drone.stop == 0)
-	{
-		//printf("CALIBRATION - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(500);
-	}
+	printf("In CALIBRATION_MODE\n");
 	
-	//printf("Exit CALIBRATION_MODE\n");
+	uint32_t counter = 0;
+    	int samples = 100;
+    	int sum_sp = 0;
+	int sum_sq = 0;
+	int sum_sr = 0;
+	int sum_sax = 0;
+	int sum_say = 0;
+	int sum_saz = 0;
+	int sum_pressure = 0;
+	int i;
+
+	if(get_time_us() < 20000000)
+		nrf_delay_ms(20000);
+	
+	// Discard some samples to avoid junk data
+	for(i = 0; i < 25000; i++)
+	{
+		if (check_timer_flag()) 
+		{
+			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
+
+			read_baro();
+			nrf_delay_ms(1);
+
+			clear_timer_flag();
+		}
+
+		if (check_sensor_int_flag()) 
+		{
+			get_dmp_data();
+			//printf("%6d %6d %6d | ", sp, sq, sr);
+			//printf("%6d %6d %6d \n", sax, say, saz);
+			nrf_delay_ms(1);
+			clear_sensor_int_flag();
+		}
+	}
+
+    for(i = 0; i < samples; i++)
+	{
+		if (check_timer_flag()) 
+		{
+			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
+
+			read_baro();
+			nrf_delay_ms(1);
+
+			clear_timer_flag();
+		}
+ 
+		if (check_sensor_int_flag()) 
+		{
+			get_dmp_data();
+			//printf("%6d %6d %6d | ", sp, sq, sr);
+			//printf("%6d %6d %6d \n", sax, say, saz);
+			nrf_delay_ms(1);
+			clear_sensor_int_flag();
+		}
+		
+        sum_sp += sp;
+		sum_sq += sq;
+		sum_sr += sr;
+		sum_sax += sax;
+		sum_say += say;
+		sum_saz += saz;
+		sum_pressure += pressure;
+		
+		nrf_delay_ms(10);
+    }
+
+    drone.offset_sp = (int)(sum_sp / samples);
+	drone.offset_sq = (int)(sum_sq / samples);
+	drone.offset_sr = (int)(sum_sr / samples);
+	drone.offset_sax = (int)(sum_sax / samples);
+	drone.offset_say = (int)(sum_say / samples);
+	drone.offset_saz = (int)(sum_saz / samples);
+	drone.offset_pressure = (int)(sum_pressure / samples);
+
+    //nrf_delay_ms(500);
+
+    printf("New offsets found: \n");
+    printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
+	printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
+	printf("pressure = %d \n", drone.offset_pressure);
+
+    drone.current_mode = SAFE_MODE;
+    drone.change_mode = 1;
+    
+    printf("Exit CALIBRATION_MODE\n");
 }
 
 void raw_mode()

@@ -128,6 +128,14 @@ struct qr_t
 	int16_t joy_roll;
 	int16_t joy_pitch;
 	int16_t joy_yaw;
+	
+	int16_t offset_sp;
+    	int16_t offset_sq;
+    	int16_t offset_sr;
+	int16_t offset_sax;
+    	int16_t offset_say;
+    	int16_t offset_saz;
+	int16_t offset_pressure;
 };
 
 extern struct qr_t drone;
