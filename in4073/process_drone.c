@@ -3,16 +3,98 @@
 #include "command_types.h"
 #include "in4073.h"
 #include "process_drone.h"
+#include <string.h>
+#include <stdlib.h>
 
-/* XXX: 
-1. No args for process_drone().
-2. Maintain a global variable for mode.
-3. Maintain a global variable to indicate change of mode. Be in a mode until this variable doesn't change.
-3. Have a while loop in process_drone() to handle change of modes.
-4. Set defaults.
-5. process_drone() should be the main blocking function. The UART interrupt should populate the global values.
-6. Is a drone struct needed?
-*/
+struct log write_data;
+struct log read_data;
+uint32_t new_addr;
+uint32_t new_addr_write;
+bool log_flag = false;
+uint32_t counter = 0;
+
+struct log
+{
+	uint32_t current_time;
+	int16_t phi;
+	int16_t theta;
+	int16_t psi;
+	int32_t pressure;
+	uint16_t bat_volt;
+};
+
+void write_log_to_flash()
+{
+	write_data.current_time = get_time_us();
+	write_data.phi = phi;
+	write_data.theta = theta;
+	write_data.psi = psi;
+	write_data.pressure = pressure;
+	write_data.bat_volt = bat_volt;
+	
+	#if 1
+	// Check buffer size
+	if((new_addr + sizeof(write_data)) > 0x01FFFF)
+	{
+		printf("Buffer full!\n");
+		// Reset address to 0
+		new_addr = 0x000000;
+		//return;
+	}
+	
+	// Write into buffer
+	if(flash_write_bytes(new_addr, (uint8_t*)&write_data, sizeof(write_data)) == true)
+	{
+		//printf("Data write = %d\n", write_data.phi);
+
+		// Update new_addr
+		new_addr += sizeof(write_data);
+		//printf("new_addr = %d\n", (int)new_addr);
+	}
+	#endif
+}
+
+void update_log()
+{
+	// Read sensor data
+	if (check_timer_flag()) 
+	{
+		if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
+
+		adc_request_sample();
+		read_baro();
+		nrf_delay_ms(1);
+
+		clear_timer_flag();
+	}
+
+	if (check_sensor_int_flag()) 
+	{
+		get_dmp_data();
+		//printf("%6d %6d %6d | ", sp, sq, sr);
+		//printf("%6d %6d %6d \n", sax, say, saz);
+		clear_sensor_int_flag();
+	}
+
+	// Log sensor data
+	write_log_to_flash();
+}
+
+void read_log()
+{
+	for(int i = 0; i < 5; i++)
+	{
+		// Read from buffer
+		if(flash_read_bytes(new_addr_write, (uint8_t*)&read_data, sizeof(write_data)) == true)
+			printf("Data read = %d\n", read_data.phi);
+		
+		// Update new_addr_write
+		new_addr_write += sizeof(write_data);
+		//printf("new_addr_write = %d\n", (int)new_addr_write);
+		
+		nrf_delay_ms(100);
+	}
+}
 
 void reset_drone()
 {
@@ -34,13 +116,17 @@ void reset_drone()
     drone.offset_sq = 0;
     drone.offset_sr = 0;
 	drone.offset_pressure = 0;
+	
+	new_addr = 0x000000;
+	new_addr_write = 0x000000;
+	
+	if(flash_chip_erase() == true)
+		printf("Memory erase successful\n");
 }
 
 void safe_mode()
 {
 	printf("In SAFE_MODE\n");
-	
-	//uint32_t counter = 0;
 	
 	__disable_irq();
 	// Don't read lift/roll/pitch/yaw data from PC link.
@@ -54,61 +140,40 @@ void safe_mode()
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
 	
-
-#if 0
-		// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
-		while(ae[0] || ae[1] || ae[2] || ae[3])
-		{
-			ae[0] = (ae[0]) < RPM_STEP? 0 : ae[0] - 10;
-			ae[1] = (ae[1]) < RPM_STEP? 0 : ae[1] - 10;
-			ae[2] = (ae[2]) < RPM_STEP? 0 : ae[2] - 10;
-			ae[3] = (ae[3]) < RPM_STEP? 0 : ae[3] - 10;
-			//printf("\nDrone motor values: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
-			nrf_delay_ms(1000);
-		}
-#endif
-
-#if 1
-		// Gradually reduce RPM of the motors to 0.
-		while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
-		{
-			drone.ae[0] = (drone.ae[0]) < RPM_STEP? 0 : drone.ae[0] - 10;
-			drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
-			drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
-			drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
-			//printf("\nDrone decreasing motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
-			nrf_delay_ms(1000);
-		}
-#endif
+	// Gradually reduce RPM of the motors to 0.
+	while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
+	{
+		drone.ae[0] = (drone.ae[0]) < RPM_STEP? 0 : drone.ae[0] - 10;
+		drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
+		drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
+		drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
+		//printf("\nDrone decreasing motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+		nrf_delay_ms(1000);
+	}
 	__enable_irq();
-
+	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(500);
 		
-		#if 0
-		if (check_timer_flag()) 
+		// Update log
+		if(log_flag == 1)
 		{
-			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
-
-			adc_request_sample();
-			read_baro();
-			nrf_delay_ms(1);
-
-			clear_timer_flag();
+			//printf("Start %10ld\n", get_time_us());
+			// Clear log flag
+			log_flag = 0;
+			
+			// Log sensor data
+			update_log();
+			//printf("Stop %10ld\n", get_time_us());
 		}
- 
-		if (check_sensor_int_flag()) 
-		{
-			get_dmp_data();
-			run_filters_and_control();
-
-			clear_sensor_int_flag();
-		}
-		#endif
+		
+		nrf_delay_ms(1);
 	}
 	printf("Exit SAFE_MODE\n");
+	
+	// XXX: Test Logging
+	//read_log();
 }
 
 void panic_mode()
@@ -118,26 +183,13 @@ void panic_mode()
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
 	__disable_irq();
-	
-#if 0
-	// XXX: Test. drone.ae[] is not being used right now. The global variable ae[] is being used to drive the motors.
-	ae[0] = HOVER_RPM;
-	ae[1] = HOVER_RPM;
-	ae[2] = HOVER_RPM;
-	ae[3] = HOVER_RPM;
-#endif
 
-#if 1
 	// Set moderate RPM values to the motors for hovering
 	drone.ae[0] = HOVER_RPM;
 	drone.ae[1] = HOVER_RPM;
 	drone.ae[2] = HOVER_RPM;
 	drone.ae[3] = HOVER_RPM;
 	//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
-#endif
-	
-	//printf("\nDrone panic motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
-
 	
 	// Stay in this mode for a few seconds
 	nrf_delay_ms(5000);
@@ -153,17 +205,9 @@ void panic_mode()
 	__enable_irq();
 }
 
-#if 0
-// Scales numbers from a range into another range
-int scale_number(int x, int in_min, int in_max, int out_min, int out_max)
-{
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-#endif
-
 void manual_mode()
 {
-	//printf("In MANUAL_MODE\n");
+	printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
 	int lift_force;
@@ -243,27 +287,36 @@ void manual_mode()
 		
 		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
-		//nrf_delay_ms(10);
-
-		run_filters_and_control();
+		
+		// Update log
+		if(log_flag == 1)
+		{
+			//printf("Start %10ld\n", get_time_us());
+			// Clear log flag
+			log_flag = 0;
+			
+			// Log sensor data
+			update_log();
+			//printf("Stop %10ld\n", get_time_us());
+		}
+		
+		nrf_delay_ms(1);
 	}
 	
-	//printf("Exit MANUAL_MODE\n");
+	printf("Exit MANUAL_MODE\n");
 }
 
 void yaw_control_mode()
 {
-	//printf("In YAW_CONTROL_MODE\n");
+	printf("In YAW_CONTROL_MODE\n");
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);
-				//printf("Drone: %d, %d , %d, %d\n",(signed char)drone.joy_roll, (signed char)drone.joy_pitch, (signed char)drone.joy_yaw, (signed char)drone.joy_lift);
-
-		nrf_delay_ms(500);
+		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);		
+		nrf_delay_ms(1);
 	}
 	
-	//printf("Exit YAW_CONTROL_MODE\n");
+	printf("Exit YAW_CONTROL_MODE\n");
 }
 
 void full_control_mode()

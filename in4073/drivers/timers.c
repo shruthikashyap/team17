@@ -13,6 +13,7 @@
  
 static bool TIMER2_flag;
 static uint32_t global_time;
+static unsigned int log_timer = 0;
 
 void timers_init(void)
 {
@@ -50,6 +51,13 @@ void TIMER2_IRQHandler(void)
 {
 	if (NRF_TIMER2->EVENTS_COMPARE[0])
     	{
+		if(log_timer % 100 == 0)
+		{
+			log_flag = 1;
+			//printf("Timer log = %d\n", log_timer);
+		}
+		log_timer++;
+
 		NRF_TIMER2->CC[0] += 2500;
 		NRF_TIMER1->TASKS_CLEAR = 1;
 		nrf_gpio_pin_set(MOTOR_0_PIN); nrf_gpio_pin_set(MOTOR_1_PIN); nrf_gpio_pin_set(MOTOR_2_PIN); nrf_gpio_pin_set(MOTOR_3_PIN);
@@ -68,7 +76,6 @@ void TIMER2_IRQHandler(void)
 		global_time += 0xffff;
 		NRF_TIMER2->EVENTS_COMPARE[2] = 0;
     	}
-
 }
 
 void TIMER1_IRQHandler(void)

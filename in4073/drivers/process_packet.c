@@ -68,7 +68,7 @@ void send_packet_ack(int ack)
 	compute_crc(&p);
 	p.stop = STOP_BYTE;
 	
-	#if 1
+	#if 0
 	// XXX: Send p to PC
 	uart_put(p.start);
 	uart_put(p.command);

@@ -7,6 +7,7 @@
 #include "queue.h"
 #include "../command_types.h"
 #include "rs232_com.h"
+#include "term_io.h"
 #include "../crc.h"
 
 int ack_received = 2;
@@ -144,7 +145,7 @@ void* process_receive_packets(void* thread)
 
 		//usleep(250);
 	}
-
+	
 	#if 0
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
