@@ -9,6 +9,10 @@
 #define JOY_YAW		0x08
 #define JOY_LIFT	0x09
 
+#define KEY_CONTROL_YAW	0x10
+#define KEY_CONTROL_P1	0x11
+#define KEY_CONTROL_P2	0x12
+
 /* Mode Types */
 #define SAFE_MODE		0x20
 #define PANIC_MODE		0x29

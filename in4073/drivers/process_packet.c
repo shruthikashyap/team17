@@ -256,6 +256,91 @@ void set_key_yaw(char value)
 	}
 }
 
+
+void set_key_control_yaw(char value)
+{
+	//printf("In set_key_control_yaw - %d\n", value);
+	
+	if(value == 1)
+	{
+		drone.controlgain_yaw += KEYBOARD_STEP;
+		if(drone.controlgain_yaw > MAX_CONTROLGAIN_YAW)
+			drone.controlgain_yaw = MAX_CONTROLGAIN_YAW;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else if(value == 0)
+	{
+		drone.controlgain_yaw -= KEYBOARD_STEP;
+		if(drone.controlgain_yaw < MIN_CONTROLGAIN_YAW)
+			drone.controlgain_yaw = MIN_CONTROLGAIN_YAW;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
+	}
+}
+
+
+void set_key_control_p1(char value)
+{
+	//printf("In set_key_control_p1 - %d\n", value);
+	
+	if(value == 1)
+	{
+		drone.controlgain_p1 += KEYBOARD_STEP;
+		if(drone.controlgain_p1 > MAX_CONTROLGAIN_P1)
+			drone.controlgain_p1 = MAX_CONTROLGAIN_P1;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else if(value == 0)
+	{
+		drone.controlgain_p1 -= KEYBOARD_STEP;
+		if(drone.controlgain_p1 < MIN_CONTROLGAIN_P1)
+			drone.controlgain_p1 = MIN_CONTROLGAIN_P1;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
+	}
+}
+
+
+void set_key_control_p2(char value)
+{
+	//printf("In set_key_control_p2 - %d\n", value);
+	
+	if(value == 1)
+	{
+		drone.controlgain_p2 += KEYBOARD_STEP;
+		if(drone.controlgain_p2 > MAX_CONTROLGAIN_P2)
+			drone.controlgain_p2 = MAX_CONTROLGAIN_P2;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else if(value == 0)
+	{
+		drone.controlgain_p2 -= KEYBOARD_STEP;
+		if(drone.controlgain_p2 < MIN_CONTROLGAIN_P2)
+			drone.controlgain_p2 = MIN_CONTROLGAIN_P2;
+		
+		send_packet_ack(ACK_SUCCESS);
+	}
+	else
+	{
+		// XXX: Send NACK
+		send_packet_ack(ACK_FAILURE);
+	}
+}
+
+
 void set_joy_lift(char value)
 {
 	//printf("In set_joy_lift - %d\n", value);
@@ -340,6 +425,15 @@ void process_packet(struct packet_t packet)
 				break;
 		case JOY_YAW:
 				set_joy_yaw(packet.value);
+				break;
+		case KEY_CONTROL_YAW:
+				set_key_control_yaw(packet.value);
+				break;
+		case KEY_CONTROL_P1:
+				set_key_control_p1(packet.value);
+				break;
+		case KEY_CONTROL_P2:
+				set_key_control_p2(packet.value);
 				break;
 		default :
 				// XXX: Packet error. Needs to be handled

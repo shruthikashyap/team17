@@ -114,6 +114,48 @@ void sendKeyPacket(char key)
 			p_flag = 1;
 			break;
 
+		case 'q':
+			p.command = KEY_YAW;
+			p.value = DECREASE;
+			p_flag = 1;
+			break;
+
+		case 'u':
+			p.command = KEY_CONTROL_YAW;
+			p.value = INCREASE;
+			p_flag = 1;
+			break;
+
+		case 'j':
+			p.command = KEY_CONTROL_YAW;
+			p.value = DECREASE;
+			p_flag = 1;
+			break;
+
+		case 'i':
+			p.command = KEY_CONTROL_P1;
+			p.value = INCREASE;
+			p_flag = 1;
+			break;
+
+		case 'k':
+			p.command = KEY_CONTROL_P1;
+			p.value = DECREASE;
+			p_flag = 1;
+			break;
+
+		case 'o':
+			p.command = KEY_CONTROL_P2;
+			p.value = INCREASE;
+			p_flag = 1;
+			break;									
+
+		case 'l':
+			p.command = KEY_CONTROL_P2;
+			p.value = DECREASE;
+			p_flag = 1;
+			break;
+
 		default:
 			break;
 	}
