@@ -18,6 +18,9 @@
 #define DRONE_PITCH_CONSTANT 10000
 #define DRONE_YAW_CONSTANT 10000 // 10000*128 = 12800000 = 12 800 000
 
+// Battery threshold level
+#define BATT_THRESHOLD	585	// XXX: Need to update this
+
 void process_drone();
 void reset_drone();
 void safe_mode();

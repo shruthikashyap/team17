@@ -114,12 +114,6 @@ void sendKeyPacket(char key)
 			p_flag = 1;
 			break;
 
-		case 'q':
-			p.command = KEY_YAW;
-			p.value = DECREASE;
-			p_flag = 1;
-			break;
-
 		case 'u':
 			p.command = KEY_CONTROL_YAW;
 			p.value = INCREASE;

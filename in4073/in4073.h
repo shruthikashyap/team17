@@ -148,5 +148,6 @@ extern struct log write_data;
 extern struct log read_data;
 extern uint32_t new_addr;
 extern bool log_flag;
+extern bool sensor_flag;
 
 #endif // IN4073_H__

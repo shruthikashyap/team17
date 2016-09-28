@@ -11,7 +11,9 @@ struct log read_data;
 uint32_t new_addr;
 uint32_t new_addr_write;
 bool log_flag = false;
+bool sensor_flag = false;
 uint32_t counter = 0;
+bool batt_low_flag = 0;
 
 struct log
 {
@@ -23,7 +25,7 @@ struct log
 	uint16_t bat_volt;
 };
 
-void write_log_to_flash()
+void update_log()
 {
 	write_data.current_time = get_time_us();
 	write_data.phi = phi;
@@ -32,14 +34,34 @@ void write_log_to_flash()
 	write_data.pressure = pressure;
 	write_data.bat_volt = bat_volt;
 	
-	#if 1
+	#if 0
+	//printf("Battery voltage = %d\n", bat_volt);
+	if(bat_volt < BATT_THRESHOLD)
+	{
+		printf("Battery low");
+		
+		if(drone.current_mode != SAFE_MODE)
+		{
+			drone.current_mode = PANIC_MODE;
+			drone.change_mode = 1;
+		}
+		
+		batt_low_flag = true;
+		return;
+	}
+	#endif
+	
 	// Check buffer size
 	if((new_addr + sizeof(write_data)) > 0x01FFFF)
 	{
 		printf("Buffer full!\n");
+		
+		// Erase chip data
+		if(flash_chip_erase() == true)
+			printf("Memory erase successful\n");
+		
 		// Reset address to 0
 		new_addr = 0x000000;
-		//return;
 	}
 	
 	// Write into buffer
@@ -51,10 +73,25 @@ void write_log_to_flash()
 		new_addr += sizeof(write_data);
 		//printf("new_addr = %d\n", (int)new_addr);
 	}
-	#endif
 }
 
-void update_log()
+void read_log()
+{
+	for(int i = 0; i < 5; i++)
+	{
+		// Read from buffer
+		if(flash_read_bytes(new_addr_write, (uint8_t*)&read_data, sizeof(write_data)) == true)
+			printf("Data read = %d\n", read_data.phi);
+		
+		// Update new_addr_write
+		new_addr_write += sizeof(write_data);
+		//printf("new_addr_write = %d\n", (int)new_addr_write);
+		
+		nrf_delay_ms(100);
+	}
+}
+
+void read_sensor()
 {
 	// Read sensor data
 	if (check_timer_flag()) 
@@ -75,25 +112,14 @@ void update_log()
 		//printf("%6d %6d %6d \n", sax, say, saz);
 		clear_sensor_int_flag();
 	}
-
-	// Log sensor data
-	write_log_to_flash();
-}
-
-void read_log()
-{
-	for(int i = 0; i < 5; i++)
-	{
-		// Read from buffer
-		if(flash_read_bytes(new_addr_write, (uint8_t*)&read_data, sizeof(write_data)) == true)
-			printf("Data read = %d\n", read_data.phi);
-		
-		// Update new_addr_write
-		new_addr_write += sizeof(write_data);
-		//printf("new_addr_write = %d\n", (int)new_addr_write);
-		
-		nrf_delay_ms(100);
-	}
+	
+	sp -= drone.offset_sp;
+	sq -= drone.offset_sq;
+	sr -= drone.offset_sr;
+	sax -= drone.offset_sax;
+	say -= drone.offset_say;
+	saz -= drone.offset_saz;
+	pressure -= drone.offset_pressure;
 }
 
 void reset_drone()
@@ -113,12 +139,14 @@ void reset_drone()
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
 	drone.offset_sp = 0;
-    drone.offset_sq = 0;
-    drone.offset_sr = 0;
+    	drone.offset_sq = 0;
+    	drone.offset_sr = 0;
 	drone.offset_pressure = 0;
 	
+	// Other parameters
 	new_addr = 0x000000;
 	new_addr_write = 0x000000;
+	batt_low_flag = false;
 	
 	if(flash_chip_erase() == true)
 		printf("Memory erase successful\n");
@@ -154,14 +182,28 @@ void safe_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+		// XXX: Handle Low Battery case
+		
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		
-		// Update log
-		if(log_flag == 1)
+		// Read sensor
+		if(sensor_flag == true && batt_low_flag == false)
 		{
 			//printf("Start %10ld\n", get_time_us());
 			// Clear log flag
-			log_flag = 0;
+			sensor_flag = false;
+			
+			// Log sensor data
+			read_sensor();
+			//printf("Stop %10ld\n", get_time_us());
+		}
+		
+		// Update log
+		if(log_flag == true && batt_low_flag == false)
+		{
+			//printf("Start %10ld\n", get_time_us());
+			// Clear log flag
+			log_flag = false;
 			
 			// Log sensor data
 			update_log();
@@ -178,7 +220,7 @@ void safe_mode()
 
 void panic_mode()
 {
-	//printf("In PANIC_MODE\n");
+	printf("In PANIC_MODE\n");
 	
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
@@ -198,11 +240,11 @@ void panic_mode()
 	drone.current_mode = SAFE_MODE;
 	drone.change_mode = 1; // XXX: Is this needed?
 	
-	//printf("Exit PANIC_MODE\n");
-	
 	// Enable UART interrupts
 	//NVIC_EnableIRQ(UART0_IRQn);
 	__enable_irq();
+	
+	printf("Exit PANIC_MODE\n");
 }
 
 void manual_mode()

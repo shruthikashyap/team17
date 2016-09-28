@@ -14,6 +14,7 @@
 static bool TIMER2_flag;
 static uint32_t global_time;
 static unsigned int log_timer = 0;
+static unsigned int sensor_read_timer = 0;
 
 void timers_init(void)
 {
@@ -51,9 +52,16 @@ void TIMER2_IRQHandler(void)
 {
 	if (NRF_TIMER2->EVENTS_COMPARE[0])
     	{
-		if(log_timer % 100 == 0)
+		if(sensor_read_timer % 4 == 0)
 		{
-			log_flag = 1;
+			sensor_flag = true;
+			//printf("Timer sensor = %d\n", log_timer);
+		}
+		sensor_read_timer++;
+			
+		if(log_timer % 20 == 0)
+		{
+			log_flag = true;
 			//printf("Timer log = %d\n", log_timer);
 		}
 		log_timer++;
