@@ -12,6 +12,7 @@ uint32_t new_addr;
 uint32_t new_addr_write;
 bool log_flag = false;
 bool sensor_flag = false;
+bool telemetry_flag = false;
 uint32_t counter = 0;
 bool batt_low_flag = 0;
 
@@ -139,8 +140,8 @@ void reset_drone()
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
 	drone.offset_sp = 0;
-    	drone.offset_sq = 0;
-    	drone.offset_sr = 0;
+    drone.offset_sq = 0;
+    drone.offset_sr = 0;
 	drone.offset_pressure = 0;
 	
 	// Other parameters
