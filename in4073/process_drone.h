@@ -32,4 +32,7 @@ void calibration_mode();
 void raw_mode();
 void height_control_mode();
 void wireless_mode();
+void log_upload();
+void uart_put_16bit(int16_t);					
+void uart_put_32bit(int32_t);					
 //int scale_number();

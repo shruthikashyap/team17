@@ -5,6 +5,7 @@
 #include "process_drone.h"
 #include <string.h>
 #include <stdlib.h>
+#include "crc.h"
 
 struct log write_data;
 struct log read_data;
@@ -14,55 +15,40 @@ bool log_flag = false;
 bool sensor_flag = false;
 bool telemetry_flag = false;
 uint32_t counter = 0;
-bool batt_low_flag = 0;
-
-struct log
-{
-	uint32_t current_time;
-	int16_t phi;
-	int16_t theta;
-	int16_t psi;
-	int32_t pressure;
-	uint16_t bat_volt;
-};
+bool batt_low_flag = false;
 
 void update_log()
 {
 	write_data.current_time = get_time_us();
-	write_data.phi = phi;
-	write_data.theta = theta;
-	write_data.psi = psi;
-	write_data.pressure = pressure;
+	write_data.sp = sp;
+	write_data.sq = sq;
+	write_data.sr = sr;
+	write_data.sax = sax;
+	write_data.say = say;
+	write_data.saz = saz;
 	write_data.bat_volt = bat_volt;
-	
-	#if 0
+
+	//Battery voltage check
 	//printf("Battery voltage = %d\n", bat_volt);
-	if(bat_volt < BATT_THRESHOLD)
+	if(bat_volt <= BATT_THRESHOLD && drone.current_mode != SAFE_MODE)
 	{
-		printf("Battery low");
-		
-		if(drone.current_mode != SAFE_MODE)
-		{
-			drone.current_mode = PANIC_MODE;
-			drone.change_mode = 1;
-		}
-		
+		//printf("Battery low");
+		drone.current_mode = PANIC_MODE;
+		drone.change_mode = 1;
 		batt_low_flag = true;
 		return;
 	}
-	#endif
-	
+
+	#if 1
 	// Check buffer size
 	if((new_addr + sizeof(write_data)) > 0x01FFFF)
 	{
-		printf("Buffer full!\n");
-		
-		// Erase chip data
-		if(flash_chip_erase() == true)
-			printf("Memory erase successful\n");
-		
+		//printf("Buffer full!\n");
 		// Reset address to 0
+		flash_chip_erase();						
 		new_addr = 0x000000;
+		new_addr_write = 0x000000;
+		//return;
 	}
 	
 	// Write into buffer
@@ -74,22 +60,7 @@ void update_log()
 		new_addr += sizeof(write_data);
 		//printf("new_addr = %d\n", (int)new_addr);
 	}
-}
-
-void read_log()
-{
-	for(int i = 0; i < 5; i++)
-	{
-		// Read from buffer
-		if(flash_read_bytes(new_addr_write, (uint8_t*)&read_data, sizeof(write_data)) == true)
-			printf("Data read = %d\n", read_data.phi);
-		
-		// Update new_addr_write
-		new_addr_write += sizeof(write_data);
-		//printf("new_addr_write = %d\n", (int)new_addr_write);
-		
-		nrf_delay_ms(100);
-	}
+	#endif
 }
 
 void read_sensor()
@@ -148,14 +119,16 @@ void reset_drone()
 	new_addr = 0x000000;
 	new_addr_write = 0x000000;
 	batt_low_flag = false;
-	
+
 	if(flash_chip_erase() == true)
-		printf("Memory erase successful\n");
+	{
+		//printf("Memory erase successful\n");
+	}
 }
 
 void safe_mode()
 {
-	printf("In SAFE_MODE\n");
+	//printf("In SAFE_MODE\n");
 	
 	__disable_irq();
 	// Don't read lift/roll/pitch/yaw data from PC link.
@@ -183,7 +156,12 @@ void safe_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		// XXX: Handle Low Battery case
+		if (batt_low_flag == true)
+		{
+			nrf_gpio_pin_toggle(RED);
+			drone.stop = 1;
+			//printf("Warning! Battery critically low!")
+		}
 		
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		
@@ -200,7 +178,7 @@ void safe_mode()
 		}
 		
 		// Update log
-		if(log_flag == true && batt_low_flag == false)
+		if(log_flag == true && batt_low_flag == false && log_active_flag == true)
 		{
 			//printf("Start %10ld\n", get_time_us());
 			// Clear log flag
@@ -211,9 +189,15 @@ void safe_mode()
 			//printf("Stop %10ld\n", get_time_us());
 		}
 		
+		if (log_upload_flag == true)
+		{
+			printf("Value of log_upload_flag = %d\n", log_upload_flag);
+			log_upload();
+		}
+		
 		nrf_delay_ms(1);
 	}
-	printf("Exit SAFE_MODE\n");
+	//printf("Exit SAFE_MODE\n");
 	
 	// XXX: Test Logging
 	//read_log();
@@ -221,7 +205,7 @@ void safe_mode()
 
 void panic_mode()
 {
-	printf("In PANIC_MODE\n");
+	//printf("In PANIC_MODE\n");
 	
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
@@ -244,13 +228,13 @@ void panic_mode()
 	// Enable UART interrupts
 	//NVIC_EnableIRQ(UART0_IRQn);
 	__enable_irq();
-	
-	printf("Exit PANIC_MODE\n");
+
+	//printf("Exit PANIC_MODE\n");
 }
 
 void manual_mode()
 {
-	printf("In MANUAL_MODE\n");
+	//printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
 	int lift_force;
@@ -332,11 +316,11 @@ void manual_mode()
 		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
 		
 		// Update log
-		if(log_flag == 1)
+		if(log_flag == true && batt_low_flag == false && log_active_flag == true)
 		{
 			//printf("Start %10ld\n", get_time_us());
 			// Clear log flag
-			log_flag = 0;
+			log_flag = false;
 			
 			// Log sensor data
 			update_log();
@@ -346,7 +330,7 @@ void manual_mode()
 		nrf_delay_ms(1);
 	}
 	
-	printf("Exit MANUAL_MODE\n");
+	//printf("Exit MANUAL_MODE\n");
 }
 
 void yaw_control_mode()
@@ -483,6 +467,111 @@ void wireless_mode()
 {
 	//printf("In WIRELESS_MODE\n");
 }
+
+//************************* L O G   U P L O A D ******************
+void uart_put_16bit(int16_t value)
+{	
+	uint8_t c1, c2;			// unsigned int
+
+	c1 = value;
+	c2 = (value >> 8);
+	
+	//printf("%d %d\n",c1,c2 );
+	uart_put(c1);
+	uart_put(c2);
+}
+
+void uart_put_32bit(int32_t value)
+{
+	uint8_t c1, c2, c3, c4;
+
+	c1 = value;
+	c2 = (value >> 8);
+	c3 = (value >> 16);
+	c4 = (value >> 24);
+
+	//printf("%d %d %d %d\n",c1, c2, c3, c4 );
+
+	uart_put(c1);
+	uart_put(c2);
+	uart_put(c3);
+	uart_put(c4);
+}
+
+void log_upload()
+{
+	// printf("In LOG_UPLOAD\n");
+	// Read from buffer
+	struct packet_t p;
+	if (drone.current_mode == SAFE_MODE)
+	{
+		//printf("Inside log_upload \n");
+		#if 1
+		p.start = START_BYTE;
+		p.command = LOG;
+		p.value = LOG_START;
+		compute_crc(&p);
+		p.stop = STOP_BYTE;
+
+		uart_put(p.start);
+		uart_put(p.command);
+		uart_put(p.value);
+		uart_put(p.crc);
+		uart_put(p.stop);
+		#endif
+
+		while(flash_read_bytes(new_addr_write, (uint8_t*)&read_data, sizeof(read_data)) == true)
+		{
+			// Update new_addr_write
+			//printf("%d %lu %d %d %d %d %d %d %d %d\n", LOG_LINE_START, read_data.current_time, read_data.sp, read_data.sq, read_data.sr, read_data.sax, read_data.say, read_data.saz, read_data.bat_volt, LOG_LINE_END);
+			#if 1
+			uart_put(LOG_LINE_START);
+			uart_put_32bit(read_data.current_time);			
+			//uart_put_32bit(4057748);			
+			uart_put_16bit(read_data.sp);	
+			//uart_put_16bit(-46);				
+			uart_put_16bit(read_data.sq);
+			//uart_put_16bit(-45);
+			uart_put_16bit(read_data.sr);
+			//uart_put_16bit(-23);
+			uart_put_16bit(read_data.sax);
+			//uart_put_16bit(-1626);
+			uart_put_16bit(read_data.say);
+			//uart_put_16bit(1232);
+			uart_put_16bit(read_data.saz);
+			//uart_put_16bit(16884);
+			uart_put_16bit(read_data.bat_volt);
+			//uart_put_16bit(574);
+			uart_put(LOG_LINE_END);
+			#endif
+			new_addr_write += sizeof(read_data);
+			if (new_addr_write >= new_addr)
+			{	
+				log_upload_flag = false;
+				break;
+			}
+			//printf("new_addr_write = %d\n", (int)new_addr_write);
+			
+			nrf_delay_ms(100);
+		}
+	}
+	else
+	{
+		// Send ACK_FAILURE to indicate that drone is not in SAFE MODE currently
+		p.start = START_BYTE;
+		p.command = ACK;
+		p.value = ACK_FAILURE;
+		compute_crc(&p);
+		p.stop = STOP_BYTE;
+
+		uart_put(p.start);
+		uart_put(p.command);
+		uart_put(p.value);
+		uart_put(p.crc);
+		uart_put(p.stop);
+	}
+}
+//******************************************************************
 
 void process_drone()
 {

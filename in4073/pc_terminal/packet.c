@@ -149,7 +149,24 @@ void sendKeyPacket(char key)
 			p.value = DECREASE;
 			p_flag = 1;
 			break;
+		//Log
+		case 'b':
+			p.command = LOG;
+			p.value = LOG_START;
+			p_flag = 1;
+			break;
 
+		case 's':
+			p.command = LOG;
+			p.value = LOG_STOP;
+			p_flag = 1;
+			break;
+
+		case 'g':
+			p.command = LOG;
+			p.value = LOG_UPLOAD;
+			p_flag = 1;
+			break;
 		default:
 			break;
 	}

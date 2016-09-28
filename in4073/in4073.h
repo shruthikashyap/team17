@@ -130,11 +130,11 @@ struct qr_t
 	int16_t joy_yaw;
 	
 	int16_t offset_sp;
-    	int16_t offset_sq;
-    	int16_t offset_sr;
+    int16_t offset_sq;
+    int16_t offset_sr;
 	int16_t offset_sax;
-    	int16_t offset_say;
-    	int16_t offset_saz;
+    int16_t offset_say;
+    int16_t offset_saz;
 	int16_t offset_pressure;
 
 	int16_t controlgain_yaw;
@@ -150,5 +150,7 @@ extern uint32_t new_addr;
 extern bool log_flag;
 extern bool sensor_flag;
 extern bool telemetry_flag;
+extern bool log_upload_flag;
+extern bool log_active_flag;
 
 #endif // IN4073_H__

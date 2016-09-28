@@ -1,3 +1,5 @@
+#include <inttypes.h>
+
 struct queue_t{
 	int16_t capacity;
 	int16_t size;
@@ -14,3 +16,4 @@ void enqueue(struct packet_t);
 void* process_dequeue(void *);
 void* process_dequeue(void* thread);
 void* process_receive_packets(void* thread);
+void get_log(uint8_t ch);

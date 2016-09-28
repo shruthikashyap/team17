@@ -3,6 +3,9 @@
 #include "in4073.h"
 #include "../crc.h"
 
+bool log_upload_flag = false;
+bool log_active_flag = false;
+
 /*------------------------------------------------------------------
  * process_key -- process command keys
  *------------------------------------------------------------------
@@ -434,6 +437,22 @@ void process_packet(struct packet_t packet)
 				break;
 		case KEY_CONTROL_P2:
 				set_key_control_p2(packet.value);
+				break;
+		case LOG:
+				if (packet.value == LOG_START)
+				{
+					log_active_flag = true;
+					//printf("Inside log start\n");
+				}
+				else if (packet.value == LOG_STOP)
+				{
+					log_active_flag = false;
+				}
+				else if (packet.value == LOG_UPLOAD)
+				{
+					//printf("Log upload command received\n");
+					log_upload_flag = true;
+				}
 				break;
 		default :
 				// XXX: Packet error. Needs to be handled
