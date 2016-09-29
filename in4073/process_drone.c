@@ -22,6 +22,7 @@ bool batt_low_flag = false;
 
 void update_log()
 {
+	nrf_gpio_pin_toggle(RED);
 	write_data.current_time = get_time_us();
 	write_data.sp = sp;
 	write_data.sq = sq;
@@ -81,8 +82,6 @@ void read_sensor()
 	if (check_sensor_int_flag()) 
 	{
 		get_dmp_data();
-		//printf("%6d %6d %6d | ", sp, sq, sr);
-		//printf("%6d %6d %6d \n", sax, say, saz);
 		clear_sensor_int_flag();
 	}
 	
@@ -93,6 +92,9 @@ void read_sensor()
 	say -= drone.offset_say;
 	saz -= drone.offset_saz;
 	pressure -= drone.offset_pressure;
+	
+	printf("%6d %6d %6d | ", sp, sq, sr);
+	printf("%6d %6d %6d \n", sax, say, saz);
 }
 
 void send_telemetry_data()
@@ -139,7 +141,7 @@ void check_sensor_log_tele_flags()
 	}
 
 	// Update log
-	if(log_flag == true && batt_low_flag == false)
+	if(log_flag == true && batt_low_flag == false && log_active_flag == true)
 	{
 		//printf("Start log %10ld\n", get_time_us());
 		// Clear log flag
@@ -371,7 +373,8 @@ void yaw_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);		
+		//printf("YAW - drone.change_mode = %d\n", drone.change_mode);
+		check_sensor_log_tele_flags();
 		nrf_delay_ms(1);
 	}
 	
