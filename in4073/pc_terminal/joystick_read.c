@@ -37,7 +37,14 @@ void scale_joystick_values(int axis[6])
 		
 		if(axis[i] >= OldMin && axis[i] <= OldMax)
 		{
-			scale_axis[i] = (((axis[i] - OldMin) * NewRange) / OldRange) + NewMin;
+			if (axis[i] == 0) 
+			{
+				scale_axis[i] = 0;
+			} 
+			else 
+			{
+				scale_axis[i] = (((axis[i] - OldMin) * NewRange) / OldRange) + NewMin;
+			}
 			//printf("scale_axis[%d] is %d, axis[%d] = %d\n", i, scale_axis[i], i, axis[i]);
 		}
 	}
@@ -103,7 +110,7 @@ void sendJsPacket()
 
 			case 3:
 				p.command = JOY_LIFT;
-				p.value = scale_axis[i];
+				p.value = -scale_axis[i]+127;
 				compute_crc(&p);
 				enqueue(p);
 				break;

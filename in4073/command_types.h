@@ -48,10 +48,6 @@
 #define	ACK_FAILURE	1
 #define ACK_INVALID	2
 
-/* RPMs */
-#define RPM_STEP	10
-#define HOVER_RPM	250 // XXX: Find out the right value
-
 /* Increase or Decrease */
 #define	INCREASE	1
 #define DECREASE	0

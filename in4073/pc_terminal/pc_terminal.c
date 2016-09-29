@@ -45,15 +45,15 @@ int main(int argc, char **argv)
 	pthread_t pthread_dequeue;
 	pthread_t pthread_receive;
 
-/*
+
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
 	}
-*/
+
 	/* non-blocking mode
  	*/
-//	fcntl(fd, F_SETFL, O_NONBLOCK);
+	fcntl(fd, F_SETFL, O_NONBLOCK);
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 			sendKeyPacket(c);
 		}
 
-		//sendJsPacket();
+		sendJsPacket();
 		
 		usleep(20000);
 

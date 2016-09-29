@@ -65,8 +65,8 @@ void enqueue(struct packet_t p)
 void* process_dequeue(void* thread)
 {
 	struct packet_t *p = (struct packet_t*)malloc(sizeof(struct packet_t));
-	int retry_count = 0;
-	int time_out = 0;
+	//int retry_count = 0;
+	//int time_out = 0;
 
 	while(1)
 	{
@@ -98,7 +98,7 @@ void* process_dequeue(void* thread)
 			// XXX: To be Done: Check for ACK. If NACK - Resend from beginning. Timeout if nothing is received and retry again.
 			// XXX: Retry for PANIC_MODE - ack_received
 			// ACK SUCCESS = 0, FAILURE = 1
-			#if 1
+			#if 0
 			if(p->command == MODE_TYPE && p->value == PANIC_MODE)
 			{
 				//printf("Inside panic mode retry logic!\n");
@@ -438,7 +438,7 @@ void receive_telemetry_data(uint8_t ch)
 		case 16:
 			if((unsigned char)ch == TELE_STOP)
 			{
-				#if 0
+				#if 1
 				printf("%d | ", tele_data.current_time);
 				printf("%d | ", tele_data.current_mode);
 				printf("%d | ", tele_data.bat_volt);
@@ -459,7 +459,7 @@ void receive_telemetry_data(uint8_t ch)
 
 void* process_receive_packets(void* thread)
 {
-	#if 1
+	#if 0
 	char c;
 	while(1)
 	{
@@ -470,7 +470,7 @@ void* process_receive_packets(void* thread)
 	}
 	#endif
 	
-	#if 0
+	#if 1
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;

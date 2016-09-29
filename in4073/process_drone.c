@@ -116,13 +116,13 @@ void send_telemetry_data()
 	//uart_put_16bit(574);
 	uart_put_16bit(bat_volt);
 	//uart_put_16bit(710);
-	uart_put_16bit(ae[0]);
+	uart_put_16bit(drone.ae[0]);
 	//uart_put_16bit(510);
-	uart_put_16bit(ae[1]);
+	uart_put_16bit(drone.ae[1]);
 	//uart_put_16bit(1000);
-	uart_put_16bit(ae[2]);
+	uart_put_16bit(drone.ae[2]);
 	//uart_put_16bit(555);
-	uart_put_16bit(ae[3]);
+	uart_put_16bit(drone.ae[3]);
 	uart_put(TELE_STOP);
 }
 
@@ -160,7 +160,7 @@ void check_sensor_log_tele_flags()
 		telemetry_flag = false;
 
 		// Send telemetry data
-		//send_telemetry_data();
+		send_telemetry_data();
 		//printf("Stop tele %10ld\n", get_time_us());
 	}
 }
@@ -191,15 +191,15 @@ void reset_drone()
 	new_addr_write = 0x000000;
 	batt_low_flag = false;
 	
-	if(flash_chip_erase() == true)
-		printf("Memory erase successful\n");
+	if(flash_chip_erase() == true);
+		//printf("Memory erase successful\n");
 }
 
 void safe_mode()
 {
 	//printf("In SAFE_MODE\n");
 	
-	__disable_irq();
+	//__disable_irq();
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
 	drone.key_lift = 0;
@@ -218,11 +218,16 @@ void safe_mode()
 		drone.ae[1] = (drone.ae[1]) < RPM_STEP? 0 : drone.ae[1] - 10;
 		drone.ae[2] = (drone.ae[2]) < RPM_STEP? 0 : drone.ae[2] - 10;
 		drone.ae[3] = (drone.ae[3]) < RPM_STEP? 0 : drone.ae[3] - 10;
+		run_filters_and_control();
 		//printf("\nDrone decreasing motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
-		nrf_delay_ms(1000);
+		nrf_delay_ms(250);
 	}
-	__enable_irq();
+	//__enable_irq();
 	
+
+
+	//printf("In SAFE_MODE again\n");
+
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		if (batt_low_flag == true)
@@ -241,9 +246,13 @@ void safe_mode()
 			//printf("Value of log_upload_flag = %d\n", log_upload_flag);
 			log_upload();
 		}
+
+		//printf("bat volt:  %d \n", bat_volt);
 		
 		nrf_delay_ms(1);
 	}
+	
+
 	//printf("Exit SAFE_MODE\n");
 }
 
@@ -253,7 +262,7 @@ void panic_mode()
 	
 	// Disable UART interrupts
 	//NVIC_DisableIRQ(UART0_IRQn);
-	__disable_irq();
+	//__disable_irq();
 
 	// Set moderate RPM values to the motors for hovering
 	drone.ae[0] = HOVER_RPM;
@@ -262,6 +271,8 @@ void panic_mode()
 	drone.ae[3] = HOVER_RPM;
 	//printf("Drone motor values: %3d %3d %3d %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
 	
+	run_filters_and_control();
+
 	// Stay in this mode for a few seconds
 	nrf_delay_ms(5000);
 	
@@ -271,7 +282,7 @@ void panic_mode()
 	
 	// Enable UART interrupts
 	//NVIC_EnableIRQ(UART0_IRQn);
-	__enable_irq();
+	//__enable_irq();
 
 	//printf("Exit PANIC_MODE\n");
 }
@@ -297,22 +308,29 @@ void manual_mode()
 		__disable_irq();
 
 		// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
-		lift_force   = (signed char)drone.joy_lift+0  + (signed char)drone.key_lift;
-		roll_moment  = (signed char)drone.joy_roll+0  + (signed char)drone.key_roll;
-		pitch_moment = (signed char)drone.joy_pitch+0 + (signed char)drone.key_pitch;
-		yaw_moment   = (signed char)drone.joy_yaw+0   + (signed char)drone.key_yaw;
+		lift_force   = (signed char)drone.joy_lift  + (signed char)drone.key_lift;
+		roll_moment  = (signed char)drone.joy_roll  + (signed char)drone.key_roll;
+		pitch_moment = (signed char)drone.joy_pitch + (signed char)drone.key_pitch;
+		yaw_moment   = (signed char)drone.joy_yaw   + (signed char)drone.key_yaw;
 
 		// Enable UART interrupts
 		//NVIC_EnableIRQ(UART0_IRQn);
 		__enable_irq();
 
 		//printf("%d, %d, %d, %d\n", (signed char)drone.joy_roll, (signed char)drone.joy_pitch, (signed char)drone.joy_yaw, (signed int)drone.joy_lift);
-		//printf("%d, %d, %d, %d\n", lift_force, roll_moment, pitch_moment, yaw_moment);
+		//printf("%d, %d, %d, %d | %d\n", lift_force, roll_moment, pitch_moment, yaw_moment, bat_volt);
 
 		lift  = DRONE_LIFT_CONSTANT * lift_force;
 		pitch = DRONE_PITCH_CONSTANT * pitch_moment;
 		roll  = DRONE_ROLL_CONSTANT * roll_moment;
 		yaw   = DRONE_YAW_CONSTANT * yaw_moment;
+
+		if ((signed char)drone.joy_lift < 5)
+		{
+			pitch = 0;
+			roll  = 0;
+			yaw   = 0;
+		}
 #if 0
 		// no need to do this, rotor speeds are getting maxed/mined a few lines later
 		lift  = lift  < MIN_LIFT  ? MIN_LIFT  : lift;
@@ -336,11 +354,13 @@ void manual_mode()
 		ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
 		ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
 		
-		// checking min/max	
-		ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-		ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-		ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-		ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+		if ((signed char)drone.joy_lift > 5)
+		{
+			ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+			ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+			ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+			ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+		}
 
 		ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
 		ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
@@ -353,13 +373,15 @@ void manual_mode()
 		drone.ae[2] = ae_[2];
 		drone.ae[3] = ae_[3];
 
-		//printf("%3d %3d %3d %3d %3d\n", ae_[0], ae_[1], ae_[2], ae_[3], lift_force);
-		printf("%3d, %3d, %3d, %3d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3]);
+		//printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
+		//printf("%3d, %3d, %3d, %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
 		
 		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
 		
 		check_sensor_log_tele_flags();
+
+		run_filters_and_control();
 
 		nrf_delay_ms(1);
 	}
@@ -381,17 +403,16 @@ void yaw_control_mode()
 
 	int lift, roll, pitch, yaw;
 
-	drone.controlgain_yaw = 4;
+	drone.controlgain_yaw = 2;
+	//drone.key_lift = 20;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		check_sensor_log_tele_flags();
 
-		drone.key_lift = 30;
-
 		__disable_irq();
-		lift_force       = (signed char)drone.joy_lift+1 + (signed char)drone.key_lift;
-		yawrate_setpoint = (signed char)drone.joy_yaw+1  + (signed char)drone.key_yaw;
+		lift_force       = (signed char)drone.joy_lift + (signed char)drone.key_lift;
+		yawrate_setpoint = (signed char)drone.joy_yaw  + (signed char)drone.key_yaw;
 		__enable_irq();
 		
 		// setpoint is keyboard + joystick, so in range of -127 to 128
@@ -399,12 +420,21 @@ void yaw_control_mode()
 		// yaw rate of max 3000 seems decent (trial and error) so max of setpoint should be 3000
 		// 3000/128 = 23.43, so setpoints times 24 should be in decent range
 		// dividing sr by 24 to keep yaw_error a low number, so the controlgainnumber doesnt have to be so small
-		yaw_error = (int)((1*yawrate_setpoint) - (sr/24));
-		//yaw_error = (int)(sr/24);
+		
+		if (lift_force > 10) 
+		{
+			yaw_error = -(int)((1*yawrate_setpoint) - (sr/24));
+		
+			//yaw_error = (int)(sr/24);
 
-		// yaw error in range of -255 to 256 (although the extremes probably wont happen)
-		yaw_moment = (int)drone.controlgain_yaw*yaw_error;
-		printf("sr: %d \n", yaw_error);
+			// yaw error in range of -255 to 256 (although the extremes probably wont happen)
+			yaw_moment = (int)drone.controlgain_yaw*yaw_error;
+			//printf("yaw moment:  %d \n", yaw_moment);
+		}
+		else
+		{
+			yaw_moment = 0;
+		}
 
 		//printf("yaw error: %d\n",yaw_moment);
 
@@ -428,25 +458,29 @@ void yaw_control_mode()
 		ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
 		ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
 
-		// min/max the values
-		ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-		ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-		ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-		ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+		if ((signed char)drone.joy_lift > 5)
+		{
+			ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+			ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+			ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+			ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+		}
 
 		ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
 		ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
 		ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
 		ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
 
-		printf("%3d %3d %3d %3d\n", ae_[0], ae_[1], ae_[2], ae_[3]);
+		//printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
 
 		// setting drone rotor speeds
 		drone.ae[0] = ae_[0];
 		drone.ae[1] = ae_[1];
 		drone.ae[2] = ae_[2];
 		drone.ae[3] = ae_[3];
-		//nrf_delay_ms(50); // maybe remove delay?!
+
+		run_filters_and_control();
+		nrf_delay_ms(1); // maybe remove delay?!
 	}
 	
 	//printf("Exit YAW_CONTROL_MODE\n");
@@ -467,8 +501,8 @@ void full_control_mode()
 
 void calibration_mode()
 {
-	printf("In CALIBRATION_MODE\n");
-	
+	//printf("In CALIBRATION_MODE\n");
+	nrf_gpio_pin_toggle(RED);
 	uint32_t counter = 0;
     int samples = 100;
     int sum_sp = 0;
@@ -548,15 +582,15 @@ void calibration_mode()
 
     //nrf_delay_ms(500);
 
-    printf("New offsets found: \n");
-    printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
-	printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
-	printf("pressure = %d \n", drone.offset_pressure);
+    //printf("New offsets found: \n");
+    //printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
+	//printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
+	//printf("pressure = %d \n", drone.offset_pressure);
 
     drone.current_mode = SAFE_MODE;
     drone.change_mode = 1;
     
-    printf("Exit CALIBRATION_MODE\n");
+    //printf("Exit CALIBRATION_MODE\n");
 }
 
 void raw_mode()
@@ -698,7 +732,12 @@ void process_drone()
 	{
 		drone.change_mode = 0;
 
-		//drone.current_mode = YAW_CONTROL_MODE;
+		if((drone.joy_lift > 10) && !(drone.current_mode == SAFE_MODE || drone.current_mode == PANIC_MODE))
+		{
+			drone.current_mode = SAFE_MODE;
+			//printf("Make lift 0 before changing mode :)\n");
+			continue;
+		}
 
 		switch (drone.current_mode)
 		{

@@ -32,37 +32,37 @@ void sendKeyPacket(char key)
 
 		case '3':
 			p.command = MODE_TYPE;
-			p.value = YAW_CONTROL_MODE;
+			p.value = CALIBRATION_MODE;
 			p_flag = 1;
 			break;
 
 		case '4':
 			p.command = MODE_TYPE;
-			p.value = FULL_CONTROL_MODE;
+			p.value = YAW_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
 		case '5':
 			p.command = MODE_TYPE;
-			p.value = CALIBRATION_MODE;
+			p.value = FULL_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
 		case '6':
 			p.command = MODE_TYPE;
-			p.value = HEIGHT_CONTROL_MODE;
+			p.value = RAW_MODE;
 			p_flag = 1;
 			break;
 
 		case '7':
 			p.command = MODE_TYPE;
-			p.value = WIRELESS_MODE;
+			p.value = HEIGHT_CONTROL_MODE;
 			p_flag = 1;
 			break;
 
 		case '8':
 			p.command = MODE_TYPE;
-			p.value = RAW_MODE;
+			p.value = WIRELESS_MODE;
 			p_flag = 1;
 			break;
 
