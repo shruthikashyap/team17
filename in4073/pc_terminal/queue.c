@@ -12,12 +12,16 @@
 #include "../crc.h"
 
 int ack_received = 2;
+
 int log_start_flag = 0;
 int log_byte_count = 0;
 struct log log_line;
 
 char filename[100] = "log.txt";
 FILE *fp;
+
+int telemetry_rcv_flag = 0;
+struct telemetry tele_data;
 
 struct queue_t* createQueue(int numelements)
 {
@@ -297,6 +301,162 @@ void get_log(uint8_t ch)
 		//printf("log byte count : %d\n",log_byte_count);
 }
 
+void receive_telemetry_data(uint8_t ch)
+{
+	static uint8_t count = 0;
+	uint32_t shift_32;
+	int16_t shift_16;
+	uint16_t shift_u16;
+	
+	//printf("receive_telemetry_data %d\n", ch);
+#if 1
+	switch(count)
+	{
+		case 0:
+			if((unsigned char)ch != TELE_START)
+			{
+				telemetry_rcv_flag = 0;
+				count = 0;
+			}
+			else
+			{
+				tele_data.current_time = 0;
+				tele_data.current_mode = 0;
+				tele_data.bat_volt = 0;
+				tele_data.ae[0] = 0;
+				tele_data.ae[1] = 0;
+				tele_data.ae[2] = 0;
+				tele_data.ae[3] = 0;
+				count++;
+			}
+			break;
+
+		case 1:
+			shift_32 = (uint32_t)ch;
+			tele_data.current_time = tele_data.current_time | shift_32;
+			//printf("tele_data.current_time 0-7: %u\n", tele_data.current_time);
+			count++;
+			break;
+
+		case 2:
+			shift_32 = (uint32_t)ch;
+			tele_data.current_time = tele_data.current_time | (shift_32<<8);
+			//printf("tele_data.current_time 8-15: %u\n", tele_data.current_time);
+			count++;
+			break;
+
+		case 3:
+			shift_32 = (uint32_t)ch;
+			tele_data.current_time = tele_data.current_time | (shift_32<<16);
+			//printf("tele_data.current_time 16-23: %u\n", tele_data.current_time);
+			count++;
+			break;
+
+		case 4:
+			shift_32 = (uint32_t)ch;
+			tele_data.current_time = tele_data.current_time | (shift_32<<24);
+			//printf("tele_data.current_time 24-31: %u\n", tele_data.current_time);
+			count++;
+			break;
+			
+		case 5:
+			tele_data.current_mode = ch;
+			//printf("tele_data.current_mode: %d\n", tele_data.current_mode);
+			count++;
+			break;
+
+		case 6:
+			shift_u16 = (uint16_t)ch;	
+			tele_data.bat_volt = tele_data.bat_volt | shift_u16;
+			//printf("tele_data.bat_volt 0-7: %d\n", tele_data.bat_volt);
+			count++;
+			break;
+
+		case 7:
+			shift_u16 = (uint16_t)ch;	
+			tele_data.bat_volt = tele_data.bat_volt | (shift_u16<<8);
+			//printf("tele_data.bat_volt 8-16: %d\n", tele_data.bat_volt);
+			count++;
+			break;
+
+		case 8:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[0] = tele_data.ae[0] | shift_16;
+			//printf("tele_data.ae[0] 0-7: %d\n", tele_data.ae[0]);
+			count++;
+			break;
+
+		case 9:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[0] = tele_data.ae[0] | (shift_16<<8);
+			//printf("tele_data.ae[0] 8-16: %d\n", tele_data.ae[0]);
+			count++;
+			break;
+
+		case 10:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[1] = tele_data.ae[1] | shift_16;
+			//printf("tele_data.ae[1] 0-7: %d\n", tele_data.ae[1]);
+			count++;
+			break;
+
+		case 11:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[1] = tele_data.ae[1] | (shift_16<<8);
+			//printf("tele_data.ae[1] 8-16: %d\n", tele_data.ae[1]);
+			count++;
+			break;
+
+		case 12:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[2] = tele_data.ae[2] | shift_16;
+			//printf("tele_data.ae[2] 0-7: %d\n", tele_data.ae[2]);
+			count++;
+			break;
+
+		case 13:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[2] = tele_data.ae[2] | (shift_16<<8);
+			//printf("tele_data.ae[2] 8-16: %d\n", tele_data.ae[2]);
+			count++;
+			break;
+
+		case 14:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[3] = tele_data.ae[3] | shift_16;
+			//printf("tele_data.ae[3] 0-7: %d\n", tele_data.ae[3]);
+			count++;
+			break;
+
+		case 15:
+			shift_16 = (int16_t)ch;
+			tele_data.ae[3] = tele_data.ae[3] | (shift_16<<8);
+			//printf("tele_data.ae[3] 8-16: %d\n", tele_data.ae[3]);
+			count++;
+			break;
+
+		case 16:
+			if((unsigned char)ch == TELE_STOP)
+			{
+				#if 0
+				printf("%d | ", tele_data.current_time);
+				printf("%d | ", tele_data.current_mode);
+				printf("%d | ", tele_data.bat_volt);
+				printf("%3d %3d %3d %3d\n", tele_data.ae[0], tele_data.ae[1], tele_data.ae[2], tele_data.ae[3]);
+				#endif
+			}
+			telemetry_rcv_flag = 0;
+			count = 0;
+			break;
+
+		default:
+			telemetry_rcv_flag = 0;
+			count = 0;
+			break;
+	}
+#endif
+}
+
 void* process_receive_packets(void* thread)
 {
 	#if 1
@@ -306,7 +466,7 @@ void* process_receive_packets(void* thread)
 		if((c = rs232_getchar_nb()) != -1) 
 			term_putchar(c);
 
-		usleep(250);
+		//usleep(250);
 	}
 	#endif
 	
@@ -323,12 +483,16 @@ void* process_receive_packets(void* thread)
 	
 	while(1)
 	{
-		if ((ch = rs232_getchar_nb()) != -1)
+		if((ch = rs232_getchar_nb()) != -1)
 		{
 			//printf("%d\n", ch);
-			if (log_start_flag == 1)
+			if(log_start_flag == 1)
 			{
 				get_log(ch);
+			}
+			else if(telemetry_rcv_flag == 1)
+			{
+				receive_telemetry_data(ch);
 			}
 			else
 			{
@@ -359,16 +523,20 @@ void* process_receive_packets(void* thread)
 						// Process packet
 						if (!check_crc(p))
 						{
-							printf("Packet received from QR - command = %d, value = %d\n", p.command, p.value);
+							//printf("Packet received from QR - command = %d, value = %d\n", p.command, p.value);
 							if(p.command == ACK)
 							{
 								// Update a ack_received global variable
 								ack_received = p.value;
 								//printf("Updating global ack = %d\n", ack_received);
 							}
-							else if (p.command == LOG && p.value == LOG_START)
+							else if(p.command == LOG && p.value == LOG_START)
 							{
 								log_start_flag = 1;
+							}
+							else if(p.command == TELEMETRY_DATA)
+							{
+								telemetry_rcv_flag = 1;
 							}
 							else
 							{
@@ -415,10 +583,10 @@ void* process_receive_packets(void* thread)
 					rcv_byte_count = 0;
 				}
 			}
-		}
-		else
-		{
-			usleep(100000);
+			//else
+			//{
+			//	usleep(100000);
+			//}
 		}
 	}
 	#endif

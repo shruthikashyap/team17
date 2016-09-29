@@ -5,7 +5,10 @@
 #include "process_drone.h"
 #include <string.h>
 #include <stdlib.h>
+//#include "drivers/process_packet.h"
 #include "crc.h"
+
+void send_packet_to_pc(struct packet_t p);
 
 struct log write_data;
 struct log read_data;
@@ -39,7 +42,6 @@ void update_log()
 		return;
 	}
 
-	#if 1
 	// Check buffer size
 	if((new_addr + sizeof(write_data)) > 0x01FFFF)
 	{
@@ -60,7 +62,6 @@ void update_log()
 		new_addr += sizeof(write_data);
 		//printf("new_addr = %d\n", (int)new_addr);
 	}
-	#endif
 }
 
 void read_sensor()
@@ -94,6 +95,74 @@ void read_sensor()
 	pressure -= drone.offset_pressure;
 }
 
+void send_telemetry_data()
+{
+	// Send telemetry command to PC
+	struct packet_t p;
+	p.start = START_BYTE;
+	p.command = TELEMETRY_DATA;
+	compute_crc(&p);
+	p.stop = STOP_BYTE;
+	
+	send_packet_to_pc(p);
+	
+	uart_put(TELE_START);
+	//uart_put_32bit(4057748);
+	uart_put_32bit(get_time_us());
+	//uart_put(0x20);
+	uart_put(drone.current_mode);
+	//uart_put_16bit(574);
+	uart_put_16bit(bat_volt);
+	//uart_put_16bit(710);
+	uart_put_16bit(ae[0]);
+	//uart_put_16bit(510);
+	uart_put_16bit(ae[1]);
+	//uart_put_16bit(1000);
+	uart_put_16bit(ae[2]);
+	//uart_put_16bit(555);
+	uart_put_16bit(ae[3]);
+	uart_put(TELE_STOP);
+}
+
+void check_sensor_log_tele_flags()
+{
+	// Read sensor
+	if(sensor_flag == true && batt_low_flag == false)
+	{
+		//printf("Start sensor %10ld\n", get_time_us());
+		// Clear sensor flag
+		sensor_flag = false;
+
+		// Read sensor data
+		read_sensor();
+		//printf("Stop sensor %10ld\n", get_time_us());
+	}
+
+	// Update log
+	if(log_flag == true && batt_low_flag == false)
+	{
+		//printf("Start log %10ld\n", get_time_us());
+		// Clear log flag
+		log_flag = false;
+
+		// Log sensor data
+		update_log();
+		//printf("Stop log %10ld\n", get_time_us());
+	}
+
+	// Send telemetry
+	if(telemetry_flag == true && batt_low_flag == false)
+	{
+		//printf("Start tele %10ld\n", get_time_us());
+		// Clear telemetry flag
+		telemetry_flag = false;
+
+		// Send telemetry data
+		//send_telemetry_data();
+		//printf("Stop tele %10ld\n", get_time_us());
+	}
+}
+
 void reset_drone()
 {
 	// XXX: Set mode as SAFE_MODE and clear all flags
@@ -119,11 +188,9 @@ void reset_drone()
 	new_addr = 0x000000;
 	new_addr_write = 0x000000;
 	batt_low_flag = false;
-
+	
 	if(flash_chip_erase() == true)
-	{
-		//printf("Memory erase successful\n");
-	}
+		printf("Memory erase successful\n");
 }
 
 void safe_mode()
@@ -165,42 +232,17 @@ void safe_mode()
 		
 		//printf("SAFE - drone.change_mode = %d\n", drone.change_mode);
 		
-		// Read sensor
-		if(sensor_flag == true && batt_low_flag == false)
-		{
-			//printf("Start %10ld\n", get_time_us());
-			// Clear log flag
-			sensor_flag = false;
-			
-			// Log sensor data
-			read_sensor();
-			//printf("Stop %10ld\n", get_time_us());
-		}
-		
-		// Update log
-		if(log_flag == true && batt_low_flag == false && log_active_flag == true)
-		{
-			//printf("Start %10ld\n", get_time_us());
-			// Clear log flag
-			log_flag = false;
-			
-			// Log sensor data
-			update_log();
-			//printf("Stop %10ld\n", get_time_us());
-		}
+		check_sensor_log_tele_flags();
 		
 		if (log_upload_flag == true)
 		{
-			printf("Value of log_upload_flag = %d\n", log_upload_flag);
+			//printf("Value of log_upload_flag = %d\n", log_upload_flag);
 			log_upload();
 		}
 		
 		nrf_delay_ms(1);
 	}
 	//printf("Exit SAFE_MODE\n");
-	
-	// XXX: Test Logging
-	//read_log();
 }
 
 void panic_mode()
@@ -315,17 +357,7 @@ void manual_mode()
 		//printf("%3d %3d %3d %3d %3d \n",ae[0], lift, roll, pitch, yaw);
 		//printf("MANUAL - drone.change_mode = %d\n", drone.change_mode);
 		
-		// Update log
-		if(log_flag == true && batt_low_flag == false && log_active_flag == true)
-		{
-			//printf("Start %10ld\n", get_time_us());
-			// Clear log flag
-			log_flag = false;
-			
-			// Log sensor data
-			update_log();
-			//printf("Stop %10ld\n", get_time_us());
-		}
+		check_sensor_log_tele_flags();
 		
 		nrf_delay_ms(1);
 	}
@@ -364,8 +396,8 @@ void calibration_mode()
 	printf("In CALIBRATION_MODE\n");
 	
 	uint32_t counter = 0;
-    	int samples = 100;
-    	int sum_sp = 0;
+    int samples = 100;
+    int sum_sp = 0;
 	int sum_sq = 0;
 	int sum_sr = 0;
 	int sum_sax = 0;

@@ -59,6 +59,16 @@ void process_key(struct packet_t p)
 	}*/
 }
 
+void send_packet_to_pc(struct packet_t p)
+{
+	// XXX: Send p to PC
+	uart_put(p.start);
+	uart_put(p.command);
+	uart_put(p.value);
+	uart_put(p.crc);
+	uart_put(p.stop);
+}
+
 void send_packet_ack(int ack)
 {
 	// XXX: Send ack to PC
@@ -72,12 +82,7 @@ void send_packet_ack(int ack)
 	p.stop = STOP_BYTE;
 	
 	#if 0
-	// XXX: Send p to PC
-	uart_put(p.start);
-	uart_put(p.command);
-	uart_put(p.value);
-	uart_put(p.crc);
-	uart_put(p.stop);
+	send_packet_to_pc(p);
 	#endif
 }
 

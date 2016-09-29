@@ -17,3 +17,4 @@ void* process_dequeue(void *);
 void* process_dequeue(void* thread);
 void* process_receive_packets(void* thread);
 void get_log(uint8_t ch);
+void receive_telemetry_data(uint8_t ch);

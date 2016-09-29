@@ -16,6 +16,8 @@
 #define KEY_CONTROL_P1	0x11
 #define KEY_CONTROL_P2	0x12
 
+#define TELEMETRY_DATA	0x13
+
 /* Mode Types */
 #define SAFE_MODE		0x20
 #define PANIC_MODE		0x29
@@ -59,6 +61,10 @@
 #define CRC_POLY	0xC8 
 #define MASK		0xF0
 
+/* Telemetry start stop bytes */
+#define TELE_START	0x40
+#define TELE_STOP	0x45
+
 struct packet_t
 {
 	// XXX: Add check bytes
@@ -79,4 +85,12 @@ struct log
 	int16_t say;
 	int16_t saz;
 	uint16_t bat_volt;
+};
+
+struct telemetry
+{
+	uint32_t current_time;
+	char current_mode;
+	uint16_t bat_volt;
+	int16_t ae[4];
 };

@@ -69,7 +69,7 @@ void TIMER2_IRQHandler(void)
 		}
 		log_timer++;
 			
-		if(telemetry_timer % 100 == 0) //4Hz
+		if(telemetry_timer % 200 == 0) //2Hz
 		{
 			telemetry_flag = true;
 			//printf("Timer telemetry = %d\n", telemetry_timer);
