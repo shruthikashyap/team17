@@ -151,7 +151,7 @@ void check_sensor_log_tele_flags()
 	}
 
 	// Send telemetry
-	if(telemetry_flag == true && batt_low_flag == false)
+	if(telemetry_flag == true && batt_low_flag == false && log_upload_flag == false)
 	{
 		//printf("Start tele %10ld\n", get_time_us());
 		// Clear telemetry flag
@@ -234,7 +234,7 @@ void safe_mode()
 		
 		check_sensor_log_tele_flags();
 		
-		if (log_upload_flag == true)
+		if (log_upload_flag == true && telemetry_flag == false)
 		{
 			//printf("Value of log_upload_flag = %d\n", log_upload_flag);
 			log_upload();
