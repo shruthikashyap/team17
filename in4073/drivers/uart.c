@@ -59,6 +59,9 @@ void UART0_IRQHandler(void)
 	{
 		NRF_UART0->EVENTS_ERROR = 0;
 		printf("uart error: %lu\n", NRF_UART0->ERRORSRC);
+		
+		// XXX: Test cable disconnection
+		nrf_gpio_pin_toggle(RED);
 	}
 
 	// XXX: Receive in struct order and handle acknowledgement

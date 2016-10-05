@@ -22,7 +22,7 @@ bool batt_low_flag = false;
 
 void update_log()
 {
-	nrf_gpio_pin_toggle(RED);
+	//nrf_gpio_pin_toggle(RED);
 	write_data.current_time = get_time_us();
 	write_data.sp = sp;
 	write_data.sq = sq;
@@ -67,6 +67,14 @@ void update_log()
 
 void read_sensor()
 {
+	drone.sp = 0;
+	drone.sq = 0;
+	drone.sr = 0;
+	drone.sax = 0;
+	drone.say = 0;
+	drone.saz = 0;
+	drone.pressure = 0;
+	
 	// Read sensor data
 	if (check_timer_flag()) 
 	{
@@ -85,16 +93,16 @@ void read_sensor()
 		clear_sensor_int_flag();
 	}
 	
-	sp -= drone.offset_sp;
-	sq -= drone.offset_sq;
-	sr -= drone.offset_sr;
-	sax -= drone.offset_sax;
-	say -= drone.offset_say;
-	saz -= drone.offset_saz;
-	pressure -= drone.offset_pressure;
+	drone.sp = sp - drone.offset_sp;
+	drone.sq = sq - drone.offset_sq;
+	drone.sr = sr - drone.offset_sr;
+	drone.sax = sax - drone.offset_sax;
+	drone.say = say - drone.offset_say;
+	drone.saz = saz - drone.offset_saz;
+	drone.pressure = pressure - drone.offset_pressure;
 	
-	//printf("%6d %6d %6d | ", sp, sq, sr);
-	//printf("%6d %6d %6d \n", sax, say, saz);
+	//printf("%6d %6d %6d | ", drone.sp, drone.sq, drone.sr);
+	//printf("%6d %6d %6d \n", drone.sax, drone.say, drone.saz);
 }
 
 void send_telemetry_data()
@@ -232,7 +240,7 @@ void safe_mode()
 	{
 		if (batt_low_flag == true)
 		{
-			nrf_gpio_pin_toggle(RED);
+			//nrf_gpio_pin_toggle(RED);
 			drone.stop = 1;
 			//printf("Warning! Battery critically low!")
 		}
@@ -404,7 +412,7 @@ void yaw_control_mode()
 	int lift, roll, pitch, yaw;
 
 	drone.controlgain_yaw = 2;
-	//drone.key_lift = 20;
+	//drone.key_lift = 20; // XXX: For testing
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -416,14 +424,14 @@ void yaw_control_mode()
 		__enable_irq();
 		
 		// setpoint is keyboard + joystick, so in range of -127 to 128
-		// gyro in in 16 bit range with a max of 250deg/s 
+		// gyro is in 16 bit range with a max of 250deg/s 
 		// yaw rate of max 3000 seems decent (trial and error) so max of setpoint should be 3000
 		// 3000/128 = 23.43, so setpoints times 24 should be in decent range
 		// dividing sr by 24 to keep yaw_error a low number, so the controlgainnumber doesnt have to be so small
 		
 		if (lift_force > 10) 
 		{
-			yaw_error = -(int)((1*yawrate_setpoint) - (sr/24));
+			yaw_error = -(int)((1*yawrate_setpoint) - (drone.sr/24));
 		
 			//yaw_error = (int)(sr/24);
 
@@ -489,22 +497,107 @@ void yaw_control_mode()
 void full_control_mode()
 {
 	//printf("In FULL_CONTROL_MODE\n");
+#if 1
+	int rollrate_setpoint;
+	int roll_s;
+	int pitchrate_setpoint;
+	int pitch_s;
+	int roll_moment;
+	int pitch_moment;
+	int lift_force;
+
+	int ae_[4];
+
+	int lift, roll, pitch, yaw;
+
+	drone.roll_P1 = 1;
+	drone.roll_P2 = 1;
+	drone.pitch_P1 = 1;
+	drone.pitch_P2 = 1;
+	
+	//drone.key_lift = 20; // XXX: For testing
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		//printf("FULL - drone.change_mode = %d\n", drone.change_mode);
-		nrf_delay_ms(500);
+		check_sensor_log_tele_flags();
+
+		__disable_irq();
+		lift_force = (signed char)drone.joy_lift + (signed char)drone.key_lift;
+		roll_s = (signed char)drone.joy_roll  + (signed char)drone.key_roll;
+		pitch_s = (signed char)drone.joy_pitch  + (signed char)drone.key_pitch;
+		__enable_irq();
+		
+		// sax ~ 7000, 7000/127 = 56 ???
+		
+		if (lift_force > 10) 
+		{
+			// XXX: Find range
+			rollrate_setpoint = drone.roll_P1 * (roll_s - (drone.sax/56));
+			roll_moment = drone.roll_P2 * (rollrate_setpoint - (drone.sp/6));
+			
+			//printf("%d | ", rollrate_setpoint);
+			//printf("roll_moment = %d\n", roll_moment);
+			
+			pitchrate_setpoint = drone.pitch_P1 * (pitch_s - (drone.say/56));
+			pitch_moment = drone.pitch_P2 * (pitchrate_setpoint - (drone.sq/6));
+		}
+		else
+		{
+			roll_moment = 0;
+			pitch_moment = 0;
+		}
+
+		lift  = DRONE_LIFT_CONSTANT * lift_force;
+		roll  = (int)(DRONE_ROLL_CONSTANT/3 * roll_moment);
+		pitch = (int)(DRONE_PITCH_CONSTANT/3 * pitch_moment);
+		yaw   = 0;
+
+		// Solving drone rotor dynamics equations
+		ae_[0] = 0.25*(lift + 2*pitch - yaw);
+		ae_[1] = 0.25*(lift - 2*roll  + yaw);
+		ae_[2] = 0.25*(lift - 2*pitch - yaw);
+		ae_[3] = 0.25*(lift + 2*roll  + yaw);
+		
+		// no negative number for sqrt
+		ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
+		ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
+		ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
+		ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
+
+		if ((signed char)drone.joy_lift > 5)
+		{
+			ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+			ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+			ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+			ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+		}
+
+		ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
+		ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
+		ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
+		ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
+
+		//printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
+
+		// setting drone rotor speeds
+		drone.ae[0] = ae_[0];
+		drone.ae[1] = ae_[1];
+		drone.ae[2] = ae_[2];
+		drone.ae[3] = ae_[3];
+
+		run_filters_and_control();
+		nrf_delay_ms(1); // maybe remove delay?!
 	}
-	
+#endif
 	//printf("Exit FULL_CONTROL_MODE\n");
 }
 
 void calibration_mode()
 {
 	//printf("In CALIBRATION_MODE\n");
-	nrf_gpio_pin_toggle(RED);
+	//nrf_gpio_pin_toggle(RED);
 	uint32_t counter = 0;
-    int samples = 100;
+    int samples = 2500;
     int sum_sp = 0;
 	int sum_sq = 0;
 	int sum_sr = 0;
@@ -515,10 +608,10 @@ void calibration_mode()
 	int i;
 
 	if(get_time_us() < 20000000)
-		nrf_delay_ms(20000);
+		nrf_delay_ms(10000);
 	
 	// Discard some samples to avoid junk data
-	for(i = 0; i < 25000; i++)
+	for(i = 0; i < 2500; i++)
 	{
 		if (check_timer_flag()) 
 		{
@@ -569,9 +662,9 @@ void calibration_mode()
 		sum_saz += saz;
 		sum_pressure += pressure;
 		
-		nrf_delay_ms(10);
+		nrf_delay_ms(1);
     }
-
+	
     drone.offset_sp = (int)(sum_sp / samples);
 	drone.offset_sq = (int)(sum_sq / samples);
 	drone.offset_sr = (int)(sum_sr / samples);
