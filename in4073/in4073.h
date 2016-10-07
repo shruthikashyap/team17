@@ -136,14 +136,6 @@ struct qr_t
     int16_t offset_say;
     int16_t offset_saz;
 	int16_t offset_pressure;
-
-	int16_t controlgain_yaw;
-	int16_t controlgain_p1;
-	int16_t controlgain_p2;
-	int16_t roll_P1;
-	int16_t roll_P2;
-	int16_t pitch_P1;
-	int16_t pitch_P2;
 	
 	int16_t sp;
 	int16_t sq;
@@ -152,6 +144,10 @@ struct qr_t
 	int16_t say;
 	int16_t saz;
 	int16_t pressure;
+
+	int16_t controlgain_yaw;
+	int16_t controlgain_p1;
+	int16_t controlgain_p2;
 };
 
 extern struct qr_t drone;

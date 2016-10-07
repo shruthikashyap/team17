@@ -19,6 +19,7 @@
 #define MIN_CONTROLGAIN_P2 0
 
 #define KEYBOARD_STEP 2
+#define KEYBOARD_CONTROL_STEP 1
 
 void process_packet(struct packet_t packet);
 void process_key(struct packet_t packet);
@@ -30,7 +31,7 @@ void set_key_yaw(char value);
 void set_key_control_yaw(char value);
 void set_key_control_p1(char value);
 void set_key_control_p2(char value);
-void set_joy_lift(char value);
+void set_joy_lift(signed char value);
 void set_joy_roll(char value);
 void set_joy_pitch(char value);
 void set_joy_yaw(char value);

@@ -110,7 +110,7 @@ void sendJsPacket()
 
 			case 3:
 				p.command = JOY_LIFT;
-				p.value = -scale_axis[i]+127;
+				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
@@ -118,7 +118,7 @@ void sendJsPacket()
 			default:
 				break;
 		}
-		usleep(20000);
+		usleep(1000);
 		//printf("Values from joystick: %d , %d\n", p.command, p.value);
 	}
 	//usleep(20000);

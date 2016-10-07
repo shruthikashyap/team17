@@ -1,6 +1,6 @@
 // XXX: Need to change the values
-#define MIN_RPM 150 // Minimal speed to let the rotor turn due to internal friction
-#define MAX_RPM	700 
+#define MIN_RPM 200 // Minimal speed to let the rotor turn due to internal friction
+#define MAX_RPM	600 
 
 /* RPMs */
 #define RPM_STEP	10
@@ -18,8 +18,8 @@
 
 // Drone specific constants for lift roll yaw pitch
 #define DRONE_LIFT_CONSTANT 6000 // 1 280 000
-#define DRONE_ROLL_CONSTANT 3000
-#define DRONE_PITCH_CONSTANT 3000
+#define DRONE_ROLL_CONSTANT 1000
+#define DRONE_PITCH_CONSTANT 1000
 #define DRONE_YAW_CONSTANT 3000 // 10000*128 = 12800000 = 12 800 000
 
 // Battery threshold level

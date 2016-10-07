@@ -271,7 +271,7 @@ void set_key_control_yaw(char value)
 	
 	if(value == 1)
 	{
-		drone.controlgain_yaw += KEYBOARD_STEP;
+		drone.controlgain_yaw += KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_yaw > MAX_CONTROLGAIN_YAW)
 			drone.controlgain_yaw = MAX_CONTROLGAIN_YAW;
 		
@@ -279,7 +279,7 @@ void set_key_control_yaw(char value)
 	}
 	else if(value == 0)
 	{
-		drone.controlgain_yaw -= KEYBOARD_STEP;
+		drone.controlgain_yaw -= KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_yaw < MIN_CONTROLGAIN_YAW)
 			drone.controlgain_yaw = MIN_CONTROLGAIN_YAW;
 		
@@ -290,6 +290,8 @@ void set_key_control_yaw(char value)
 		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
+	
+	//printf("In drone.controlgain_yaw - %d\n", drone.controlgain_yaw);
 }
 
 
@@ -299,7 +301,7 @@ void set_key_control_p1(char value)
 	
 	if(value == 1)
 	{
-		drone.controlgain_p1 += KEYBOARD_STEP;
+		drone.controlgain_p1 += KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_p1 > MAX_CONTROLGAIN_P1)
 			drone.controlgain_p1 = MAX_CONTROLGAIN_P1;
 		
@@ -307,7 +309,7 @@ void set_key_control_p1(char value)
 	}
 	else if(value == 0)
 	{
-		drone.controlgain_p1 -= KEYBOARD_STEP;
+		drone.controlgain_p1 -= KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_p1 < MIN_CONTROLGAIN_P1)
 			drone.controlgain_p1 = MIN_CONTROLGAIN_P1;
 		
@@ -318,6 +320,8 @@ void set_key_control_p1(char value)
 		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
+	
+	//printf("In drone.controlgain_p1 - %d\n", drone.controlgain_p1);
 }
 
 
@@ -327,7 +331,7 @@ void set_key_control_p2(char value)
 	
 	if(value == 1)
 	{
-		drone.controlgain_p2 += KEYBOARD_STEP;
+		drone.controlgain_p2 += KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_p2 > MAX_CONTROLGAIN_P2)
 			drone.controlgain_p2 = MAX_CONTROLGAIN_P2;
 		
@@ -335,7 +339,7 @@ void set_key_control_p2(char value)
 	}
 	else if(value == 0)
 	{
-		drone.controlgain_p2 -= KEYBOARD_STEP;
+		drone.controlgain_p2 -= KEYBOARD_CONTROL_STEP;
 		if(drone.controlgain_p2 < MIN_CONTROLGAIN_P2)
 			drone.controlgain_p2 = MIN_CONTROLGAIN_P2;
 		
@@ -346,15 +350,17 @@ void set_key_control_p2(char value)
 		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
+	
+	//printf("In drone.controlgain_p2 - %d\n", drone.controlgain_p2);
 }
 
 
-void set_joy_lift(char value)
+void set_joy_lift(signed char value)
 {
 	//printf("In set_joy_lift - %d\n", value);
 	
-	drone.joy_lift = value;
-	
+	drone.joy_lift = -value + 127;
+		
 	send_packet_ack(ACK_SUCCESS);
 }
 
