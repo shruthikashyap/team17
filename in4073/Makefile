@@ -42,6 +42,8 @@ $(abspath ../components/drivers_nrf/delay/nrf_delay.c) \
 $(abspath ./in4073.c) \
 $(abspath ./crc.c) \
 $(abspath ./control.c) \
+$(abspath ./fixed.c) \
+$(abspath ./filters.c) \
 $(abspath ./process_drone.c) \
 $(abspath ./drivers/process_packet.c) \
 $(abspath ./drivers/gpio.c) \
