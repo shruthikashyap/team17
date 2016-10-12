@@ -168,6 +168,7 @@ void get_log(uint8_t ch)
 					log_line.sax = 0;
 					log_line.say = 0;
 					log_line.saz = 0;
+					log_line.pressure = 0;
 					log_line.bat_volt = 0;
 
 					log_byte_count++;
@@ -270,25 +271,49 @@ void get_log(uint8_t ch)
 				log_byte_count++;
 				//printf("saz: %d\n",log_line.saz);
 				break;
-			case 17:	
+			case 17:
+				shift_32 = (int32_t)ch;
+				log_line.pressure = log_line.pressure|shift_32;					// bits 0-7 of pressure
+				//printf("current time 0-7: %u\n", log_line.pressure);
+				log_byte_count++;
+				break;
+			case 18:
+				shift_32 = (int32_t)ch;
+				log_line.pressure = log_line.pressure|(shift_32<<8);			// bits 8-15 of pressure
+				//printf("current time 0-7: %u\n", log_line.pressure);
+				log_byte_count++;
+				break;
+			case 19:
+				shift_32 = (int32_t)ch;
+				log_line.pressure = log_line.pressure|(shift_32<<16);			// bits 16-23 of pressure
+				//printf("current time 0-7: %u\n", log_line.pressure);
+				log_byte_count++;
+				break;
+			case 20:
+				shift_32 = (int32_t)ch;
+				log_line.pressure = log_line.pressure|(shift_32<<24);			// bits 24-31 of pressure
+				//printf("current time 0-7: %u\n", log_line.pressure);
+				log_byte_count++;
+				break;
+			case 21:	
 				shift_u16 = (uint16_t)ch;	
 				log_line.bat_volt = log_line.bat_volt | shift_u16;				// bits 0-7 of bat_volt
 				log_byte_count++;
 				break;
-			case 18:	
+			case 22:	
 				shift_u16 = (uint16_t)ch;
 				log_line.bat_volt = log_line.bat_volt | (shift_u16<<8);			// bits 8-15 of bat_volt
 				log_byte_count++;
 				//printf("bat_volt: %d\n",log_line.bat_volt);
 				break;
-			case 19:
+			case 23:
 				if (uch == LOG_LINE_END)
 				{
 					//printf("%d %d %d %d %d %d %d %d \n", log_line.current_time, log_line.sp, log_line.sq, log_line.sr, log_line.sax, log_line.say, log_line.saz, log_line.bat_volt);
 					fp = fopen(filename, "a+");
 					if (fp == NULL)
 						printf("Cannot open file!\n");
-					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",log_line.current_time, log_line.sp, log_line.sq, log_line.sr, log_line.sax, log_line.say, log_line.saz, log_line.bat_volt);
+					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",log_line.current_time, log_line.sp, log_line.sq, log_line.sr, log_line.sax, log_line.say, log_line.saz, log_line.pressure, log_line.bat_volt);
 					fclose(fp);
 				}
 				log_byte_count = 0;

@@ -135,7 +135,10 @@ struct qr_t
 	int16_t offset_sax;
     int16_t offset_say;
     int16_t offset_saz;
-	int16_t offset_pressure;
+	int16_t offset_phi;
+    int16_t offset_theta;
+    int16_t offset_psi;
+	int32_t offset_pressure;
 	
 	int16_t sp;
 	int16_t sq;
@@ -143,11 +146,18 @@ struct qr_t
 	int16_t sax;
 	int16_t say;
 	int16_t saz;
-	int16_t pressure;
+	int16_t phi;
+	int16_t theta;
+	int16_t psi;
+	int32_t pressure;
 
 	int16_t controlgain_yaw;
 	int16_t controlgain_p1;
 	int16_t controlgain_p2;
+	int16_t controlgain_height;
+	
+	int32_t	height_control_pressure;
+	int16_t height_control_lift;
 };
 
 extern struct qr_t drone;
@@ -160,5 +170,6 @@ extern bool sensor_flag;
 extern bool telemetry_flag;
 extern bool log_upload_flag;
 extern bool log_active_flag;
+extern bool height_control_flag;
 
 #endif // IN4073_H__

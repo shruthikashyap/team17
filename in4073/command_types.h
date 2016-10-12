@@ -80,6 +80,7 @@ struct log
 	int16_t sax;
 	int16_t say;
 	int16_t saz;
+	int32_t pressure;
 	uint16_t bat_volt;
 };
 

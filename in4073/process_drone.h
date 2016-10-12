@@ -4,7 +4,8 @@
 
 /* RPMs */
 #define RPM_STEP	10
-#define HOVER_RPM	250
+#define HOVER_RPM	400
+#define HOVER_LIFT_FORCE	107 // 4*400^2/6000
 
 #define MIN_LIFT 0 // negative lift does not occur
 #define MIN_ROLL  -25000000
@@ -23,7 +24,7 @@
 #define DRONE_YAW_CONSTANT 3000 // 10000*128 = 12800000 = 12 800 000
 
 // Battery threshold level
-#define BATT_THRESHOLD	1050 // XXX: Need to update this
+#define BATT_THRESHOLD 400	//1050 // XXX: Need to update this
 
 void process_drone();
 void reset_drone();

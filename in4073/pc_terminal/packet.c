@@ -55,8 +55,8 @@ void sendKeyPacket(char key)
 			break;
 
 		case '7':
-			p.command = MODE_TYPE;
-			p.value = HEIGHT_CONTROL_MODE;
+			p.command = HEIGHT_CONTROL_MODE;
+			p.value = 0;
 			p_flag = 1;
 			break;
 

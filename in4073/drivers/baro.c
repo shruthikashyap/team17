@@ -14,6 +14,7 @@
 #define CONVERT_D1_1024 0x44
 #define CONVERT_D1_4096 0x48
 #define CONVERT_D2_1024 0x54
+#define CONVERT_D2_4096 0x58
 #define MS5611_ADDR	0b01110111
 #define READ		0x0
 #define PROM		0xA0
@@ -26,52 +27,52 @@ uint32_t initTime = 0;
 
 void read_baro(void)
 {
-
-	if(loop_count==0)
+	switch(loop_count)
 	{
-		NRF_TWI0->ADDRESS = MS5611_ADDR;
-		NRF_TWI0->SHORTS = TWI_SHORTS_BB_STOP_Msk;
-		NRF_TWI0->TXD = CONVERT_D1_4096;
-		NRF_TWI0->TASKS_STARTTX = 1;
-
-		loop_count = 1;
-		initTime = get_time_us();
-	}
+		case 0:
+			NRF_TWI0->ADDRESS = MS5611_ADDR;
+			NRF_TWI0->SHORTS = TWI_SHORTS_BB_STOP_Msk;
+			NRF_TWI0->TXD = CONVERT_D1_4096;
+			NRF_TWI0->TASKS_STARTTX = 1;
+	
+			loop_count = 1;
+			initTime = get_time_us();
+			break;
     
-	if(loop_count == 1 && ((get_time_us() - initTime) >= 10000))
-	{
-		i2c_read(MS5611_ADDR, READ, 3, data);
-		D1 = (uint32_t) ((data[0] << 16)|(data[1] << 8)|data[2]);
-
-		NRF_TWI0->ADDRESS = MS5611_ADDR;
-		NRF_TWI0->SHORTS = TWI_SHORTS_BB_STOP_Msk;
-		NRF_TWI0->TXD = CONVERT_D2_1024;
-		NRF_TWI0->TASKS_STARTTX = 1;
-
-		loop_count = 2;
-		initTime = get_time_us();
-	}
+		case 1:
+			if( (get_time_us() - initTime) < 10000) break;
+			i2c_read(MS5611_ADDR, READ, 3, data);
+			D1 = (uint32_t) ((data[0] << 16)|(data[1] << 8)|data[2]);
 	
-	if(loop_count == 2 && ((get_time_us() - initTime) >= 3000))
-	{
-		i2c_read(MS5611_ADDR, READ, 3, data);
-		D2 = (uint32_t) ((data[0] << 16)|(data[1] << 8)|data[2]);
-
-		long long dT, OFFSET, SENS;
-
-		dT = D2 - (prom[5]<<8);    // calculate temperature difference from reference
+			NRF_TWI0->ADDRESS = MS5611_ADDR;
+			NRF_TWI0->SHORTS = TWI_SHORTS_BB_STOP_Msk;
+			NRF_TWI0->TXD = CONVERT_D2_4096;
+			NRF_TWI0->TASKS_STARTTX = 1;
 	
-		OFFSET = ((long long)prom[2]<<16) + ((dT*prom[4])>>7);
+			loop_count = 2;
+			initTime = get_time_us();
+			break;
 	
-    		SENS = ((long long)prom[1]<<15) + ((dT*prom[3])>>8);
+		case 2:
+			if( (get_time_us() - initTime) < 10000) break;
+			i2c_read(MS5611_ADDR, READ, 3, data);
+			D2 = (uint32_t) ((data[0] << 16)|(data[1] << 8)|data[2]);
 
-		temperature = 2000 + ((dT*prom[6])>>23);           // First-order Temperature in degrees Centigrade
-		pressure = (((D1*SENS)>>21) - OFFSET)>>15;  // Pressure in mbar or kPa
+			long long dT, OFFSET, SENS;
 	
-		loop_count = 0;
+			dT = D2 - (prom[5]<<8);    // calculate temperature difference from reference
+		
+			OFFSET = ((long long)prom[2]<<16) + ((dT*prom[4])>>7);
+		
+  	  		SENS = ((long long)prom[1]<<15) + ((dT*prom[3])>>8);
+
+			temperature = 2000 + ((dT*prom[6])>>23);           // First-order Temperature in degrees Centigrade
+			pressure = (((D1*SENS)>>21) - OFFSET)>>15;  // Pressure in mbar or kPa
+		
+			loop_count = 0;
+			break;
 	}
 }
-
 
 void baro_init(void)
 {	

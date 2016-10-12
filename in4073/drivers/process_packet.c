@@ -5,6 +5,7 @@
 
 bool log_upload_flag = false;
 bool log_active_flag = false;
+bool height_control_flag = false;
 
 /*------------------------------------------------------------------
  * process_key -- process command keys
@@ -99,7 +100,7 @@ void set_mode_type(char value)
 	
 	// Don't change mode if drone is not in safe mode
 	// Accept change to safe and panic modes during other modes
-	if(drone.current_mode == SAFE_MODE || (value == SAFE_MODE || value == PANIC_MODE))
+	if(drone.current_mode == SAFE_MODE || value == PANIC_MODE || (value == SAFE_MODE && drone.ae[0] == 0 && drone.ae[1] == 0 && drone.ae[2] == 0 && drone.ae[3] == 0))
 	{
 		switch(value)
 		{
@@ -139,9 +140,6 @@ void set_mode_type(char value)
 						drone.change_mode = 1;
 						send_packet_ack(ACK_SUCCESS);
 						break;
-			case HEIGHT_CONTROL_MODE:
-						// XXX: Not considered a mode. Needs to be handled.
-						break;
 			case WIRELESS_MODE:
 						// XXX: Not considered a mode. Needs to be handled.
 						break;
@@ -154,6 +152,8 @@ void set_mode_type(char value)
 						send_packet_ack(ACK_FAILURE);
 		}
 	}
+	else
+		printf("Cannot change mode!\n");
 }
 
 void set_key_lift(char value)
@@ -463,6 +463,20 @@ void process_packet(struct packet_t packet)
 				{
 					//printf("Log upload command received\n");
 					log_upload_flag = true;
+				}
+				break;
+		case HEIGHT_CONTROL_MODE:
+				if(height_control_flag == false)
+				{
+					height_control_flag = true;
+					drone.height_control_pressure = pressure;
+					drone.height_control_lift = drone.joy_lift;
+					printf("In HEIGHT_CONTROL_MODE\n");
+				}
+				else
+				{
+					height_control_flag = false;
+					printf("Exit HEIGHT_CONTROL_MODE\n");
 				}
 				break;
 		default :
