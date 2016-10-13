@@ -104,8 +104,8 @@ void read_sensor()
 	}
 	
 	//printf("%6d %6d %6d | ", drone.sp, drone.sq, drone.sr);
-	//printf("%6d %6d %6d \n", drone.sax, drone.say, drone.saz);
-	//printf("%6d | %6d | %6d \n", drone.phi, drone.theta, drone.psi);
+	//printf("%6d %6d %6d | ", drone.sax, drone.say, drone.saz);
+	//printf("%6d %6d %6d | ", drone.phi, drone.theta, drone.psi);
 	//printf("%ld\n", drone.pressure);
 }
 
@@ -120,6 +120,8 @@ void read_battery_level()
 
 		clear_timer_flag();
 	}
+	
+	//printf("%d\n", bat_volt);
 	
 	// Battery voltage check
 	if(bat_volt <= BATT_THRESHOLD && drone.current_mode != SAFE_MODE)
@@ -161,19 +163,26 @@ void send_telemetry_data()
 	uart_put(TELE_STOP);
 }
 
-void check_log_tele_flags()
+void check_sensor_log_tele_flags()
 {
-	#if 0
-	// Read sensor
-	if(sensor_flag == true && batt_low_flag == false)
+	#if 1
+	if(drone.current_mode == SAFE_MODE || drone.current_mode == MANUAL_MODE)
 	{
-		//printf("Start sensor %10ld\n", get_time_us());
-		// Clear sensor flag
-		sensor_flag = false;
+		read_battery_level();
+	}
+	else
+	{
+		// Read sensor
+		if(sensor_flag == true && batt_low_flag == false)
+		{
+			//printf("Start sensor %10ld\n", get_time_us());
+			// Clear sensor flag
+			sensor_flag = false;
 
-		// Read sensor data
-		read_sensor();
-		//printf("Stop sensor %10ld\n", get_time_us());
+			// Read sensor data
+			read_sensor();
+			//printf("Stop sensor %10ld\n", get_time_us());
+		}
 	}
 	#endif
 	
@@ -259,9 +268,9 @@ void safe_mode()
 		}
 		
 		// Update log and telemetry if corresponding flags are set
-		check_log_tele_flags();
+		check_sensor_log_tele_flags();
 		// Read battery
-		read_battery_level();
+		//read_battery_level();
 		
 		if (log_upload_flag == true && telemetry_flag == false)
 		{
@@ -383,9 +392,9 @@ void manual_mode()
 		printf("%3d %3d %3d %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
 		
 		// Update log and telemetry if corresponding flags are set
-		check_log_tele_flags();
+		check_sensor_log_tele_flags();
 		// Read battery
-		read_battery_level();
+		//read_battery_level();
 
 		run_filters_and_control();
 
@@ -413,12 +422,11 @@ void yaw_control_mode()
 
 	drone.controlgain_yaw = 2;
 	drone.controlgain_height = 1;
-	//drone.key_lift = 20; // XXX: For testing
+	drone.key_lift = 20; // XXX: For testing
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		check_log_tele_flags();
-		read_sensor();
+		check_sensor_log_tele_flags();
 
 		__disable_irq();
 		lift_force = drone.joy_lift + drone.key_lift;
@@ -523,8 +531,7 @@ void full_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
-		check_log_tele_flags();
-		read_sensor();
+		check_sensor_log_tele_flags();
 
 		__disable_irq();
 		lift_force = drone.joy_lift + drone.key_lift;
@@ -589,7 +596,7 @@ void full_control_mode()
 		drone.ae[3] = ae_[3];
 
 		run_filters_and_control();
-		nrf_delay_ms(1); // maybe remove delay?!
+		nrf_delay_ms(1);
 	}
 
 	printf("Exit FULL_CONTROL_MODE\n");
@@ -686,10 +693,10 @@ void calibration_mode()
 	drone.offset_pressure = (int)(sum_pressure / samples);
 
     //printf("New offsets found: \n");
-    //printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
+    printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
 	//printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
-	//printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
-	//printf("pressure = %ld \n", drone.offset_pressure);
+	printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
+	printf("pressure = %ld \n", drone.offset_pressure);
 
     drone.current_mode = SAFE_MODE;
     drone.change_mode = 1;
