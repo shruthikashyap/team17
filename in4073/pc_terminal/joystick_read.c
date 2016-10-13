@@ -19,6 +19,7 @@ int fd;
 struct js_event js;
 char scale_axis[6];
 int axis[6];
+int button[12];
 
 void scale_joystick_values(int axis[6])
 {
@@ -71,6 +72,9 @@ void sendJsPacket()
 			case JS_EVENT_AXIS:
 				axis[js.number] = js.value;
 				break;
+			case JS_EVENT_BUTTON:
+				button[js.number] = js.value;
+				break;
 		}
 	}
 	if (errno != EAGAIN) {
@@ -80,8 +84,19 @@ void sendJsPacket()
 
 	// Scale joystick axis values
 	scale_joystick_values(&axis[0]);
-
-
+	
+	// button for PANIC_MODE
+	#if 0
+	if (button[?] == 1)
+	{
+		p.command = MODE_TYPE;
+		p.value = PANIC_MODE;
+		compute_crc(&p);
+		enqueue(p);
+		return;
+	}	
+	#endif
+		
 	// Send joystick values
 	for (i = 0; i < 4; i++ )
 	{

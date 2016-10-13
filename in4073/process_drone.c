@@ -76,6 +76,7 @@ void read_sensor()
 	if (check_sensor_int_flag()) 
 	{
 		get_dmp_data();
+		//get_raw_sensor_data();
 		clear_sensor_int_flag();
 	}
 	
@@ -206,7 +207,7 @@ void check_sensor_log_tele_flags()
 		telemetry_flag = false;
 
 		// Send telemetry data
-		//send_telemetry_data();
+		send_telemetry_data();
 		//printf("Stop tele %10ld\n", get_time_us());
 	}
 }
@@ -243,7 +244,7 @@ void reset_drone()
 
 void safe_mode()
 {
-	printf("In SAFE_MODE\n");
+	//printf("In SAFE_MODE\n");
 	
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables
@@ -269,8 +270,6 @@ void safe_mode()
 		
 		// Update log and telemetry if corresponding flags are set
 		check_sensor_log_tele_flags();
-		// Read battery
-		//read_battery_level();
 		
 		if (log_upload_flag == true && telemetry_flag == false)
 		{
@@ -281,12 +280,12 @@ void safe_mode()
 		nrf_delay_ms(1);
 	}
 	
-	printf("Exit SAFE_MODE\n");
+	//printf("Exit SAFE_MODE\n");
 }
 
 void panic_mode()
 {
-	printf("In PANIC_MODE\n");
+	//printf("In PANIC_MODE\n");
 	
 	// Set moderate RPM values to the motors for hovering
 	drone.ae[0] = HOVER_RPM;
@@ -317,12 +316,12 @@ void panic_mode()
 	drone.current_mode = SAFE_MODE;
 	drone.change_mode = 1; // XXX: Is this needed?
 	
-	printf("Exit PANIC_MODE\n");
+	//printf("Exit PANIC_MODE\n");
 }
 
 void manual_mode()
 {
-	printf("In MANUAL_MODE\n");
+	//printf("In MANUAL_MODE\n");
 	
 	int ae_[4]; // Motor rpm values
 	int lift_force;
@@ -389,24 +388,22 @@ void manual_mode()
 		drone.ae[2] = ae_[2];
 		drone.ae[3] = ae_[3];
 
-		printf("%3d %3d %3d %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
+		//printf("%3d %3d %3d %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
 		
 		// Update log and telemetry if corresponding flags are set
 		check_sensor_log_tele_flags();
-		// Read battery
-		//read_battery_level();
 
 		run_filters_and_control();
 
 		nrf_delay_ms(1);
 	}
 	
-	printf("Exit MANUAL_MODE\n");
+	//printf("Exit MANUAL_MODE\n");
 }
 
 void yaw_control_mode()
 {
-	printf("In YAW_CONTROL_MODE\n");
+	//printf("In YAW_CONTROL_MODE\n");
 
 	int yawrate_setpoint;
 	int yaw_error;
@@ -496,7 +493,7 @@ void yaw_control_mode()
 		ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
 		ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
 
-		printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
+		//printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
 
 		// setting drone rotor speeds
 		drone.ae[0] = ae_[0];
@@ -508,12 +505,12 @@ void yaw_control_mode()
 		nrf_delay_ms(1); // maybe remove delay?!
 	}
 	
-	printf("Exit YAW_CONTROL_MODE\n");
+	//printf("Exit YAW_CONTROL_MODE\n");
 }
 
 void full_control_mode()
 {
-	printf("In FULL_CONTROL_MODE\n");
+	//printf("In FULL_CONTROL_MODE\n");
 
 	int rollrate_setpoint;
 	int roll_s;
@@ -587,7 +584,7 @@ void full_control_mode()
 		ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
 		ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
 
-		printf("%3d %3d %3d %3d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, bat_volt);
+		//printf("%3d %3d %3d %3d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, bat_volt);
 
 		// setting drone rotor speeds
 		drone.ae[0] = ae_[0];
@@ -599,12 +596,12 @@ void full_control_mode()
 		nrf_delay_ms(1);
 	}
 
-	printf("Exit FULL_CONTROL_MODE\n");
+	//printf("Exit FULL_CONTROL_MODE\n");
 }
 
 void calibration_mode()
 {
-	printf("In CALIBRATION_MODE\n");
+	//printf("In CALIBRATION_MODE\n");
 
 	uint32_t counter = 0;
     int samples = 2500;
@@ -693,15 +690,15 @@ void calibration_mode()
 	drone.offset_pressure = (int)(sum_pressure / samples);
 
     //printf("New offsets found: \n");
-    printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
+    //printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
 	//printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
-	printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
-	printf("pressure = %ld \n", drone.offset_pressure);
+	//printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
+	//printf("pressure = %ld \n", drone.offset_pressure);
 
     drone.current_mode = SAFE_MODE;
     drone.change_mode = 1;
     
-    printf("Exit CALIBRATION_MODE\n");
+    //printf("Exit CALIBRATION_MODE\n");
 }
 
 void raw_mode()
@@ -798,7 +795,7 @@ void log_upload()
 			}
 			//printf("new_addr_write = %d\n", (int)new_addr_write);
 			
-			nrf_delay_ms(100);
+			nrf_delay_ms(10);
 		}
 	}
 	else

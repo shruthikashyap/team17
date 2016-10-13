@@ -30,7 +30,8 @@ int main(void)
 	timers_init();
 	adc_init();
 	twi_init();
-	imu_init(true, 100);	
+	imu_init(true, 100); // DMP
+	//imu_init(false, 900); // Raw
 	baro_init();
 	spi_flash_init();
 //	ble_init();

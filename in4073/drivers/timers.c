@@ -63,7 +63,7 @@ void TIMER2_IRQHandler(void)
 		sensor_read_timer++;
 		#endif
 		
-		if(log_timer % 40 == 0) //10Hz 
+		if(log_timer % 20 == 0) //20Hz
 		{
 			log_flag = true;
 			//printf("Timer log = %d\n", log_timer);

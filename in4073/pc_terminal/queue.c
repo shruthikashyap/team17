@@ -309,7 +309,7 @@ void get_log(uint8_t ch)
 			case 23:
 				if (uch == LOG_LINE_END)
 				{
-					//printf("%d %d %d %d %d %d %d %d \n", log_line.current_time, log_line.sp, log_line.sq, log_line.sr, log_line.sax, log_line.say, log_line.saz, log_line.bat_volt);
+					printf("%d %d %d %d %d %d %d %d \n", log_line.current_time, log_line.sp, log_line.sq, log_line.sr, log_line.sax, log_line.say, log_line.saz, log_line.bat_volt);
 					fp = fopen(filename, "a+");
 					if (fp == NULL)
 						printf("Cannot open file!\n");
@@ -484,7 +484,7 @@ void receive_telemetry_data(uint8_t ch)
 
 void* process_receive_packets(void* thread)
 {
-	#if 1
+	#if 0
 	char c;
 	while(1)
 	{
@@ -495,7 +495,7 @@ void* process_receive_packets(void* thread)
 	}
 	#endif
 	
-	#if 0
+	#if 1
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;
@@ -512,7 +512,7 @@ void* process_receive_packets(void* thread)
 		{
 			//printf("%d\n", ch);
 			if(log_start_flag == 1)
-			{
+			{	
 				get_log(ch);
 			}
 			else if(telemetry_rcv_flag == 1)
@@ -557,6 +557,7 @@ void* process_receive_packets(void* thread)
 							}
 							else if(p.command == LOG && p.value == LOG_START)
 							{
+								printf("Log start\n");
 								log_start_flag = 1;
 							}
 							else if(p.command == TELEMETRY_DATA)
