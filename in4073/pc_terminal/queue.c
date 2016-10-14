@@ -140,7 +140,7 @@ void* process_dequeue(void* thread)
 
 		pthread_mutex_unlock(&mutex);
 		
-		usleep(1000);
+		usleep(10000);
 	}
 	
 	free(p);
@@ -484,7 +484,7 @@ void receive_telemetry_data(uint8_t ch)
 
 void* process_receive_packets(void* thread)
 {
-	#if 0
+	#if 1
 	char c;
 	while(1)
 	{
@@ -495,7 +495,7 @@ void* process_receive_packets(void* thread)
 	}
 	#endif
 	
-	#if 1
+	#if 0
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;

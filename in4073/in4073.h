@@ -166,7 +166,7 @@ extern struct log write_data;
 extern struct log read_data;
 extern uint32_t new_addr;
 extern bool log_flag;
-extern bool sensor_flag;
+extern bool control_loop_flag;
 extern bool telemetry_flag;
 extern bool log_upload_flag;
 extern bool log_active_flag;

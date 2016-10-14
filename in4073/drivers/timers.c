@@ -14,7 +14,7 @@
 static bool TIMER2_flag;
 static uint32_t global_time;
 static uint8_t log_timer = 0;
-static uint8_t sensor_read_timer = 0;
+static uint8_t control_loop_timer = 0;
 static uint8_t telemetry_timer = 0;
 
 void timers_init(void)
@@ -53,15 +53,13 @@ void TIMER2_IRQHandler(void)
 {
 	if (NRF_TIMER2->EVENTS_COMPARE[0])
     	{
-		#if 1
-		if(sensor_read_timer % 2 == 0) //200Hz
+		if(control_loop_timer % 2 == 0) //200Hz
 		{
-			sensor_flag = true;
-			//printf("Timer sensor = %d\n", sensor_read_timer);
-			sensor_read_timer = 0;
+			control_loop_flag = true;
+			//printf("Timer control loop = %d\n", control_loop_timer);
+			control_loop_timer = 0;
 		}
-		sensor_read_timer++;
-		#endif
+		control_loop_timer++;
 		
 		if(log_timer % 20 == 0) //20Hz
 		{
