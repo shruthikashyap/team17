@@ -323,7 +323,9 @@ void manual_mode()
 	{
 		if(control_loop_flag == true && batt_low_flag == false)
 		{
+			// Clear sensor flag
 			control_loop_flag = false;
+			
 			// Disable UART interrupts
 			__disable_irq();
 
@@ -520,11 +522,15 @@ void full_control_mode()
 	int pitch_s;
 	int roll_moment;
 	int pitch_moment;
+	int yawrate_setpoint;
+	int yaw_error;
+	int yaw_moment;
 	int lift_force;
 	int ae_[4];
 	int lift, roll, pitch, yaw;
 	
 	drone.key_lift = 20; // XXX: For testing
+	drone.controlgain_yaw = 0; // XXX: Enable later. Maybe update from keyboard
 	//int count = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
@@ -541,6 +547,7 @@ void full_control_mode()
 			lift_force = drone.joy_lift + drone.key_lift;
 			roll_s = (signed char)drone.joy_roll + (signed char)drone.key_roll;
 			pitch_s = (signed char)drone.joy_pitch + (signed char)drone.key_pitch;
+			yawrate_setpoint = (signed char)drone.joy_yaw  + (signed char)drone.key_yaw;
 			__enable_irq();
 
 			// sax ~ 7000, 7000/127 = 56 ???
@@ -554,17 +561,21 @@ void full_control_mode()
 
 				pitchrate_setpoint = drone.controlgain_p1 * (pitch_s - (drone.theta/20));
 				pitch_moment = drone.controlgain_p2 * (pitchrate_setpoint + (drone.sq/6));
+				
+				yaw_error = -(int)((1*yawrate_setpoint) - (drone.sr/24));
+				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
 			}
 			else
 			{
 				roll_moment = 0;
 				pitch_moment = 0;
+				yaw_moment = 0;
 			}
 
 			lift  = DRONE_LIFT_CONSTANT * lift_force;
 			roll  = (int)(DRONE_ROLL_CONSTANT/100 * roll_moment);
 			pitch = (int)(DRONE_PITCH_CONSTANT/100 * pitch_moment);
-			yaw   = 0;
+			yaw   = (int)(DRONE_YAW_CONSTANT/4 * yaw_moment);
 
 			// Solving drone rotor dynamics equations
 			ae_[0] = 0.25*(lift + 2*pitch - yaw);
