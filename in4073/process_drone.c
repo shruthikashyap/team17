@@ -261,7 +261,8 @@ void safe_mode()
 				log_upload();
 			}
 		}
-		nrf_delay_ms(1);
+		else
+			nrf_delay_ms(1);
 	}
 	
 	printf("Exit SAFE_MODE\n");
@@ -389,7 +390,8 @@ void manual_mode()
 			// Update log and telemetry if corresponding flags are set
 			check_log_tele_flags();
 		}
-		nrf_delay_ms(1);
+		else
+			nrf_delay_ms(1);
 	}
 	
 	printf("Exit MANUAL_MODE\n");
@@ -506,7 +508,8 @@ void yaw_control_mode()
 			// Update log and telemetry if corresponding flags are set
 			check_log_tele_flags();
 		}
-		nrf_delay_ms(1);
+		else
+			nrf_delay_ms(1);
 	}
 	
 	printf("Exit YAW_CONTROL_MODE\n");
@@ -623,7 +626,8 @@ void full_control_mode()
 			// Update log and telemetry if corresponding flags are set
 			check_log_tele_flags();
 		}
-		nrf_delay_ms(1);
+		else
+			nrf_delay_ms(1);
 	}
 
 	printf("Exit FULL_CONTROL_MODE\n");
