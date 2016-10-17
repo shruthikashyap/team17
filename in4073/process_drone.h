@@ -23,6 +23,12 @@
 #define DRONE_PITCH_CONSTANT 1000
 #define DRONE_YAW_CONSTANT 3000 // 10000*128 = 12800000 = 12 800 000
 
+// Drone specific constants for manual mode
+#define DRONE_MANUAL_LIFT_CONSTANT 6000 // 1 280 000
+#define DRONE_MANUAL_ROLL_CONSTANT 3000
+#define DRONE_MANUAL_PITCH_CONSTANT 3000
+#define DRONE_MANUAL_YAW_CONSTANT 3000 // 10000*128 = 12800000 = 12 800 000
+
 // Battery threshold level
 #define BATT_THRESHOLD 400//1050 // XXX: Need to update this
 

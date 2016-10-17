@@ -245,10 +245,10 @@ void safe_mode()
 			{
 				//nrf_gpio_pin_toggle(RED);
 				drone.stop = 1;
-				//printf("Warning! Battery critically low!")
+				//printf("Warning! Battery critically low!\n");
 				return;
 			}
-			
+
 			// Check battery level
 			read_battery_level();
 
@@ -339,10 +339,10 @@ void manual_mode()
 			// Enable UART interrupts
 			__enable_irq();
 
-			lift  = DRONE_LIFT_CONSTANT * lift_force;
-			pitch = DRONE_PITCH_CONSTANT * pitch_moment;
-			roll  = DRONE_ROLL_CONSTANT * roll_moment;
-			yaw   = DRONE_YAW_CONSTANT * yaw_moment;
+			lift  = DRONE_MANUAL_LIFT_CONSTANT * lift_force;
+			pitch = DRONE_MANUAL_PITCH_CONSTANT * pitch_moment;
+			roll  = DRONE_MANUAL_ROLL_CONSTANT * roll_moment;
+			yaw   = DRONE_MANUAL_YAW_CONSTANT * yaw_moment;
 
 			if((signed char)drone.joy_lift < 5)
 			{
@@ -533,8 +533,7 @@ void full_control_mode()
 	int lift, roll, pitch, yaw;
 	
 	drone.key_lift = 20; // XXX: For testing
-	drone.controlgain_yaw = 0; // XXX: Enable later. Maybe update from keyboard
-	//int count = 0;
+	int count = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -559,10 +558,10 @@ void full_control_mode()
 			if (lift_force > 10) 
 			{
 				// XXX: Find range
-				rollrate_setpoint = drone.controlgain_p1 * (roll_s - (drone.phi/20));
+				rollrate_setpoint = drone.controlgain_p1/5 * (roll_s - (drone.phi/50));
 				roll_moment = drone.controlgain_p2 * (rollrate_setpoint - (drone.sp/6));
 
-				pitchrate_setpoint = drone.controlgain_p1 * (pitch_s - (drone.theta/20));
+				pitchrate_setpoint = drone.controlgain_p1/5 * (pitch_s - (drone.theta/50));
 				pitch_moment = drone.controlgain_p2 * (pitchrate_setpoint + (drone.sq/6));
 				
 				yaw_error = -(int)((1*yawrate_setpoint) - (drone.sr/24));
@@ -578,7 +577,7 @@ void full_control_mode()
 			lift  = DRONE_LIFT_CONSTANT * lift_force;
 			roll  = (int)(DRONE_ROLL_CONSTANT/100 * roll_moment);
 			pitch = (int)(DRONE_PITCH_CONSTANT/100 * pitch_moment);
-			yaw   = (int)(DRONE_YAW_CONSTANT/4 * yaw_moment);
+			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment);
 
 			// Solving drone rotor dynamics equations
 			ae_[0] = 0.25*(lift + 2*pitch - yaw);
@@ -605,11 +604,11 @@ void full_control_mode()
 			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
 			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
 
-			printf("%3d %3d %3d %3d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, bat_volt);
-			#if 0
-			if(count%200 == 0)
+			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
+			#if 1
+			if(count%100 == 0)
 			{
-				printf("%3d %3d %3d %3d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, bat_volt);
+				printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 				count = 0;
 			}
 			count++;
@@ -638,7 +637,7 @@ void calibration_mode()
 	printf("In CALIBRATION_MODE\n");
 
 	uint32_t counter = 0;
-    int samples = 2500;
+    int samples = 100;
     int sum_sp = 0;
 	int sum_sq = 0;
 	int sum_sr = 0;
@@ -677,7 +676,9 @@ void calibration_mode()
 		}
 	}
 
-    for(i = 0; i < samples; i++)
+    //for(i = 0; i < samples; i++)
+	i = 0;
+	while(i < samples)
 	{
 		if (check_timer_flag()) 
 		{
@@ -687,6 +688,8 @@ void calibration_mode()
 			nrf_delay_ms(1);
 
 			clear_timer_flag();
+			
+			sum_pressure += pressure;
 		}
  
 		if (check_sensor_int_flag()) 
@@ -696,18 +699,19 @@ void calibration_mode()
 			//printf("%6d %6d %6d \n", sax, say, saz);
 			nrf_delay_ms(1);
 			clear_sensor_int_flag();
+			
+			sum_sp += sp;
+			sum_sq += sq;
+			sum_sr += sr;
+			sum_sax += sax;
+			sum_say += say;
+			sum_saz += saz;
+			sum_phi += phi;
+			sum_theta += theta;
+			sum_psi += psi;
+			
+			i++;
 		}
-		
-        sum_sp += sp;
-		sum_sq += sq;
-		sum_sr += sr;
-		sum_sax += sax;
-		sum_say += say;
-		sum_saz += saz;
-		sum_phi += phi;
-		sum_theta += theta;
-		sum_psi += psi;
-		sum_pressure += pressure;
 		
 		nrf_delay_ms(1);
     }
@@ -724,13 +728,15 @@ void calibration_mode()
 	drone.offset_pressure = (int)(sum_pressure / samples);
 
     //printf("New offsets found: \n");
-    printf("sp = %d, sq = %d, sr = %d \n", drone.offset_sp, drone.offset_sq, drone.offset_sr);
+    printf("i = %d, sp = %d, sq = %d, sr = %d \n", i, drone.offset_sp, drone.offset_sq, drone.offset_sr);
 	printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
 	printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
 	printf("pressure = %ld \n", drone.offset_pressure);
 
     drone.current_mode = SAFE_MODE;
     drone.change_mode = 1;
+	
+	nrf_delay_ms(1);
     
     printf("Exit CALIBRATION_MODE\n");
 }
