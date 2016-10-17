@@ -16,6 +16,7 @@ bool txd_available = true;
 struct packet_t p;
 int rcv_byte_count = 0;
 int nack_flag = 0;
+int cable_disconnect_flag = 1; 				// Assume that cable is disconnected by default
 
 void uart_put(uint8_t byte)
 {
@@ -67,6 +68,7 @@ void UART0_IRQHandler(void)
 	// XXX: Receive in struct order and handle acknowledgement
 	if(rx_queue.count)
 	{
+		cable_disconnect_flag = 0;
 		char ch = dequeue(&rx_queue);
 		//printf("Received byte = %d\n", ch);
 

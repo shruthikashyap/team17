@@ -171,5 +171,6 @@ extern bool telemetry_flag;
 extern bool log_upload_flag;
 extern bool log_active_flag;
 extern bool height_control_flag;
+extern int cable_disconnect_flag;
 
 #endif // IN4073_H__

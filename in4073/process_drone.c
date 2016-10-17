@@ -322,6 +322,15 @@ void manual_mode()
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+		if (cable_disconnect_flag == 2)
+		{
+			//printf("Going into panic mode from cable disconnection!!!\n");
+			cable_disconnect_flag = 1;
+			//drone.change_mode = 1;
+			//drone.current_mode = PANIC_MODE;
+			//return;
+		}
+
 		if(control_loop_flag == true && batt_low_flag == false)
 		{
 			// Clear sensor flag
@@ -419,6 +428,14 @@ void yaw_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+		if (cable_disconnect_flag == 2)
+		{	
+			cable_disconnect_flag = 1;
+			//drone.change_mode = 1;
+			//drone.current_mode = PANIC_MODE;
+			//return;
+		}
+
 		if(control_loop_flag == true && batt_low_flag == false)
 		{
 			// Clear sensor flag
@@ -537,6 +554,14 @@ void full_control_mode()
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+		if (cable_disconnect_flag == 2)
+		{
+			cable_disconnect_flag = 1;
+			//drone.change_mode = 1;
+			//drone.current_mode = PANIC_MODE;
+			//return;
+		}
+
 		if(control_loop_flag == true && batt_low_flag == false)
 		{
 			// Clear sensor flag
