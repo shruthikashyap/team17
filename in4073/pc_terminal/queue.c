@@ -333,8 +333,6 @@ void receive_telemetry_data(uint8_t ch)
 	int16_t shift_16;
 	uint16_t shift_u16;
 	
-	//printf("receive_telemetry_data %d\n", ch);
-#if 1
 	switch(count)
 	{
 		case 0:
@@ -352,6 +350,9 @@ void receive_telemetry_data(uint8_t ch)
 				tele_data.ae[1] = 0;
 				tele_data.ae[2] = 0;
 				tele_data.ae[3] = 0;
+				tele_data.controlgain_yaw = 0;
+				tele_data.controlgain_p1 = 0;
+				tele_data.controlgain_p2 = 0;
 				count++;
 			}
 			break;
@@ -459,14 +460,72 @@ void receive_telemetry_data(uint8_t ch)
 			//printf("tele_data.ae[3] 8-16: %d\n", tele_data.ae[3]);
 			count++;
 			break;
-
+			
 		case 16:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_yaw = tele_data.controlgain_yaw | (shift_16);
+			//printf("tele_data.controlgain_yaw 0-7: %d\n", tele_data.controlgain_yaw);
+			count++;
+			break;
+			
+		case 17:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_yaw = tele_data.controlgain_yaw | (shift_16<<8);
+			//printf("tele_data.controlgain_yaw 8-16: %d\n", tele_data.controlgain_yaw);
+			count++;
+			break;
+			
+		case 18:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_p1 = tele_data.controlgain_p1 | (shift_16);
+			//printf("tele_data.controlgain_p1 0-7: %d\n", tele_data.controlgain_p1);
+			count++;
+			break;
+			
+		case 19:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_p1 = tele_data.controlgain_p1 | (shift_16<<8);
+			//printf("tele_data.controlgain_p1 8-16: %d\n", tele_data.controlgain_p1);
+			count++;
+			break;
+			
+		case 20:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_p2 = tele_data.controlgain_p2 | (shift_16);
+			//printf("tele_data.controlgain_p2 0-7: %d\n", tele_data.controlgain_p2);
+			count++;
+			break;
+			
+		case 21:
+			shift_16 = (int16_t)ch;
+			tele_data.controlgain_p2 = tele_data.controlgain_p2 | (shift_16<<8);
+			//printf("tele_data.controlgain_p2 8-16: %d\n", tele_data.controlgain_p2);
+			count++;
+			break;
+
+		case 22:
 			if((unsigned char)ch == TELE_STOP)
 			{
 				#if 1
 				printf("%d | ", tele_data.current_time);
-				printf("%d | ", tele_data.current_mode);
+				//printf("%d | ", tele_data.current_mode);
+				
+				// Print mode
+				switch(tele_data.current_mode)
+				{
+					case SAFE_MODE: printf("SAFE_MODE | ");
+						break;
+					case MANUAL_MODE: printf("MANUAL_MODE | ");
+						break;
+					case YAW_CONTROL_MODE: printf("YAW_MODE | ");
+						break;
+					case FULL_CONTROL_MODE: printf("FULL_MODE | ");
+						break;
+					default: printf("ERROR | ");						
+				}
+				
 				printf("%d | ", tele_data.bat_volt);
+				printf("%d %d %d | ", tele_data.controlgain_yaw, tele_data.controlgain_p1, tele_data.controlgain_p2);
 				printf("%3d %3d %3d %3d\n", tele_data.ae[0], tele_data.ae[1], tele_data.ae[2], tele_data.ae[3]);
 				#endif
 			}
@@ -479,12 +538,11 @@ void receive_telemetry_data(uint8_t ch)
 			count = 0;
 			break;
 	}
-#endif
 }
 
 void* process_receive_packets(void* thread)
 {
-	#if 1
+	#if 0
 	char c;
 	while(1)
 	{
@@ -495,7 +553,7 @@ void* process_receive_packets(void* thread)
 	}
 	#endif
 	
-	#if 0
+	#if 1
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;

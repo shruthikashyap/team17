@@ -90,4 +90,7 @@ struct telemetry
 	char current_mode;
 	uint16_t bat_volt;
 	int16_t ae[4];
+	int16_t controlgain_yaw;
+	int16_t controlgain_p1;
+	int16_t controlgain_p2;
 };

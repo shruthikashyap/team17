@@ -152,8 +152,8 @@ void set_mode_type(char value)
 						send_packet_ack(ACK_FAILURE);
 		}
 	}
-	else
-		printf("Cannot change mode!\n");
+	//else
+		//printf("Cannot change mode!\n");
 }
 
 void set_key_lift(char value)
