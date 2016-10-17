@@ -33,8 +33,9 @@
 #define LOG_UPLOAD		0x31
 #define LOG_START		0x32
 #define LOG_STOP 		0x33
-#define LOG_LINE_START		0x90
-#define LOG_LINE_END		0x99
+#define LOG_LINE_START	0x90
+#define LOG_LINE_END	0x95
+#define LOG_END    		0x99
 
 /* Start and Stop Bytes */
 #define START_BYTE	0xFA    //250
@@ -74,12 +75,28 @@ struct packet_t
 struct log
 {
 	uint32_t current_time;
+	char current_mode;
+	int16_t joy_lift;
+	int16_t joy_roll;
+	int16_t joy_pitch;
+	int16_t joy_yaw;
+	int16_t key_lift;
+	int16_t key_roll;
+	int16_t key_pitch;
+	int16_t key_yaw;
+	int16_t ae_0;
+	int16_t ae_1;
+	int16_t ae_2;
+	int16_t ae_3;
 	int16_t sp;
 	int16_t sq;
 	int16_t sr;
 	int16_t sax;
 	int16_t say;
 	int16_t saz;
+	int16_t controlgain_yaw;
+	int16_t controlgain_p1;
+	int16_t controlgain_p2;
 	int32_t pressure;
 	uint16_t bat_volt;
 };

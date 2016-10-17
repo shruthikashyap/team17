@@ -25,7 +25,7 @@ void read_sensor()
 	drone.sax = 0;
 	drone.say = 0;
 	drone.saz = 0;
-	drone.pressure = 0;
+	//drone.pressure = 0;
 	
 	// Read sensor data
 	if(check_timer_flag()) 
@@ -56,7 +56,7 @@ void read_sensor()
 	drone.phi = phi - drone.offset_phi;
 	drone.theta = theta - drone.offset_theta;
 	drone.psi   = psi   - drone.offset_psi;
-	drone.pressure = pressure - drone.offset_pressure ;
+	//drone.pressure = pressure - drone.offset_pressure ;
 	//drone.pressure = pressure;
 	__enable_irq();
 	

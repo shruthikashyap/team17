@@ -461,7 +461,7 @@ void process_packet(struct packet_t packet)
 					log_active_flag = false;
 					nrf_gpio_pin_toggle(GREEN);
 				}
-				else if (packet.value == LOG_UPLOAD)
+				else if (packet.value == LOG_UPLOAD && drone.current_mode == SAFE_MODE)
 				{
 					//printf("Log upload command received\n");
 					log_upload_flag = true;
