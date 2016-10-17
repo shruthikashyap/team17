@@ -126,7 +126,7 @@ void log_upload()
 			nrf_delay_ms(10);
 		}
 
-		uart_put(LOG_END);					// Finish sending log
+		//uart_put(LOG_END);					// Finish sending log
 	}
 	else
 	{

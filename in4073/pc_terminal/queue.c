@@ -151,7 +151,7 @@ void get_log(uint8_t ch)
 	unsigned char uch = (unsigned char)ch;
 	uint32_t shift_32;
 	int16_t shift_16;
-	uint16_t shift_u16;
+	//uint16_t shift_u16;
 
 	//printf("ch: %d\n", ch);
 		
@@ -762,8 +762,8 @@ void* process_receive_packets(void* thread)
 		if((ch = rs232_getchar_nb()) != -1)
 		{
 			//printf("%d\n", ch);
-			if (ch == LOG_END)
-				log_start_flag = 0;							// reset log start flag
+			//if (ch == LOG_END)
+			//	log_start_flag = 0;							// reset log start flag
 
 			if(log_start_flag == 1)
 			{	
