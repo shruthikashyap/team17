@@ -18,6 +18,7 @@ bool control_loop_flag = false;
 bool telemetry_flag = false;
 uint32_t counter = 0;
 bool batt_low_flag = false;
+int ae_[4];
 
 void update_log()
 {
@@ -310,11 +311,6 @@ void manual_mode()
 {
 	printf("In MANUAL_MODE\n");
 	
-	int ae_[4]; // Motor rpm values
-	int lift_force;
-	int roll_moment;
-	int pitch_moment;
-	int yaw_moment;
 	int lift;
 	int pitch;
 	int roll;
@@ -338,20 +334,11 @@ void manual_mode()
 			
 			// Disable UART interrupts
 			__disable_irq();
-
-			// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
-			lift_force   = drone.joy_lift  + drone.key_lift;
-			roll_moment  = (signed char)drone.joy_roll  + (signed char)drone.key_roll;
-			pitch_moment = (signed char)drone.joy_pitch + (signed char)drone.key_pitch;
-			yaw_moment   = (signed char)drone.joy_yaw   + (signed char)drone.key_yaw;
-
-			// Enable UART interrupts
+			lift  = DRONE_MANUAL_LIFT_CONSTANT  * drone.joy_lift;
+			pitch = DRONE_MANUAL_PITCH_CONSTANT * drone.joy_pitch;
+			roll  = DRONE_MANUAL_ROLL_CONSTANT  * drone.joy_roll;
+			yaw   = DRONE_MANUAL_YAW_CONSTANT   * drone.joy_yaw;
 			__enable_irq();
-
-			lift  = DRONE_MANUAL_LIFT_CONSTANT * lift_force;
-			pitch = DRONE_MANUAL_PITCH_CONSTANT * pitch_moment;
-			roll  = DRONE_MANUAL_ROLL_CONSTANT * roll_moment;
-			yaw   = DRONE_MANUAL_YAW_CONSTANT * yaw_moment;
 
 			if((signed char)drone.joy_lift < 5)
 			{
@@ -360,34 +347,7 @@ void manual_mode()
 				yaw   = 0;
 			}
 
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
-
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
-
-			// setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
+			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
 			printf("%3d %3d %3d %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
 
@@ -416,8 +376,6 @@ void yaw_control_mode()
 	int yaw_moment;
 	int lift_force;
 
-	int ae_[4];
-
 	int lift, roll, pitch, yaw;
 	
 	//int pressure_error;
@@ -445,8 +403,8 @@ void yaw_control_mode()
 			read_sensor();
 			
 			__disable_irq();
-			lift_force = drone.joy_lift + drone.key_lift;
-			yawrate_setpoint = (signed char)drone.joy_yaw  + (signed char)drone.key_yaw;
+			lift_force = drone.joy_lift;
+			yawrate_setpoint = (signed char)drone.joy_yaw;
 			__enable_irq();
 
 			#if 0
@@ -471,7 +429,7 @@ void yaw_control_mode()
 
 			if (lift_force > 10) 
 			{
-				yaw_error = -(int)((1*yawrate_setpoint) - (drone.sr/24));
+				yaw_error = -(int)(yawrate_setpoint - (drone.sr/24));
 
 				// yaw error in range of -255 to 256 (although the extremes probably wont happen)
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
@@ -487,38 +445,7 @@ void yaw_control_mode()
 			pitch = 0;
 			yaw   = (int)(DRONE_YAW_CONSTANT/4 * yaw_moment); // misschien deze drone constant aanpassen voor yaw mode
 
-			// Solving drone rotor dynamics equations
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
-
-			// no negative number for sqrt
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
-
-			printf("%3d %3d %3d %3d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], bat_volt);
-
-			// setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
+			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
 			run_filters_and_control();
 			
@@ -546,7 +473,6 @@ void full_control_mode()
 	int yaw_error;
 	int yaw_moment;
 	int lift_force;
-	int ae_[4];
 	int lift, roll, pitch, yaw;
 	
 	drone.key_lift = 20; // XXX: For testing
@@ -571,14 +497,11 @@ void full_control_mode()
 			read_sensor();
 			
 			__disable_irq();
-			lift_force = drone.joy_lift + drone.key_lift;
-			roll_s = (signed char)drone.joy_roll + (signed char)drone.key_roll;
-			pitch_s = (signed char)drone.joy_pitch + (signed char)drone.key_pitch;
-			yawrate_setpoint = (signed char)drone.joy_yaw  + (signed char)drone.key_yaw;
+			lift_force = drone.joy_lift;
+			roll_s = (signed char)drone.joy_roll;
+			pitch_s = (signed char)drone.joy_pitch;
+			yawrate_setpoint = (signed char)drone.joy_yaw;
 			__enable_irq();
-
-			// sax ~ 7000, 7000/127 = 56 ???
-			// phi ~ 2500/128 = 20
 
 			if (lift_force > 10) 
 			{
@@ -589,7 +512,7 @@ void full_control_mode()
 				pitchrate_setpoint = drone.controlgain_p1/5 * (pitch_s - (drone.theta/50));
 				pitch_moment = drone.controlgain_p2 * (pitchrate_setpoint + (drone.sq/6));
 				
-				yaw_error = -(int)((1*yawrate_setpoint) - (drone.sr/24));
+				yaw_error = -(int)(yawrate_setpoint - (drone.sr/24));
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
 			}
 			else
@@ -604,46 +527,17 @@ void full_control_mode()
 			pitch = (int)(DRONE_PITCH_CONSTANT/100 * pitch_moment);
 			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment);
 
-			// Solving drone rotor dynamics equations
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
-
-			// no negative number for sqrt
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
+			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
 			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 			#if 1
 			if(count%100 == 0)
 			{
-				printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
+				printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 				count = 0;
 			}
 			count++;
 			#endif
-
-			// Setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
 
 			run_filters_and_control();
 			
@@ -655,6 +549,46 @@ void full_control_mode()
 	}
 
 	printf("Exit FULL_CONTROL_MODE\n");
+}
+
+void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
+{
+	// Solving drone rotor dynamics equations
+	ae_[0] = 0.25*(lift + 2*pitch - yaw);
+	ae_[1] = 0.25*(lift - 2*roll  + yaw);
+	ae_[2] = 0.25*(lift - 2*pitch - yaw);
+	ae_[3] = 0.25*(lift + 2*roll  + yaw);
+
+	// no negative number for sqrt
+	ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
+	ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
+	ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
+	ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
+
+	// adjusting trimming
+	ae_[0] += drone.key_lift + drone.key_pitch - drone.key_yaw;
+	ae_[1] += drone.key_lift - drone.key_pitch + drone.key_yaw;
+	ae_[2] += drone.key_lift - drone.key_pitch - drone.key_yaw;
+	ae_[3] += drone.key_lift + drone.key_pitch + drone.key_yaw;
+
+	if (drone.joy_lift > 5)
+	{
+		ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
+		ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
+		ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
+		ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
+	}
+
+	ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
+	ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
+	ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
+	ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];
+
+	// Setting drone rotor speeds
+	drone.ae[0] = ae_[0];
+	drone.ae[1] = ae_[1];
+	drone.ae[2] = ae_[2];
+	drone.ae[3] = ae_[3];	
 }
 
 void calibration_mode()
