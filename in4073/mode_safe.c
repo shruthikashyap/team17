@@ -2,7 +2,7 @@
 
 void safe_mode()
 {
-	printf("In SAFE_MODE\n");
+	//printf("In SAFE_MODE\n");
 	
 	// Don't read lift/roll/pitch/yaw data from PC link.
 	// Reset drone control variables

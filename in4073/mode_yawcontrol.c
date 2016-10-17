@@ -81,6 +81,8 @@ void yaw_control_mode()
 			yaw   = (int)(DRONE_YAW_CONSTANT/4 * yaw_moment); // misschien deze drone constant aanpassen voor yaw mode
 
 			calculate_rotor_speeds(lift, pitch, roll, yaw);
+			
+			//printf("%3d %3d %3d %3d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 
 			run_filters_and_control();
 			

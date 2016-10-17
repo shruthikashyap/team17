@@ -2,7 +2,7 @@
 
 void full_control_mode()
 {
-	printf("In FULL_CONTROL_MODE\n");
+	//printf("In FULL_CONTROL_MODE\n");
 
 	int rollrate_setpoint;
 	int roll_s;
@@ -17,7 +17,7 @@ void full_control_mode()
 	int lift, roll, pitch, yaw;
 	
 	drone.joy_lift = 100; // XXX: For testing
-	int count = 0;
+	//int count = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -70,11 +70,11 @@ void full_control_mode()
 
 			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
-			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", ae_[0], ae_[1], ae_[2], ae_[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-			#if 1
+			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
+			#if 0
 			if(count%100 == 0)
 			{
-				printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
+				//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 				count = 0;
 			}
 			count++;
@@ -89,5 +89,5 @@ void full_control_mode()
 			nrf_delay_ms(1);
 	}
 
-	printf("Exit FULL_CONTROL_MODE\n");
+	//printf("Exit FULL_CONTROL_MODE\n");
 }

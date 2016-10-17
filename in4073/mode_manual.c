@@ -2,7 +2,7 @@
 
 void manual_mode()
 {
-	printf("In MANUAL_MODE\n");
+	//printf("In MANUAL_MODE\n");
 	
 	int lift;
 	int pitch;
@@ -34,8 +34,6 @@ void manual_mode()
 			yaw   = DRONE_MANUAL_YAW_CONSTANT   * (signed char)drone.joy_yaw;
 			__enable_irq();
 
-			printf("%d %d %d %d \n", lift, pitch, roll, yaw);
-
 			if((signed char)drone.joy_lift < 5)
 			{
 				pitch = 0;
@@ -44,6 +42,8 @@ void manual_mode()
 			}
 
 			calculate_rotor_speeds(lift, pitch, roll, yaw);
+			
+			//printf("%3d %3d %3d %3d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], bat_volt);
 
 			run_filters_and_control();
 			

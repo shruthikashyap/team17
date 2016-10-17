@@ -223,6 +223,7 @@ void get_log(uint8_t ch)
 				log_line.current_mode = uch;									// current_mode
 				log_byte_count++;	
 				break;
+#if 0
 			case 6:
 				shift_16 = (int16_t)ch;
 				log_line.joy_lift = log_line.joy_lift|shift_16;					// bits 0-7 of joy_lift
@@ -343,74 +344,76 @@ void get_log(uint8_t ch)
 				log_line.ae_3 = log_line.ae_3|(shift_16<<8);					// bits 8-15 of ae_3
 				log_byte_count++;
 				break;
-			case 30:	
+#endif
+			case 6:	
 				shift_16 = (int16_t)ch;
 				log_line.sp = log_line.sp|shift_16;								// bits 0-7 of sp
 				log_byte_count++;
 				//printf("sp1: %d\n",log_line.sp);
 				break;
-			case 31:	
+			case 7:	
 				shift_16 = (int16_t)ch;		
 				log_line.sp = log_line.sp|(shift_16<<8);						// bits 8-15 of sp
 				log_byte_count++;
 				//printf("sp: %d\n",log_line.sp);
 				break;
-			case 32:	
+			case 8:	
 				shift_16 = (int16_t)ch;	
 				log_line.sq = log_line.sq|shift_16;								// bits 0-7 of sq
 				log_byte_count++;
 				//printf("sq1: %d\n",log_line.sq);
 				break;
-			case 33:		
+			case 9:		
 				shift_16 = (int16_t)ch;
 				log_line.sq = log_line.sq|(shift_16<<8);						// bits 8-15 of sq
 				log_byte_count++;
 				//printf("sq: %d\n",log_line.sq);
 				break;
-			case 34:		
+			case 10:		
 				shift_16 = (int16_t)ch;
 				log_line.sr = log_line.sr | shift_16;							// bits 0-7 of sr
 				log_byte_count++;
 				break;
-			case 35:
+			case 11:
 				shift_16 = (int16_t)ch;		
 				log_line.sr = log_line.sr | (shift_16<<8);						// bits 8-15 of sr
 				log_byte_count++;
 				//printf("sr: %d\n",log_line.sr);
 				break;
-			case 36:
+			case 12:
 				shift_16 = (int16_t)ch;		
 				log_line.sax = log_line.sax | shift_16;							// bits 0-7 of sax
 				log_byte_count++;
 				break;
-			case 37:
+			case 13:
 				shift_16 = (int16_t)ch;		
 				log_line.sax = log_line.sax | (shift_16<<8);					// bits 8-15 of sax
 				log_byte_count++;
 				//printf("sax: %d\n",log_line.sax);
 				break;
-			case 38:		
+			case 14:		
 				shift_16 = (int16_t)ch;
 				log_line.say = log_line.say | shift_16;							// bits 0-7 of say
 				log_byte_count++;
 				break;
-			case 39:	
+			case 15:	
 				shift_16 = (int16_t)ch;	
 				log_line.say = log_line.say | (shift_16<<8);					// bits 8-15 of say
 				log_byte_count++;
 				//printf("say: %d\n",log_line.say);
 				break;
-			case 40:	
+			case 16:	
 				shift_16 = (int16_t)ch;	
 				log_line.saz = log_line.saz | shift_16;							// bits 0-7 of saz
 				log_byte_count++;
 				break;
-			case 41:		
+			case 17:		
 				shift_16 = (int16_t)ch;
 				log_line.saz = log_line.saz | (shift_16<<8);					// bits 8-15 of saz
 				log_byte_count++;
 				//printf("saz: %d\n",log_line.saz);
 				break;
+#if 0
 			case 42:
 				shift_16 = (int16_t)ch;		
 				log_line.controlgain_yaw = log_line.controlgain_yaw | shift_16;		// bits 0-7 of controlgain_yaw
@@ -479,7 +482,8 @@ void get_log(uint8_t ch)
 				log_byte_count++;
 				//printf("bat_volt: %d\n",log_line.bat_volt);
 				break;
-			case 54:
+#endif
+			case 18:
 				if (uch == LOG_LINE_END)
 				{
 					//printf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n", 
@@ -491,12 +495,16 @@ void get_log(uint8_t ch)
 					fp = fopen(filename, "a+");
 					if (fp == NULL)
 						printf("Cannot open file!\n");
-					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+					/*fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
 						log_line.current_time, log_line.current_mode, log_line.joy_lift, log_line.joy_roll, log_line.joy_pitch, 
 						log_line.joy_yaw, log_line.key_lift, log_line.key_roll, log_line.key_pitch, log_line.key_yaw, 
 						log_line.ae_0, log_line.ae_1, log_line.ae_2, log_line.ae_3, log_line.sp, log_line.sq, log_line.sr, 
 						log_line.sax, log_line.say, log_line.saz, log_line.controlgain_yaw, log_line.controlgain_p1,
-						log_line.controlgain_p2, log_line.pressure, log_line.bat_volt);
+						log_line.controlgain_p2, log_line.pressure, log_line.bat_volt);*/
+					
+					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+						log_line.current_time, log_line.current_mode, log_line.sp, log_line.sq, log_line.sr, 
+						log_line.sax, log_line.say, log_line.saz);
 					fclose(fp);
 				}
 				log_byte_count = 0;
