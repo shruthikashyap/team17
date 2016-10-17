@@ -45,6 +45,13 @@ $(abspath ./control.c) \
 $(abspath ./fixed.c) \
 $(abspath ./filters.c) \
 $(abspath ./process_drone.c) \
+$(abspath ./log.c) \
+$(abspath ./mode_safe.c) \
+$(abspath ./mode_panic.c) \
+$(abspath ./mode_manual.c) \
+$(abspath ./mode_yawcontrol.c) \
+$(abspath ./mode_fullcontrol.c) \
+$(abspath ./mode_calibration.c) \
 $(abspath ./drivers/process_packet.c) \
 $(abspath ./drivers/gpio.c) \
 $(abspath ./drivers/timers.c) \

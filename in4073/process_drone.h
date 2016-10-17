@@ -44,7 +44,14 @@ void raw_mode();
 void height_control_mode();
 void wireless_mode();
 void log_upload();
+void read_sensor();
+void read_battery_level();
+void check_log_tele_flags();
+void update_log();
 void uart_put_16bit(int16_t);
 void uart_put_32bit(int32_t);
 void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw);
 //int scale_number();
+
+uint32_t new_addr;
+uint32_t new_addr_write;
