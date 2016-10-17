@@ -515,6 +515,8 @@ void receive_telemetry_data(uint8_t ch)
 				{
 					case SAFE_MODE: printf("SAFE_MODE | ");
 						break;
+					case PANIC_MODE: printf("PANIC_MODE | ");
+						break;
 					case MANUAL_MODE: printf("MANUAL_MODE | ");
 						break;
 					case YAW_CONTROL_MODE: printf("YAW_MODE | ");

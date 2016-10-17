@@ -453,11 +453,13 @@ void process_packet(struct packet_t packet)
 				if (packet.value == LOG_START)
 				{
 					log_active_flag = true;
+					nrf_gpio_pin_toggle(GREEN);
 					//printf("Inside log start\n");
 				}
 				else if (packet.value == LOG_STOP)
 				{
 					log_active_flag = false;
+					nrf_gpio_pin_toggle(GREEN);
 				}
 				else if (packet.value == LOG_UPLOAD)
 				{

@@ -61,7 +61,7 @@ void TIMER2_IRQHandler(void)
 		}
 		control_loop_timer++;
 		
-		if(log_timer % 20 == 0) //20Hz
+		if(log_timer % 2 == 0) //200Hz
 		{
 			log_flag = true;
 			//printf("Timer log = %d\n", log_timer);

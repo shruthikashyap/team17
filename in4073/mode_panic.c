@@ -3,6 +3,7 @@
 void panic_mode()
 {
 	//printf("In PANIC_MODE\n");
+	nrf_gpio_pin_toggle(RED);
 	
 	if(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
 	{
@@ -28,12 +29,16 @@ void panic_mode()
 		
 		run_filters_and_control();
 		
+		// Update log and telemetry if corresponding flags are set
+		check_log_tele_flags();
+		
 		nrf_delay_ms(250);
 	}
 
 	// Go to safe mode
 	drone.current_mode = SAFE_MODE;
 	drone.change_mode = 1; // XXX: Is this needed?
+	nrf_gpio_pin_toggle(RED);
 	
 	//printf("Exit PANIC_MODE\n");
 }
