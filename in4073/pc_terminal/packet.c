@@ -49,8 +49,8 @@ void sendKeyPacket(char key)
 			break;
 
 		case '6':
-			p.command = MODE_TYPE;
-			p.value = RAW_MODE;
+			p.command = RAW_MODE;
+			p.value = 0;
 			p_flag = 1;
 			break;
 

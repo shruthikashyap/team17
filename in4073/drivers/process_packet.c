@@ -6,6 +6,8 @@
 bool log_upload_flag = false;
 bool log_active_flag = false;
 bool height_control_flag = false;
+bool raw_mode_flag = false;
+bool imu_init_flag = true;
 
 /*------------------------------------------------------------------
  * process_key -- process command keys
@@ -141,9 +143,6 @@ void set_mode_type(char value)
 						send_packet_ack(ACK_SUCCESS);
 						break;
 			case WIRELESS_MODE:
-						// XXX: Not considered a mode. Needs to be handled.
-						break;
-			case RAW_MODE:
 						// XXX: Not considered a mode. Needs to be handled.
 						break;
 			default:
@@ -395,14 +394,13 @@ void process_packet(struct packet_t packet)
 {
 	//printf("Received byte:%d, %d\n", packet.command, packet.value);
 
-// XXX: Test
-#if 0
-	if(drone.current_mode == SAFE_MODE && packet.command != MODE_TYPE)
+	#if 1
+	if(drone.current_mode == SAFE_MODE && !(packet.command == RAW_MODE || packet.command == MODE_TYPE))
 	{
-		//printf("\nIgnoring drone control commands in SAFE_MODE");
+		//printf("Ignoring drone control commands in SAFE_MODE");
 		return;
 	}
-#endif
+	#endif
 
 	if(check_crc(packet))
 	{
@@ -473,13 +471,26 @@ void process_packet(struct packet_t packet)
 					height_control_flag = true;
 					drone.height_control_pressure = pressure;
 					drone.height_control_lift = drone.joy_lift;
-					printf("In HEIGHT_CONTROL_MODE\n");
+					//printf("In HEIGHT_CONTROL_MODE\n");
 				}
 				else
 				{
 					height_control_flag = false;
-					printf("Exit HEIGHT_CONTROL_MODE\n");
+					//printf("Exit HEIGHT_CONTROL_MODE\n");
 				}
+				break;
+		case RAW_MODE:
+				if(raw_mode_flag == false)
+				{
+					//printf("In RAW_MODE\n");
+					raw_mode_flag = true;
+				}
+				else
+				{
+					//printf("In DMP_MODE\n");
+					raw_mode_flag = false;
+				}
+				imu_init_flag = false;
 				break;
 		default :
 				// XXX: Packet error. Needs to be handled

@@ -236,11 +236,6 @@ void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
 	drone.ae[3] = ae_[3];	
 }
 
-void raw_mode()
-{
-	//printf("In RAW_MODE\n");
-}
-
 void wireless_mode()
 {
 	//printf("In WIRELESS_MODE\n");
@@ -288,9 +283,6 @@ void process_drone()
 					break;
 			case CALIBRATION_MODE:
 					calibration_mode();
-					break;
-			case RAW_MODE:
-					raw_mode();
 					break;
 			case WIRELESS_MODE:
 					wireless_mode();

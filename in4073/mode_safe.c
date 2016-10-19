@@ -1,4 +1,6 @@
 #include "modes.h"
+extern bool raw_mode_flag;
+extern bool imu_init_flag;
 
 void safe_mode()
 {
@@ -33,7 +35,22 @@ void safe_mode()
 
 			// Update log and telemetry if corresponding flags are set
 			check_log_tele_flags();
-
+			
+			// Change to RAW/DMP Mode
+			if(raw_mode_flag == true && imu_init_flag == false)
+			{
+				imu_init(false, 500);
+				//printf("In RAW_MODE\n");
+				imu_init_flag = true;
+			}
+			else if(raw_mode_flag == false && imu_init_flag == false)
+			{
+				imu_init(true, 100);
+				//printf("In DMP_MODE\n");
+				imu_init_flag = true;
+			}
+			
+			// Upload log
 			if(log_upload_flag == true && telemetry_flag == false)
 			{
 				//printf("Inside safe mode - log upload\n");
