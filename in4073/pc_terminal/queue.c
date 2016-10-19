@@ -752,7 +752,7 @@ void receive_telemetry_data(uint8_t ch)
 
 void* process_receive_packets(void* thread)
 {
-	#if 1
+	#if 0
 	char c;
 	while(1)
 	{
@@ -763,7 +763,7 @@ void* process_receive_packets(void* thread)
 	}
 	#endif
 	
-	#if 0
+	#if 1
 	// XXX: Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;

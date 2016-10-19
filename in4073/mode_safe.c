@@ -55,6 +55,7 @@ void safe_mode()
 			{
 				//printf("Inside safe mode - log upload\n");
 				log_upload();
+				drone.stop = 1;
 			}
 		}
 		else
