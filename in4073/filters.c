@@ -2,8 +2,8 @@
 #include "filters.h"
 #include "in4073.h"
 
-int x[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
-int y[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
+q14 x[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
+q14 y[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 
 int drift_sp, drift_sq, drift_sr = 0;
 //int theta = 0;
@@ -37,6 +37,7 @@ void butterworth()
 
 // kalman filter ENGAGED:
 // calculate 'real' phi theta psi and sp sq sr
+// not working yet
 void kalman()
 {
 	sp = sp - drift_sp; // real dtheta

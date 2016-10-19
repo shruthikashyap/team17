@@ -70,6 +70,7 @@ void full_control_mode()
 
 			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
+			//printf("%5d %5d %5d | %5d %5d %5d \n", drone.sp, drone.sq, drone.sr, drone.sax, drone.say, drone.saz);;
 			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
 			#if 0
 			if(count%100 == 0)

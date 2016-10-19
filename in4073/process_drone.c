@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "crc.h"
+#include "filters.h"
 //#include "log.h"
 
 void send_packet_to_pc(struct packet_t p);
@@ -33,8 +34,6 @@ void read_sensor()
 	// Read sensor data
 	if(check_timer_flag()) 
 	{
-		if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
-
 		adc_request_sample();
 		//read_baro();
 		nrf_delay_ms(1);
@@ -44,7 +43,15 @@ void read_sensor()
 
 	if(check_sensor_int_flag()) 
 	{
-		get_dmp_data();
+		if (raw_mode_flag == true)
+		{
+			get_raw_sensor_data();
+			butterworth();
+		}
+		else
+		{
+			get_dmp_data();
+		}
 		//get_raw_sensor_data();
 		clear_sensor_int_flag();
 	}
@@ -83,8 +90,6 @@ void read_battery_level()
 {
 	if(check_timer_flag()) 
 	{
-		if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
-
 		adc_request_sample();
 		nrf_delay_ms(1);
 

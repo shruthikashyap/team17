@@ -6,7 +6,6 @@ void calibration_mode()
 	
 	nrf_gpio_pin_toggle(YELLOW);
 
-	uint32_t counter = 0;
     int samples = 500;
     int sum_sp = 0;
 	int sum_sq = 0;
@@ -28,8 +27,6 @@ void calibration_mode()
 	{
 		if (check_timer_flag()) 
 		{
-			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
-
 			read_baro();
 			nrf_delay_ms(1);
 
@@ -52,8 +49,6 @@ void calibration_mode()
 	{
 		if (check_timer_flag()) 
 		{
-			if (counter++%20 == 0) nrf_gpio_pin_toggle(BLUE);
-
 			read_baro();
 			nrf_delay_ms(1);
 

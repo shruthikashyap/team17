@@ -16,6 +16,7 @@ static uint32_t global_time;
 static uint8_t log_timer = 0;
 static uint8_t control_loop_timer = 0;
 static uint8_t telemetry_timer = 0;
+static uint32_t heartbeat_counter = 0;
 
 void timers_init(void)
 {
@@ -52,7 +53,7 @@ void timers_init(void)
 void TIMER2_IRQHandler(void)
 {
 	if (NRF_TIMER2->EVENTS_COMPARE[0])
-    	{
+    {
 		if(control_loop_timer % 2 == 0) //200Hz
 		{
 			control_loop_flag = true;
@@ -87,20 +88,23 @@ void TIMER2_IRQHandler(void)
 		NRF_TIMER1->TASKS_CLEAR = 1;
 		nrf_gpio_pin_set(MOTOR_0_PIN); nrf_gpio_pin_set(MOTOR_1_PIN); nrf_gpio_pin_set(MOTOR_2_PIN); nrf_gpio_pin_set(MOTOR_3_PIN);
 		NRF_TIMER2->EVENTS_COMPARE[0] = 0;
-    	}
+
+		if (heartbeat_counter++%100 == 0) nrf_gpio_pin_toggle(BLUE);
+
+    }
 
 	if (NRF_TIMER2->EVENTS_COMPARE[1])
-    	{
+    {
 		NRF_TIMER2->CC[1] += TIMER_PERIOD;
 		TIMER2_flag = true;
 		NRF_TIMER2->EVENTS_COMPARE[1] = 0;
-    	}
+    }
 
 	if (NRF_TIMER2->EVENTS_COMPARE[2])
-    	{
+    {
 		global_time += 0xffff;
 		NRF_TIMER2->EVENTS_COMPARE[2] = 0;
-    	}
+    }
 }
 
 void TIMER1_IRQHandler(void)
