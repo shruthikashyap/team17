@@ -7,7 +7,7 @@ void calibration_mode()
 	nrf_gpio_pin_toggle(YELLOW);
 
 	uint32_t counter = 0;
-    int samples = 100;
+    int samples = 500;
     int sum_sp = 0;
 	int sum_sq = 0;
 	int sum_sr = 0;

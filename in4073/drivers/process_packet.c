@@ -395,7 +395,7 @@ void process_packet(struct packet_t packet)
 	//printf("Received byte:%d, %d\n", packet.command, packet.value);
 
 	#if 1
-	if(drone.current_mode == SAFE_MODE && !(packet.command == RAW_MODE || packet.command == MODE_TYPE))
+	if((drone.current_mode == SAFE_MODE && !(packet.command == RAW_MODE || packet.command == MODE_TYPE)) || (drone.current_mode != SAFE_MODE && packet.command == RAW_MODE))
 	{
 		//printf("Ignoring drone control commands in SAFE_MODE");
 		return;

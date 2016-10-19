@@ -17,6 +17,9 @@ bool batt_low_flag = false;
 uint32_t counter = 0;
 uint32_t ae_[4];
 
+extern bool raw_mode_flag;
+extern bool imu_init_flag;
+
 void read_sensor()
 {
 	drone.sp = 0;
@@ -133,6 +136,7 @@ void send_telemetry_data()
 	uart_put_16bit(drone.controlgain_p1);
 	//uart_put_16bit(25);
 	uart_put_16bit(drone.controlgain_p2);
+	uart_put(raw_mode_flag);
 	uart_put(TELE_STOP);
 }
 

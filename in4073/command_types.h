@@ -110,4 +110,5 @@ struct telemetry
 	int16_t controlgain_yaw;
 	int16_t controlgain_p1;
 	int16_t controlgain_p2;
+	uint8_t dmp_raw_mode;
 };

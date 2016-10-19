@@ -693,8 +693,14 @@ void receive_telemetry_data(uint8_t ch)
 			//printf("tele_data.controlgain_p2 8-16: %d\n", tele_data.controlgain_p2);
 			count++;
 			break;
-
+			
 		case 22:
+			tele_data.dmp_raw_mode = ch;
+			//printf("tele_data.controlgain_p2 8-16: %d\n", tele_data.controlgain_p2);
+			count++;
+			break;
+
+		case 23:
 			if((unsigned char)ch == TELE_STOP)
 			{
 				#if 1
@@ -717,9 +723,20 @@ void receive_telemetry_data(uint8_t ch)
 					default: printf("ERROR | ");						
 				}
 				
-				printf("%d | ", tele_data.bat_volt);
 				printf("%d %d %d | ", tele_data.controlgain_yaw, tele_data.controlgain_p1, tele_data.controlgain_p2);
-				printf("%3d %3d %3d %3d\n", tele_data.ae[0], tele_data.ae[1], tele_data.ae[2], tele_data.ae[3]);
+				printf("%3d %3d %3d %3d | ", tele_data.ae[0], tele_data.ae[1], tele_data.ae[2], tele_data.ae[3]);
+				
+				// Print DMP/RAw Mode
+				switch(tele_data.dmp_raw_mode)
+				{
+					case 0: printf("DMP_MODE | ");
+						break;
+					case 1: printf("RAW_MODE | ");
+						break;
+					default: printf("ERROR | ");						
+				}
+				
+				printf("%d\n", tele_data.bat_volt);
 				#endif
 			}
 			telemetry_rcv_flag = 0;
