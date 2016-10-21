@@ -18,7 +18,7 @@
 #define MIN_CONTROLGAIN_P1 0
 #define MIN_CONTROLGAIN_P2 0
 
-#define KEYBOARD_STEP 1
+#define KEYBOARD_STEP 2
 #define KEYBOARD_CONTROL_STEP 1
 
 void process_packet(struct packet_t packet);

@@ -1,5 +1,5 @@
 #include "modes.h"
-
+#if 0
 void full_control_mode()
 {
 	//printf("In FULL_CONTROL_MODE\n");
@@ -16,7 +16,7 @@ void full_control_mode()
 	int lift_force;
 	int lift, roll, pitch, yaw;
 	
-	drone.joy_lift = 100; // XXX: For testing
+	//drone.joy_lift = 100; // XXX: For testing
 	//int count = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
@@ -87,8 +87,9 @@ void full_control_mode()
 			check_log_tele_flags();
 		}
 		else
-			nrf_delay_ms(1);
+			nrf_delay_us(10);
 	}
 
 	//printf("Exit FULL_CONTROL_MODE\n");
 }
+#endif

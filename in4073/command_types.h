@@ -111,4 +111,8 @@ struct telemetry
 	int16_t controlgain_p1;
 	int16_t controlgain_p2;
 	uint8_t dmp_raw_mode;
+	int16_t key_lift;
+	int16_t key_roll;
+	int16_t key_pitch;
+	int16_t key_yaw;
 };

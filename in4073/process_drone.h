@@ -1,6 +1,6 @@
 // XXX: Need to change the values
 #define MIN_RPM 200 // Minimal speed to let the rotor turn due to internal friction
-#define MAX_RPM	600 
+#define MAX_RPM	700 
 
 /* RPMs */
 #define RPM_STEP	10

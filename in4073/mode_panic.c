@@ -1,4 +1,5 @@
 #include "modes.h"
+void send_telemetry_data();
 
 void panic_mode()
 {
@@ -14,10 +15,11 @@ void panic_mode()
 		drone.ae[3] = HOVER_RPM;
 	}
 	
+	send_telemetry_data();
 	run_filters_and_control();
 	
 	// Stay in this mode for a few seconds
-	nrf_delay_ms(5000);
+	nrf_delay_ms(2000);
 	
 	// Gradually reduce RPM of the motors to 0.
 	while(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])

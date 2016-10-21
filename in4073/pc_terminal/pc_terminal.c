@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	pthread_t pthread_dequeue;
 	pthread_t pthread_receive;
 
-#if 0
+#if 1
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 			sendKeyPacket(c);
 		}
 
-		//sendJsPacket();
+		sendJsPacket();
 		
 		usleep(20000);
 

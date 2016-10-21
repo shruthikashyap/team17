@@ -1,4 +1,5 @@
 #include "modes.h"
+void send_telemetry_data();
 
 void calibration_mode()
 {
@@ -19,6 +20,8 @@ void calibration_mode()
 	int sum_pressure = 0;
 	int i;
 
+	send_telemetry_data();
+	
 	if(get_time_us() < 20000000)
 		nrf_delay_ms(20000);
 	

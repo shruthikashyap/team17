@@ -1,5 +1,5 @@
 #include "modes.h"
-
+#if 0
 void yaw_control_mode()
 {
 	//printf("In YAW_CONTROL_MODE\n");
@@ -17,7 +17,7 @@ void yaw_control_mode()
 	drone.controlgain_yaw = 2;
 	drone.controlgain_height = 1;
 	//drone.key_lift = 20; // XXX: For testing
-	drone.joy_lift = 100; // XXX: For testing
+	//drone.joy_lift = 100; // XXX: For testing
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -90,8 +90,9 @@ void yaw_control_mode()
 			check_log_tele_flags();
 		}
 		else
-			nrf_delay_ms(1);
+			nrf_delay_us(10);
 	}
 	
 	//printf("Exit YAW_CONTROL_MODE\n");
 }
+#endif

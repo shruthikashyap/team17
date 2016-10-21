@@ -59,7 +59,7 @@ void safe_mode()
 			}
 		}
 		else
-			nrf_delay_ms(1);
+			nrf_delay_us(10);
 	}
 	
 	//printf("Exit SAFE_MODE\n");
