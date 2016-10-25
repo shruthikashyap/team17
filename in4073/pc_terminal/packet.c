@@ -22,6 +22,13 @@ void sendKeyPacket(char key)
 
 	switch(key)
 	{
+
+		case 27: // esc key
+			p.command = MODE_TYPE;
+			p.value = PANIC_MODE;
+			p_flag = 1;
+			break;
+
 		case '0':
 			p.command = MODE_TYPE;
 			p.value = SAFE_MODE;
