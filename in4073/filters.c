@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- *  filters.c -- file includes the butterworth filter and the kalman filter
+ *  filters.c -- File includes the butterworth filter and the kalman filter
  *
  *  October 2016
  *------------------------------------------------------------------
@@ -17,9 +17,8 @@ q14 drift_sp, drift_sq, drift_sr = 0;
 q14 q14theta, q14phi, q14psi = 0;
 q14 q14sp, q14sq, q14sr;
 q14 q14sax, q14say, q14saz;
-//int theta = 0;
 
-// first order butterworth, 100hz sample freq, 10hz cut off freq
+// first order butterworth
 void butterworth()
 {
 	x[0][1] = normal2q(sp);
@@ -45,9 +44,6 @@ void butterworth()
 	saz = q2normal(y[5][1]);
 }
 
-
-// kalman filter ENGAGED:
-// calculate 'real' phi theta psi and sp sq sr
 // not working yet
 void kalman()
 {
@@ -67,12 +63,12 @@ void kalman()
 	q14sq = q14sq - drift_sq;
 	q14phi = q14phi + q_mul(q14sq, KALMAN_P2PHI);
 	q14phi = q14phi - q_mul(q14phi-q14say, KALMAN_C1);
-	drift_sq = drift_sq + q_mul(q14phi-q14say, KALMAN_C2);
+	drift_sq = drift_sq + q_mul(q14phi-q14say, KALMAN_C3);
 
 	q14sr = q14sr - drift_sr;
 	q14psi = q14psi + q_mul(q14sr, KALMAN_P2PHI);
 	q14psi = q14psi - q_mul(q14psi-q14saz, KALMAN_C1);
-	drift_sr = drift_sr + q_mul(q14psi-q14saz, KALMAN_C2);
+	drift_sr = drift_sr + q_mul(q14psi-q14saz, KALMAN_C3);
 
 	sp = q2normal(q14sp);
 	sq = q2normal(q14sp);
