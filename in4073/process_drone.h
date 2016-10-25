@@ -41,8 +41,6 @@ void yaw_control_mode();
 void full_control_mode();
 void calibration_mode();
 void raw_mode();
-void height_control_mode();
-void wireless_mode();
 void log_upload();
 void read_sensor();
 void read_battery_level();

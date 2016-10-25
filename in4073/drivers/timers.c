@@ -76,10 +76,10 @@ void TIMER2_IRQHandler(void)
 			//printf("Timer telemetry = %d\n", telemetry_timer);
 			telemetry_timer = 0;
 
-			if (cable_disconnect_flag == 0)	
-				cable_disconnect_flag = 1;
-			else if (cable_disconnect_flag == 1)
-				cable_disconnect_flag = 2;
+			//if (cable_disconnect_flag == 0)	
+			//	cable_disconnect_flag = 1;
+			//else if (cable_disconnect_flag == 1)
+			//	cable_disconnect_flag = 2;
 
 		}
 		telemetry_timer++;

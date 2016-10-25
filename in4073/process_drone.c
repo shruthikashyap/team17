@@ -16,7 +16,7 @@ bool control_loop_flag = false;
 bool telemetry_flag = false;
 bool batt_low_flag = false;
 uint32_t counter = 0;
-uint32_t ae_[4];
+//uint32_t ae_[4];
 
 extern bool raw_mode_flag;
 extern bool imu_init_flag;
@@ -206,7 +206,7 @@ void reset_drone()
 		//printf("Memory erase successful\n");
 }
 
-
+#if 0
 void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
 {
 	// Solving drone rotor dynamics equations
@@ -249,11 +249,6 @@ void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
 	drone.ae[1] = ae_[1];
 	drone.ae[2] = ae_[2];
 	drone.ae[3] = ae_[3];	
-}
-
-void wireless_mode()
-{
-	//printf("In WIRELESS_MODE\n");
 }
 
 void manual_mode()
@@ -630,6 +625,7 @@ void full_control_mode()
 
 	//printf("Exit FULL_CONTROL_MODE\n");
 }
+#endif
 
 void process_drone()
 {
@@ -673,9 +669,6 @@ void process_drone()
 					break;
 			case CALIBRATION_MODE:
 					calibration_mode();
-					break;
-			case WIRELESS_MODE:
-					wireless_mode();
 					break;
 			default :
 					// XXX: Needs to be handled
