@@ -1,3 +1,11 @@
+/*------------------------------------------------------------------
+ *  filters.c -- File implements fixed point arithmetic calculations.
+ *               We're using a Q14 number format
+ *
+ *  October 2016
+ *------------------------------------------------------------------
+ */
+
 #include <inttypes.h>
 #include "fixed.h"
 

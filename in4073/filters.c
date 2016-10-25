@@ -1,3 +1,11 @@
+/*------------------------------------------------------------------
+ *  filters.c -- file includes the butterworth filter and the kalman filter
+ *
+ *  October 2016
+ *------------------------------------------------------------------
+ */
+
+
 #include "fixed.h"
 #include "filters.h"
 #include "in4073.h"
@@ -5,7 +13,10 @@
 q14 x[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 q14 y[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 
-int drift_sp, drift_sq, drift_sr = 0;
+q14 drift_sp, drift_sq, drift_sr = 0;
+q14 q14theta, q14phi, q14psi = 0;
+q14 q14sp, q14sq, q14sr;
+q14 q14sax, q14say, q14saz;
 //int theta = 0;
 
 // first order butterworth, 100hz sample freq, 10hz cut off freq
@@ -40,18 +51,34 @@ void butterworth()
 // not working yet
 void kalman()
 {
-	sp = sp - drift_sp; // real dtheta
-	theta = theta + q2normal(q_mul(normal2q(sp),KALMAN_P2PHI)); // dt = P2PHI, fixed? or just calcuate time difference every time
-	theta = theta - ((theta - sax)/KALMAN_C1);
-	drift_sp = drift_sp + ((theta - sax)/KALMAN_C2);
+	q14sp = normal2q(sp);
+	q14sq = normal2q(sq);
+	q14sr = normal2q(sr);
 
-	sq = sq - drift_sq;
-	phi = phi + sq * KALMAN_P2PHI;
-	phi = phi - ((phi - say)/KALMAN_C1);
-	drift_sq = drift_sq + ((phi - say)/KALMAN_C2);
+	q14sax = normal2q(sax);
+	q14say = normal2q(say);
+	q14saz = normal2q(saz);
 
-	sr = sr - drift_sr;
-	psi = psi + sr * KALMAN_P2PHI;
-	psi = psi - ((psi - saz)/KALMAN_C1);
-	drift_sr = drift_sr + ((psi - saz)/KALMAN_C2);
+	q14sp = q14sp - drift_sp;
+	q14theta = q14theta + q_mul(q14sp, KALMAN_P2PHI);
+	q14theta = q14theta - q_mul(q14theta-q14sax, KALMAN_C1);
+	drift_sp = drift_sp + q_mul(q14theta-q14sax, KALMAN_C3);
+
+	q14sq = q14sq - drift_sq;
+	q14phi = q14phi + q_mul(q14sq, KALMAN_P2PHI);
+	q14phi = q14phi - q_mul(q14phi-q14say, KALMAN_C1);
+	drift_sq = drift_sq + q_mul(q14phi-q14say, KALMAN_C2);
+
+	q14sr = q14sr - drift_sr;
+	q14psi = q14psi + q_mul(q14sr, KALMAN_P2PHI);
+	q14psi = q14psi - q_mul(q14psi-q14saz, KALMAN_C1);
+	drift_sr = drift_sr + q_mul(q14psi-q14saz, KALMAN_C2);
+
+	sp = q2normal(q14sp);
+	sq = q2normal(q14sp);
+	sr = q2normal(q14sp);
+	
+	theta = q2normal(q14theta);
+	phi   = q2normal(q14phi);
+	psi   = q2normal(q14psi);
 }
