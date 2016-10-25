@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------
+ *  mode_safe.c
+ *
+ *  Defines the safe mode of the drone
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include "modes.h"
 extern bool raw_mode_flag;
 extern bool imu_init_flag;

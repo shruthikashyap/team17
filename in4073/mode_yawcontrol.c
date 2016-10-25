@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------
+ *  mode_yawcontrol.c
+ *
+ *  Defines the yaw control mode of the drone
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include "modes.h"
 
 void yaw_control_mode()

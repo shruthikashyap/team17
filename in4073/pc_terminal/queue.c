@@ -1,3 +1,15 @@
+/*------------------------------------------------------------------
+ *  queue.c
+ *
+ *  Implements the enqueue and dequeue functions for the
+ *	transmission queue to send the packets to QR.
+ *	Also processes the received packets from QR related to logging
+ *	and telemetry.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>

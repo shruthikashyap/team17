@@ -1,5 +1,13 @@
+/*------------------------------------------------------------------
+ *  mode_fullcontrol.c
+ *
+ *  Defines the full control mode of the drone
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include "modes.h"
-uint32_t ae_[4];
 
 void full_control_mode()
 {
@@ -64,7 +72,7 @@ void full_control_mode()
 				pitchrate_setpoint2 = drone.controlgain_p2 * (drone.sq/6);
 				pitch_moment = pitchrate_setpoint + pitchrate_setpoint2;
 				
-				yaw_error = (int)(yawrate_setpoint - (drone.sr/24));
+				yaw_error = (int)(yawrate_setpoint - (drone.sr/12));
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
 			}
 			else
@@ -77,7 +85,7 @@ void full_control_mode()
 			lift  = DRONE_LIFT_CONSTANT * lift_force;
 			roll  = (int)(DRONE_ROLL_CONSTANT/50 * roll_moment);
 			pitch = (int)(DRONE_PITCH_CONSTANT/50 * pitch_moment);
-			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment);
+			yaw   = (int)(DRONE_YAW_CONSTANT/16 * yaw_moment);
 
 			//calculate_rotor_speeds(lift, pitch, roll, yaw);
 			

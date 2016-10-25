@@ -1,3 +1,13 @@
+/*------------------------------------------------------------------
+ *  joystick_read.c
+ *
+ *  Reads the joystick values. Creates a packet with the scaled
+ *	values and adds it to the tranmission queue.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <sys/ioctl.h>
 #include <sys/time.h>
 #include <sys/types.h>

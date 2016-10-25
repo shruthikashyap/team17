@@ -1,5 +1,8 @@
 /*------------------------------------------------------------------
- *  uart.c -- configures uart
+ *  uart.c
+ *
+ *	Configures uart. Receives the incoming packets
+ *	from PC and checks for packet errors.
  *
  *  I. Protonotarios
  *  Embedded Software Lab

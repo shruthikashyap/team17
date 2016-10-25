@@ -1,3 +1,13 @@
+/*------------------------------------------------------------------
+ *  packet.c
+ *
+ *  Reads keyboard values. Creates packets and adds to the
+ *	transmission queue.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "packet.h"

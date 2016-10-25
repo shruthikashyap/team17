@@ -1,3 +1,14 @@
+/*------------------------------------------------------------------
+ *  process_drone.c
+ *
+ *  Controls the overall operation of the drone based on user
+ *	inputs, sends telemetry data and logs the drone data on user
+ *	request.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include "command_types.h"
@@ -195,6 +206,12 @@ void reset_drone()
 	drone.offset_sp = 0;
     drone.offset_sq = 0;
     drone.offset_sr = 0;
+	drone.offset_sax = 0;
+    drone.offset_say = 0;
+    drone.offset_saz = 0;
+	drone.offset_phi = 0;
+    drone.offset_theta = 0;
+    drone.offset_psi = 0;
 	drone.offset_pressure = 0;
 	
 	// Other parameters

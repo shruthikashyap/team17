@@ -1,3 +1,16 @@
+/*------------------------------------------------------------------
+ *  process_drone.h
+ *
+ *  Defines the max, min and hover RPMs for the drone motors, drone
+ *	constants for lift, roll, pitch and yaw.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
+#ifndef PROCESS_DRONE_H__
+#define PROCESS_DRONE_H__
+
 // XXX: Check this
 #define MIN_RPM 200 // Minimal speed to let the rotor turn due to internal friction
 #define MAX_RPM	700 
@@ -6,16 +19,6 @@
 #define RPM_STEP	10
 #define HOVER_RPM	400		// XXX: Check this
 #define HOVER_LIFT_FORCE	107 // 4*400^2/6000
-
-#define MIN_LIFT 0 // negative lift does not occur
-#define MIN_ROLL  -25000000
-#define MIN_PITCH -25000000
-#define MIN_YAW   -25000000 // 2 500 000
-
-#define MAX_LIFT  25000000
-#define MAX_ROLL  25000000
-#define MAX_PITCH 25000000
-#define MAX_YAW   25000000 // 2 500 000
 
 // Drone specific constants for lift roll yaw pitch
 #define DRONE_LIFT_CONSTANT 6000 // 1 280 000
@@ -53,3 +56,5 @@ void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw);
 
 uint32_t new_addr;
 uint32_t new_addr_write;
+
+#endif

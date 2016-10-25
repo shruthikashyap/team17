@@ -1,3 +1,15 @@
+/*------------------------------------------------------------------
+ *  queue.h
+ *
+ *  Declarations for queue related functions.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
+#ifndef QUEUE_H__
+#define QUEUE_H__
+
 #include <inttypes.h>
 
 struct queue_t{
@@ -18,3 +30,5 @@ void* process_dequeue(void* thread);
 void* process_receive_packets(void* thread);
 void get_log(uint8_t ch);
 void receive_telemetry_data(uint8_t ch);
+
+#endif

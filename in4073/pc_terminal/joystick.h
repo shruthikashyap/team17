@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------
+ *  joystick.h
+ *
+ *  Declarations for joystick attributes
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #ifndef _LINUX_JOYSTICK_H
 #define _LINUX_JOYSTICK_H
 

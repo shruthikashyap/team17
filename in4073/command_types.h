@@ -1,3 +1,16 @@
+/*------------------------------------------------------------------
+ *  command_types.h
+ *
+ *  Defines the command types, mode types, log and telemetry packet
+ *	structures.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
+#ifndef COMMAND_TYPES_H__
+#define COMMAND_TYPES_H__
+
 #include <inttypes.h>
 
 /* Command types */
@@ -115,3 +128,5 @@ struct telemetry
 	int16_t key_pitch;
 	int16_t key_yaw;
 };
+
+#endif

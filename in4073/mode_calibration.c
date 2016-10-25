@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------
+ *  mode_calibration.c
+ *
+ *  Defines the calibartion mode of the drone
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include "modes.h"
 void send_telemetry_data();
 

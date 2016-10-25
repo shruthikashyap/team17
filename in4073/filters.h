@@ -5,6 +5,9 @@
  *------------------------------------------------------------------
  */
 
+#ifndef FILTERS_H__
+#define FILTERS_H__
+
 // All in Q14
 #define BUTTER_A1 2239 // 0.1367
 #define BUTTER_A2 2239
@@ -17,3 +20,5 @@
 
 void butterworth();
 void kalman();
+
+#endif

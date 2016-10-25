@@ -1,3 +1,13 @@
+/*------------------------------------------------------------------
+ *  process_packet.c
+ *
+ *  Processes the received packets from PC and updates the global
+ * 	drone variables
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include "process_packet.h"
 #include "in4073.h"
@@ -156,16 +166,16 @@ void set_key_lift(char value)
 	if(value == 1)
 	{
 		drone.key_lift += KEYBOARD_STEP;
-		if(drone.key_lift > MAX_LIFT)
-			drone.key_lift = MAX_LIFT;
+		if(drone.key_lift > MAX_TRIM_LIFT)
+			drone.key_lift = MAX_TRIM_LIFT;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_lift -= KEYBOARD_STEP;
-		if(drone.key_lift < MIN_LIFT)
-			drone.key_lift = MIN_LIFT;
+		if(drone.key_lift < MIN_TRIM_LIFT)
+			drone.key_lift = MIN_TRIM_LIFT;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
@@ -182,16 +192,16 @@ void set_key_roll(char value)
 	if(value == 1)
 	{
 		drone.key_roll += KEYBOARD_STEP;
-		if(drone.key_roll > MAX_ROLL)
-			drone.key_roll = MAX_ROLL;
+		if(drone.key_roll > MAX_TRIM_ROLL)
+			drone.key_roll = MAX_TRIM_ROLL;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_roll -= KEYBOARD_STEP;
-		if(drone.key_roll < MIN_ROLL)
-			drone.key_roll = MIN_ROLL;
+		if(drone.key_roll < MIN_TRIM_ROLL)
+			drone.key_roll = MIN_TRIM_ROLL;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
@@ -208,16 +218,16 @@ void set_key_pitch(char value)
 	if(value == 1)
 	{
 		drone.key_pitch += KEYBOARD_STEP;
-		if(drone.key_pitch > MAX_PITCH)
-			drone.key_pitch = MAX_PITCH;
+		if(drone.key_pitch > MAX_TRIM_PITCH)
+			drone.key_pitch = MAX_TRIM_PITCH;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_pitch -= KEYBOARD_STEP;
-		if(drone.key_pitch < MIN_PITCH)
-			drone.key_pitch = MIN_PITCH;
+		if(drone.key_pitch < MIN_TRIM_PITCH)
+			drone.key_pitch = MIN_TRIM_PITCH;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
@@ -234,16 +244,16 @@ void set_key_yaw(char value)
 	if(value == 1)
 	{
 		drone.key_yaw += KEYBOARD_STEP;
-		if(drone.key_yaw > MAX_YAW)
-			drone.key_yaw = MAX_YAW;
+		if(drone.key_yaw > MAX_TRIM_YAW)
+			drone.key_yaw = MAX_TRIM_YAW;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}
 	else if(value == 0)
 	{
 		drone.key_yaw -= KEYBOARD_STEP;
-		if(drone.key_yaw < MIN_YAW)
-			drone.key_yaw = MIN_YAW;
+		if(drone.key_yaw < MIN_TRIM_YAW)
+			drone.key_yaw = MIN_TRIM_YAW;
 		
 		send_packet_ack(ACK_SUCCESS);
 	}

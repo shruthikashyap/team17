@@ -1,3 +1,15 @@
+/*------------------------------------------------------------------
+ *  log.h
+ *
+ *  Declarations of logging functions
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
+#ifndef LOG_H__
+#define LOG_H__
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
@@ -13,3 +25,5 @@ void uart_put_32bit(int32_t value);
 
 struct log write_data;
 struct log read_data;
+
+#endif

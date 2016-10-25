@@ -1,3 +1,14 @@
+/*------------------------------------------------------------------
+ *  receive_telemetry.c
+ *
+ *  Receives and processes the telemetry packets and displays the
+ *	data on console.
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
+
 #include <stdio.h>
 #include "../command_types.h"
 

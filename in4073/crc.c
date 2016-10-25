@@ -1,3 +1,12 @@
+/*------------------------------------------------------------------
+ *  crc.c
+ *
+ *  Computes and checks CRC values of packets
+ *
+ *  June 2016
+ *------------------------------------------------------------------
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "command_types.h"
