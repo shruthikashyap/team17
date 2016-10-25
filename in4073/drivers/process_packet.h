@@ -1,6 +1,5 @@
 #include "../command_types.h"
 
-// XXX: Need to change the values
 #define MAX_LIFT	128
 #define MAX_PITCH	128
 #define MAX_ROLL	128

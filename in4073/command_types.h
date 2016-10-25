@@ -64,7 +64,6 @@
 
 struct packet_t
 {
-	// XXX: Add check bytes
 	unsigned char start;
 	char command;
 	signed char value;

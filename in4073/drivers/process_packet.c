@@ -64,7 +64,6 @@ void process_key(struct packet_t p)
 
 void send_packet_to_pc(struct packet_t p)
 {
-	// XXX: Send p to PC
 	uart_put(p.start);
 	uart_put(p.command);
 	uart_put(p.value);
@@ -74,7 +73,6 @@ void send_packet_to_pc(struct packet_t p)
 
 void send_packet_ack(int ack)
 {
-	// XXX: Send ack to PC
 	//printf("Ack value = %d\n", ack);
 	
 	struct packet_t p;
@@ -142,12 +140,8 @@ void set_mode_type(char value)
 						drone.change_mode = 1;
 						send_packet_ack(ACK_SUCCESS);
 						break;
-			case WIRELESS_MODE:
-						// XXX: Not considered a mode. Needs to be handled.
-						break;
 			default:
 						//printf("Invalid mode\n");
-						// XXX: Send NACK
 						send_packet_ack(ACK_FAILURE);
 		}
 	}
@@ -177,7 +171,6 @@ void set_key_lift(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 }
@@ -204,7 +197,6 @@ void set_key_roll(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 }
@@ -231,7 +223,6 @@ void set_key_pitch(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 }
@@ -258,7 +249,6 @@ void set_key_yaw(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 }
@@ -286,7 +276,6 @@ void set_key_control_yaw(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 	
@@ -316,7 +305,6 @@ void set_key_control_p1(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 	
@@ -346,7 +334,6 @@ void set_key_control_p2(char value)
 	}
 	else
 	{
-		// XXX: Send NACK
 		send_packet_ack(ACK_FAILURE);
 	}
 	
@@ -493,8 +480,6 @@ void process_packet(struct packet_t packet)
 				imu_init_flag = false;
 				break;
 		default :
-				// XXX: Packet error. Needs to be handled
-				// XXX: Send NACK
 				send_packet_ack(ACK_FAILURE);
 				break;
 	}

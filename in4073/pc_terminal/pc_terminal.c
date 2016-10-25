@@ -86,7 +86,6 @@ int main(int argc, char **argv)
 	{
 		if ((c = term_getchar_nb()) != -1) 
 		{
-			// XXX: To be Done: Check for NACK after every byte. If NACK - Resend from beginning
 			sendKeyPacket(c);
 		}
 

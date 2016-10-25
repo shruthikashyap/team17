@@ -95,10 +95,11 @@ void* process_dequeue(void* thread)
 			
 			//printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
 
-			// XXX: To be Done: Check for ACK. If NACK - Resend from beginning. Timeout if nothing is received and retry again.
-			// XXX: Retry for PANIC_MODE - ack_received
-			// ACK SUCCESS = 0, FAILURE = 1
 			#if 0
+			// Check for ACK. If NACK - Resend from beginning. Timeout if nothing is received and retry again.
+			// Retry for PANIC_MODE - ack_received
+			// ACK SUCCESS = 0, FAILURE = 1
+			
 			if(p->command == MODE_TYPE && p->value == PANIC_MODE)
 			{
 				//printf("Inside panic mode retry logic!\n");
@@ -160,7 +161,7 @@ void* process_receive_packets(void* thread)
 	#endif
 	
 	#if 1
-	// XXX: Receive telemetry data, log data, acknowledgement, etc.
+	// Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;
 	int rcv_byte_count = 0;
@@ -199,7 +200,7 @@ void* process_receive_packets(void* thread)
 					}
 					else
 					{
-						// XXX: Packet error
+						// Packet error
 						//printf("Packet error: %d!\n", ch);
 
 						// Reset flags
@@ -233,7 +234,7 @@ void* process_receive_packets(void* thread)
 							}
 							else
 							{
-								// XXX: Need to handle other packets
+								// Do nothing
 							}
 						}
 						else
@@ -243,7 +244,7 @@ void* process_receive_packets(void* thread)
 					}
 					else
 					{
-						// XXX: Packet error
+						// Packet error
 						//printf("Packet error: %d!\n", ch);
 					}
 
@@ -269,7 +270,7 @@ void* process_receive_packets(void* thread)
 				}
 				else
 				{
-					// XXX: Packet error
+					// Packet error
 					//printf("Packet error: %d!\n", ch);
 
 					// Reset flag
