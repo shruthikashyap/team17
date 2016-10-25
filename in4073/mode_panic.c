@@ -39,7 +39,7 @@ void panic_mode()
 
 	// Go to safe mode
 	drone.current_mode = SAFE_MODE;
-	drone.change_mode = 1; // XXX: Is this needed?
+	drone.change_mode = 1;
 	nrf_gpio_pin_toggle(RED);
 	
 	//printf("Exit PANIC_MODE\n");

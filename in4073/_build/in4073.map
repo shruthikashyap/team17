@@ -209,7 +209,6 @@ drone               0x5c              _build/in4073.o
 sp                  0x2               _build/in4073.o
 new_addr            0x4               _build/in4073.o
 ble_tx_queue        0x83              _build/in4073.o
-ae                  0x8               _build/in4073.o
 D1                  0x4               _build/baro.o
 ae_                 0x10              _build/mode_fullcontrol.o
 drift_sq            0x4               _build/filters.o
@@ -369,7 +368,7 @@ Discarded input sections
                 0x00000000       0x94 _build/ble.o
  .text.ble_init
                 0x00000000      0x1ec _build/ble.o
- .bss.APP_TIMER_BUF.8504
+ .bss.APP_TIMER_BUF.8503
                 0x00000000      0x1c8 _build/ble.o
  .data.m_adv_uuids
                 0x00000000        0x4 _build/ble.o
@@ -377,7 +376,7 @@ Discarded input sections
                 0x00000000        0x2 _build/ble.o
  .rodata.str1.4
                 0x00000000       0x12 _build/ble.o
- .bss.BLE_EVT_BUFFER.8470
+ .bss.BLE_EVT_BUFFER.8469
                 0x00000000       0x48 _build/ble.o
  .bss.m_nus     0x00000000       0x1c _build/ble.o
  .comment       0x00000000       0x6f _build/ble.o
@@ -1251,7 +1250,7 @@ END GROUP
  *(fs_data)
                 [!provide]                PROVIDE (__stop_fs_data, .)
 
-.text           0x00018000     0xadfc
+.text           0x00018000     0xaddc
  *(.Vectors)
  .Vectors       0x00018000       0xc0 _build/gcc_startup_nrf51.o
                 0x00018000                __Vectors
@@ -1391,405 +1390,405 @@ END GROUP
  .text._write   0x0001a128       0x84 _build/uart.o
                 0x0001a128                _write
  .text.UART0_IRQHandler
-                0x0001a1ac      0x174 _build/uart.o
+                0x0001a1ac      0x150 _build/uart.o
                 0x0001a1ac                UART0_IRQHandler
  .text.uart_init
-                0x0001a320       0xa0 _build/uart.o
-                0x0001a320                uart_init
+                0x0001a2fc       0xa0 _build/uart.o
+                0x0001a2fc                uart_init
  .text.init_queue
-                0x0001a3c0       0x14 _build/queue.o
-                0x0001a3c0                init_queue
- .text.enqueue  0x0001a3d4       0x1c _build/queue.o
-                0x0001a3d4                enqueue
- .text.dequeue  0x0001a3f0       0x1c _build/queue.o
-                0x0001a3f0                dequeue
+                0x0001a39c       0x14 _build/queue.o
+                0x0001a39c                init_queue
+ .text.enqueue  0x0001a3b0       0x1c _build/queue.o
+                0x0001a3b0                enqueue
+ .text.dequeue  0x0001a3cc       0x1c _build/queue.o
+                0x0001a3cc                dequeue
  .text.i2c_read
-                0x0001a40c       0xc0 _build/twi.o
-                0x0001a40c                i2c_read
+                0x0001a3e8       0xc0 _build/twi.o
+                0x0001a3e8                i2c_read
  .text.i2c_write
-                0x0001a4cc       0x70 _build/twi.o
-                0x0001a4cc                i2c_write
+                0x0001a4a8       0x70 _build/twi.o
+                0x0001a4a8                i2c_write
  .text.SPI0_TWI0_IRQHandler
-                0x0001a53c       0x6c _build/twi.o
-                0x0001a53c                SPI0_TWI0_IRQHandler
+                0x0001a518       0x6c _build/twi.o
+                0x0001a518                SPI0_TWI0_IRQHandler
  .text.twi_init
-                0x0001a5a8       0x84 _build/twi.o
-                0x0001a5a8                twi_init
+                0x0001a584       0x84 _build/twi.o
+                0x0001a584                twi_init
  .text.adc_request_sample
-                0x0001a62c       0x18 _build/adc.o
-                0x0001a62c                adc_request_sample
+                0x0001a608       0x18 _build/adc.o
+                0x0001a608                adc_request_sample
  .text.ADC_IRQHandler
-                0x0001a644       0x24 _build/adc.o
-                0x0001a644                ADC_IRQHandler
+                0x0001a620       0x24 _build/adc.o
+                0x0001a620                ADC_IRQHandler
  .text.adc_init
-                0x0001a668       0x3c _build/adc.o
-                0x0001a668                adc_init
+                0x0001a644       0x3c _build/adc.o
+                0x0001a644                adc_init
  .text.read_baro
-                0x0001a6a4      0x194 _build/baro.o
-                0x0001a6a4                read_baro
+                0x0001a680      0x194 _build/baro.o
+                0x0001a680                read_baro
  .text.baro_init
-                0x0001a838       0x34 _build/baro.o
-                0x0001a838                baro_init
+                0x0001a814       0x34 _build/baro.o
+                0x0001a814                baro_init
  .text.flash_chip_erase
-                0x0001a86c       0x9c _build/spi_flash.o
-                0x0001a86c                flash_chip_erase
+                0x0001a848       0x9c _build/spi_flash.o
+                0x0001a848                flash_chip_erase
  .text.flash_write_bytes
-                0x0001a908      0x248 _build/spi_flash.o
-                0x0001a908                flash_write_bytes
+                0x0001a8e4      0x248 _build/spi_flash.o
+                0x0001a8e4                flash_write_bytes
  .text.flash_read_bytes
-                0x0001ab50       0xf0 _build/spi_flash.o
-                0x0001ab50                flash_read_bytes
+                0x0001ab2c       0xf0 _build/spi_flash.o
+                0x0001ab2c                flash_read_bytes
  .text.spi_flash_init
-                0x0001ac40      0x274 _build/spi_flash.o
-                0x0001ac40                spi_flash_init
+                0x0001ac1c      0x274 _build/spi_flash.o
+                0x0001ac1c                spi_flash_init
  .text.mpu_reset_fifo
-                0x0001aeb4      0x15c _build/inv_mpu.o
-                0x0001aeb4                mpu_reset_fifo
+                0x0001ae90      0x15c _build/inv_mpu.o
+                0x0001ae90                mpu_reset_fifo
  .text.mpu_lp_accel_mode
-                0x0001b010      0x1b8 _build/inv_mpu.o
-                0x0001b010                mpu_lp_accel_mode
+                0x0001afec      0x1b8 _build/inv_mpu.o
+                0x0001afec                mpu_lp_accel_mode
  .text.mpu_get_accel_fsr
-                0x0001b1c8       0x4c _build/inv_mpu.o
-                0x0001b1c8                mpu_get_accel_fsr
+                0x0001b1a4       0x4c _build/inv_mpu.o
+                0x0001b1a4                mpu_get_accel_fsr
  .text.mpu_set_lpf
-                0x0001b214       0x78 _build/inv_mpu.o
-                0x0001b214                mpu_set_lpf
+                0x0001b1f0       0x78 _build/inv_mpu.o
+                0x0001b1f0                mpu_set_lpf
  .text.mpu_set_sample_rate
-                0x0001b28c      0x168 _build/inv_mpu.o
-                0x0001b28c                mpu_set_sample_rate
+                0x0001b268      0x168 _build/inv_mpu.o
+                0x0001b268                mpu_set_sample_rate
  .text.mpu_configure_fifo
-                0x0001b3f4       0xd0 _build/inv_mpu.o
-                0x0001b3f4                mpu_configure_fifo
+                0x0001b3d0       0xd0 _build/inv_mpu.o
+                0x0001b3d0                mpu_configure_fifo
  .text.mpu_set_sensors
-                0x0001b4c4      0x140 _build/inv_mpu.o
-                0x0001b4c4                mpu_set_sensors
+                0x0001b4a0      0x140 _build/inv_mpu.o
+                0x0001b4a0                mpu_set_sensors
  .text.mpu_init
-                0x0001b604      0x1f4 _build/inv_mpu.o
-                0x0001b604                mpu_init
+                0x0001b5e0      0x1f4 _build/inv_mpu.o
+                0x0001b5e0                mpu_init
  .text.mpu_read_fifo
-                0x0001b7f8      0x26c _build/inv_mpu.o
-                0x0001b7f8                mpu_read_fifo
+                0x0001b7d4      0x26c _build/inv_mpu.o
+                0x0001b7d4                mpu_read_fifo
  .text.mpu_read_fifo_stream
-                0x0001ba64       0xb0 _build/inv_mpu.o
-                0x0001ba64                mpu_read_fifo_stream
+                0x0001ba40       0xb0 _build/inv_mpu.o
+                0x0001ba40                mpu_read_fifo_stream
  .text.mpu_write_mem
-                0x0001bb14       0x58 _build/inv_mpu.o
-                0x0001bb14                mpu_write_mem
+                0x0001baf0       0x58 _build/inv_mpu.o
+                0x0001baf0                mpu_write_mem
  .text.mpu_load_firmware
-                0x0001bb6c      0x15c _build/inv_mpu.o
-                0x0001bb6c                mpu_load_firmware
+                0x0001bb48      0x15c _build/inv_mpu.o
+                0x0001bb48                mpu_load_firmware
  .text.mpu_set_dmp_state
-                0x0001bcc8      0x174 _build/inv_mpu.o
-                0x0001bcc8                mpu_set_dmp_state
+                0x0001bca4      0x174 _build/inv_mpu.o
+                0x0001bca4                mpu_set_dmp_state
  .text.dmp_load_motion_driver_firmware
-                0x0001be3c       0x1c _build/inv_mpu_dmp_motion_driver.o
-                0x0001be3c                dmp_load_motion_driver_firmware
+                0x0001be18       0x1c _build/inv_mpu_dmp_motion_driver.o
+                0x0001be18                dmp_load_motion_driver_firmware
  .text.dmp_set_orientation
-                0x0001be58      0x118 _build/inv_mpu_dmp_motion_driver.o
-                0x0001be58                dmp_set_orientation
+                0x0001be34      0x118 _build/inv_mpu_dmp_motion_driver.o
+                0x0001be34                dmp_set_orientation
  .text.dmp_set_fifo_rate
-                0x0001bf70       0x64 _build/inv_mpu_dmp_motion_driver.o
-                0x0001bf70                dmp_set_fifo_rate
+                0x0001bf4c       0x64 _build/inv_mpu_dmp_motion_driver.o
+                0x0001bf4c                dmp_set_fifo_rate
  .text.dmp_set_tap_thresh
-                0x0001bfd4      0x164 _build/inv_mpu_dmp_motion_driver.o
-                0x0001bfd4                dmp_set_tap_thresh
+                0x0001bfb0      0x164 _build/inv_mpu_dmp_motion_driver.o
+                0x0001bfb0                dmp_set_tap_thresh
  .text.dmp_enable_feature
-                0x0001c138      0x28c _build/inv_mpu_dmp_motion_driver.o
-                0x0001c138                dmp_enable_feature
+                0x0001c114      0x28c _build/inv_mpu_dmp_motion_driver.o
+                0x0001c114                dmp_enable_feature
  .text.dmp_read_fifo
-                0x0001c3c4      0x20c _build/inv_mpu_dmp_motion_driver.o
-                0x0001c3c4                dmp_read_fifo
+                0x0001c3a0      0x20c _build/inv_mpu_dmp_motion_driver.o
+                0x0001c3a0                dmp_read_fifo
  .text.inv_orientation_matrix_to_scalar
-                0x0001c5d0      0x11c _build/ml.o
-                0x0001c5d0                inv_orientation_matrix_to_scalar
+                0x0001c5ac      0x11c _build/ml.o
+                0x0001c5ac                inv_orientation_matrix_to_scalar
  .text.get_dmp_data
-                0x0001c6ec      0x204 _build/mpu_wrapper.o
-                0x0001c6ec                get_dmp_data
+                0x0001c6c8      0x204 _build/mpu_wrapper.o
+                0x0001c6c8                get_dmp_data
  .text.get_raw_sensor_data
-                0x0001c8f0       0x78 _build/mpu_wrapper.o
-                0x0001c8f0                get_raw_sensor_data
+                0x0001c8cc       0x78 _build/mpu_wrapper.o
+                0x0001c8cc                get_raw_sensor_data
  .text.imu_init
-                0x0001c968      0x110 _build/mpu_wrapper.o
-                0x0001c968                imu_init
+                0x0001c944      0x110 _build/mpu_wrapper.o
+                0x0001c944                imu_init
  .text.app_error_handler
-                0x0001ca78       0x40 _build/app_error.o
-                0x0001ca78                app_error_handler
+                0x0001ca54       0x40 _build/app_error.o
+                0x0001ca54                app_error_handler
  .text.rtc1_stop
-                0x0001cab8       0x78 _build/app_timer.o
+                0x0001ca94       0x78 _build/app_timer.o
  .text.RTC1_IRQHandler
-                0x0001cb30       0xe0 _build/app_timer.o
-                0x0001cb30                RTC1_IRQHandler
+                0x0001cb0c       0xe0 _build/app_timer.o
+                0x0001cb0c                RTC1_IRQHandler
  .text.SWI0_IRQHandler
-                0x0001cc10      0x4cc _build/app_timer.o
-                0x0001cc10                SWI0_IRQHandler
+                0x0001cbec      0x4cc _build/app_timer.o
+                0x0001cbec                SWI0_IRQHandler
  .text.sd_evt_get
-                0x0001d0dc        0x4 _build/softdevice_handler.o
+                0x0001d0b8        0x4 _build/softdevice_handler.o
  .text.sd_ble_evt_get
-                0x0001d0e0        0x4 _build/softdevice_handler.o
+                0x0001d0bc        0x4 _build/softdevice_handler.o
  .text.intern_softdevice_events_execute.part.0
-                0x0001d0e4       0xec _build/softdevice_handler.o
+                0x0001d0c0       0xec _build/softdevice_handler.o
  .text.SWI2_IRQHandler
-                0x0001d1d0       0x34 _build/softdevice_handler.o
-                0x0001d1d0                SWI2_IRQHandler
- .text          0x0001d204       0x54 _build/gcc_startup_nrf51.o
-                0x0001d204                Reset_Handler
-                0x0001d24c                NMI_Handler
-                0x0001d24e                HardFault_Handler
-                0x0001d250                SVC_Handler
-                0x0001d252                PendSV_Handler
-                0x0001d254                SysTick_Handler
-                0x0001d256                RTC0_IRQHandler
-                0x0001d256                POWER_CLOCK_IRQHandler
-                0x0001d256                RADIO_IRQHandler
-                0x0001d256                LPCOMP_IRQHandler
-                0x0001d256                SWI4_IRQHandler
-                0x0001d256                TEMP_IRQHandler
-                0x0001d256                QDEC_IRQHandler
-                0x0001d256                SWI5_IRQHandler
-                0x0001d256                TIMER0_IRQHandler
-                0x0001d256                ECB_IRQHandler
-                0x0001d256                Default_Handler
-                0x0001d256                SWI3_IRQHandler
-                0x0001d256                CCM_AAR_IRQHandler
-                0x0001d256                WDT_IRQHandler
-                0x0001d256                RNG_IRQHandler
-                0x0001d256                SPI1_TWI1_IRQHandler
-                0x0001d256                SWI1_IRQHandler
- .text.fabs     0x0001d258        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_fabs.o)
-                0x0001d258                fabs
- .text.asin     0x0001d260       0xc4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_asin.o)
-                0x0001d260                asin
- .text.atan2    0x0001d324        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_atan2.o)
-                0x0001d324                atan2
- .text.sqrt     0x0001d32c       0xc0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_sqrt.o)
-                0x0001d32c                sqrt
+                0x0001d1ac       0x34 _build/softdevice_handler.o
+                0x0001d1ac                SWI2_IRQHandler
+ .text          0x0001d1e0       0x54 _build/gcc_startup_nrf51.o
+                0x0001d1e0                Reset_Handler
+                0x0001d228                NMI_Handler
+                0x0001d22a                HardFault_Handler
+                0x0001d22c                SVC_Handler
+                0x0001d22e                PendSV_Handler
+                0x0001d230                SysTick_Handler
+                0x0001d232                RTC0_IRQHandler
+                0x0001d232                POWER_CLOCK_IRQHandler
+                0x0001d232                RADIO_IRQHandler
+                0x0001d232                LPCOMP_IRQHandler
+                0x0001d232                SWI4_IRQHandler
+                0x0001d232                TEMP_IRQHandler
+                0x0001d232                QDEC_IRQHandler
+                0x0001d232                SWI5_IRQHandler
+                0x0001d232                TIMER0_IRQHandler
+                0x0001d232                ECB_IRQHandler
+                0x0001d232                Default_Handler
+                0x0001d232                SWI3_IRQHandler
+                0x0001d232                CCM_AAR_IRQHandler
+                0x0001d232                WDT_IRQHandler
+                0x0001d232                RNG_IRQHandler
+                0x0001d232                SPI1_TWI1_IRQHandler
+                0x0001d232                SWI1_IRQHandler
+ .text.fabs     0x0001d234        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_fabs.o)
+                0x0001d234                fabs
+ .text.asin     0x0001d23c       0xc4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_asin.o)
+                0x0001d23c                asin
+ .text.atan2    0x0001d300        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_atan2.o)
+                0x0001d300                atan2
+ .text.sqrt     0x0001d308       0xc0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_sqrt.o)
+                0x0001d308                sqrt
  .text.__ieee754_asin
-                0x0001d3ec      0x3cc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_asin.o)
-                0x0001d3ec                __ieee754_asin
+                0x0001d3c8      0x3cc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_asin.o)
+                0x0001d3c8                __ieee754_asin
  .text.__ieee754_atan2
-                0x0001d7b8      0x178 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_atan2.o)
-                0x0001d7b8                __ieee754_atan2
+                0x0001d794      0x178 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_atan2.o)
+                0x0001d794                __ieee754_atan2
  .text.__ieee754_sqrt
-                0x0001d930      0x1ec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_sqrt.o)
-                0x0001d930                __ieee754_sqrt
- .text.atan     0x0001db1c      0x33c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
-                0x0001db1c                atan
- .text.matherr  0x0001de58        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_matherr.o)
-                0x0001de58                matherr
- .text.nan      0x0001de5c        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_nan.o)
-                0x0001de5c                nan
- .text          0x0001de68      0x114 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_udivsi3.o)
-                0x0001de68                __udivsi3
-                0x0001de68                __aeabi_uidiv
-                0x0001df74                __aeabi_uidivmod
- .text          0x0001df7c      0x1d4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_divsi3.o)
-                0x0001df7c                __aeabi_idiv
-                0x0001df7c                __divsi3
-                0x0001e148                __aeabi_idivmod
- .text          0x0001e150        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_dvmd_tls.o)
-                0x0001e150                __aeabi_ldiv0
-                0x0001e150                __aeabi_idiv0
- .text          0x0001e154       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_arm_cmpdf2.o)
-                0x0001e154                __aeabi_cdrcmple
-                0x0001e164                __aeabi_cdcmple
-                0x0001e164                __aeabi_cdcmpeq
-                0x0001e174                __aeabi_dcmpeq
-                0x0001e180                __aeabi_dcmplt
-                0x0001e194                __aeabi_dcmple
-                0x0001e1a8                __aeabi_dcmpgt
-                0x0001e1bc                __aeabi_dcmpge
- .text          0x0001e1d0       0x74 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_arm_cmpsf2.o)
-                0x0001e1d0                __aeabi_cfrcmple
-                0x0001e1d8                __aeabi_cfcmple
-                0x0001e1d8                __aeabi_cfcmpeq
-                0x0001e1e8                __aeabi_fcmpeq
-                0x0001e1f4                __aeabi_fcmplt
-                0x0001e208                __aeabi_fcmple
-                0x0001e21c                __aeabi_fcmpgt
-                0x0001e230                __aeabi_fcmpge
- .text          0x0001e244       0x58 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_muldi3.o)
-                0x0001e244                __aeabi_lmul
-                0x0001e244                __muldi3
- .text          0x0001e29c       0x30 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_fixunssfsi.o)
-                0x0001e29c                __aeabi_f2uiz
-                0x0001e29c                __fixunssfsi
- .text          0x0001e2cc       0x3c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_fixunsdfsi.o)
-                0x0001e2cc                __fixunsdfsi
-                0x0001e2cc                __aeabi_d2uiz
- .text          0x0001e308      0x2ec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(addsf3.o)
-                0x0001e308                __aeabi_fadd
- .text          0x0001e5f4      0x234 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divsf3.o)
-                0x0001e5f4                __aeabi_fdiv
- .text          0x0001e828       0x50 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(eqsf2.o)
-                0x0001e828                __nesf2
-                0x0001e828                __eqsf2
- .text          0x0001e878       0x88 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(gesf2.o)
-                0x0001e878                __gtsf2
-                0x0001e878                __gesf2
- .text          0x0001e900       0x88 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(lesf2.o)
-                0x0001e900                __lesf2
-                0x0001e900                __ltsf2
- .text          0x0001e988      0x228 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(mulsf3.o)
-                0x0001e988                __aeabi_fmul
- .text          0x0001ebb0      0x30c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(subsf3.o)
-                0x0001ebb0                __aeabi_fsub
- .text          0x0001eebc       0x44 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(fixsfsi.o)
-                0x0001eebc                __aeabi_f2iz
- .text          0x0001ef00       0x90 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatsisf.o)
-                0x0001ef00                __aeabi_i2f
- .text          0x0001ef90       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatunsisf.o)
-                0x0001ef90                __aeabi_ui2f
- .text          0x0001f00c      0x658 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(adddf3.o)
-                0x0001f00c                __aeabi_dadd
- .text          0x0001f664      0x62c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divdf3.o)
-                0x0001f664                __aeabi_ddiv
- .text          0x0001fc90       0x80 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(eqdf2.o)
-                0x0001fc90                __eqdf2
-                0x0001fc90                __nedf2
- .text          0x0001fd10       0xc8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(gedf2.o)
-                0x0001fd10                __gtdf2
-                0x0001fd10                __gedf2
- .text          0x0001fdd8       0xd4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(ledf2.o)
-                0x0001fdd8                __ltdf2
-                0x0001fdd8                __ledf2
- .text          0x0001feac      0x4f4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(muldf3.o)
-                0x0001feac                __aeabi_dmul
- .text          0x000203a0      0x6a8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(subdf3.o)
-                0x000203a0                __aeabi_dsub
- .text          0x00020a48       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(unorddf2.o)
-                0x00020a48                __aeabi_dcmpun
- .text          0x00020a88       0x6c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(fixdfsi.o)
-                0x00020a88                __aeabi_d2iz
- .text          0x00020af4       0x84 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatsidf.o)
-                0x00020af4                __aeabi_i2d
- .text          0x00020b78       0x70 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatunsidf.o)
-                0x00020b78                __aeabi_ui2d
- .text          0x00020be8       0xa8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(extendsfdf2.o)
-                0x00020be8                __aeabi_f2d
- .text          0x00020c90       0x3c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_clzsi2.o)
-                0x00020c90                __clzsi2
- .text.__errno  0x00020ccc        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-errno.o)
-                0x00020ccc                __errno
- .text.memcmp   0x00020cd8       0x1e /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memcmp.o)
-                0x00020cd8                memcmp
- .text.memcpy   0x00020cf6       0x12 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memcpy-stub.o)
-                0x00020cf6                memcpy
- .text.printf   0x00020d08       0x34 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-printf.o)
-                0x00020d08                printf
-                0x00020d08                iprintf
+                0x0001d90c      0x1ec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-e_sqrt.o)
+                0x0001d90c                __ieee754_sqrt
+ .text.atan     0x0001daf8      0x33c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
+                0x0001daf8                atan
+ .text.matherr  0x0001de34        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_matherr.o)
+                0x0001de34                matherr
+ .text.nan      0x0001de38        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_nan.o)
+                0x0001de38                nan
+ .text          0x0001de44      0x114 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_udivsi3.o)
+                0x0001de44                __udivsi3
+                0x0001de44                __aeabi_uidiv
+                0x0001df50                __aeabi_uidivmod
+ .text          0x0001df58      0x1d4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_divsi3.o)
+                0x0001df58                __aeabi_idiv
+                0x0001df58                __divsi3
+                0x0001e124                __aeabi_idivmod
+ .text          0x0001e12c        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_dvmd_tls.o)
+                0x0001e12c                __aeabi_ldiv0
+                0x0001e12c                __aeabi_idiv0
+ .text          0x0001e130       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_arm_cmpdf2.o)
+                0x0001e130                __aeabi_cdrcmple
+                0x0001e140                __aeabi_cdcmple
+                0x0001e140                __aeabi_cdcmpeq
+                0x0001e150                __aeabi_dcmpeq
+                0x0001e15c                __aeabi_dcmplt
+                0x0001e170                __aeabi_dcmple
+                0x0001e184                __aeabi_dcmpgt
+                0x0001e198                __aeabi_dcmpge
+ .text          0x0001e1ac       0x74 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_arm_cmpsf2.o)
+                0x0001e1ac                __aeabi_cfrcmple
+                0x0001e1b4                __aeabi_cfcmple
+                0x0001e1b4                __aeabi_cfcmpeq
+                0x0001e1c4                __aeabi_fcmpeq
+                0x0001e1d0                __aeabi_fcmplt
+                0x0001e1e4                __aeabi_fcmple
+                0x0001e1f8                __aeabi_fcmpgt
+                0x0001e20c                __aeabi_fcmpge
+ .text          0x0001e220       0x58 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_muldi3.o)
+                0x0001e220                __aeabi_lmul
+                0x0001e220                __muldi3
+ .text          0x0001e278       0x30 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_fixunssfsi.o)
+                0x0001e278                __aeabi_f2uiz
+                0x0001e278                __fixunssfsi
+ .text          0x0001e2a8       0x3c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_fixunsdfsi.o)
+                0x0001e2a8                __fixunsdfsi
+                0x0001e2a8                __aeabi_d2uiz
+ .text          0x0001e2e4      0x2ec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(addsf3.o)
+                0x0001e2e4                __aeabi_fadd
+ .text          0x0001e5d0      0x234 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divsf3.o)
+                0x0001e5d0                __aeabi_fdiv
+ .text          0x0001e804       0x50 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(eqsf2.o)
+                0x0001e804                __nesf2
+                0x0001e804                __eqsf2
+ .text          0x0001e854       0x88 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(gesf2.o)
+                0x0001e854                __gtsf2
+                0x0001e854                __gesf2
+ .text          0x0001e8dc       0x88 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(lesf2.o)
+                0x0001e8dc                __lesf2
+                0x0001e8dc                __ltsf2
+ .text          0x0001e964      0x228 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(mulsf3.o)
+                0x0001e964                __aeabi_fmul
+ .text          0x0001eb8c      0x30c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(subsf3.o)
+                0x0001eb8c                __aeabi_fsub
+ .text          0x0001ee98       0x44 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(fixsfsi.o)
+                0x0001ee98                __aeabi_f2iz
+ .text          0x0001eedc       0x90 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatsisf.o)
+                0x0001eedc                __aeabi_i2f
+ .text          0x0001ef6c       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatunsisf.o)
+                0x0001ef6c                __aeabi_ui2f
+ .text          0x0001efe8      0x658 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(adddf3.o)
+                0x0001efe8                __aeabi_dadd
+ .text          0x0001f640      0x62c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divdf3.o)
+                0x0001f640                __aeabi_ddiv
+ .text          0x0001fc6c       0x80 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(eqdf2.o)
+                0x0001fc6c                __eqdf2
+                0x0001fc6c                __nedf2
+ .text          0x0001fcec       0xc8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(gedf2.o)
+                0x0001fcec                __gtdf2
+                0x0001fcec                __gedf2
+ .text          0x0001fdb4       0xd4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(ledf2.o)
+                0x0001fdb4                __ltdf2
+                0x0001fdb4                __ledf2
+ .text          0x0001fe88      0x4f4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(muldf3.o)
+                0x0001fe88                __aeabi_dmul
+ .text          0x0002037c      0x6a8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(subdf3.o)
+                0x0002037c                __aeabi_dsub
+ .text          0x00020a24       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(unorddf2.o)
+                0x00020a24                __aeabi_dcmpun
+ .text          0x00020a64       0x6c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(fixdfsi.o)
+                0x00020a64                __aeabi_d2iz
+ .text          0x00020ad0       0x84 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatsidf.o)
+                0x00020ad0                __aeabi_i2d
+ .text          0x00020b54       0x70 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(floatunsidf.o)
+                0x00020b54                __aeabi_ui2d
+ .text          0x00020bc4       0xa8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(extendsfdf2.o)
+                0x00020bc4                __aeabi_f2d
+ .text          0x00020c6c       0x3c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(_clzsi2.o)
+                0x00020c6c                __clzsi2
+ .text.__errno  0x00020ca8        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-errno.o)
+                0x00020ca8                __errno
+ .text.memcmp   0x00020cb4       0x1e /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memcmp.o)
+                0x00020cb4                memcmp
+ .text.memcpy   0x00020cd2       0x12 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memcpy-stub.o)
+                0x00020cd2                memcpy
+ .text.printf   0x00020ce4       0x34 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-printf.o)
+                0x00020ce4                printf
+                0x00020ce4                iprintf
  .text._cleanup_r
-                0x00020d3c       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00020d3c                _cleanup_r
+                0x00020d18       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00020d18                _cleanup_r
  .text.std.isra.0
-                0x00020d4c       0x48 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00020d28       0x48 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
  .text.__sfmoreglue
-                0x00020d94       0x2c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00020d94                __sfmoreglue
- .text.__sinit  0x00020dc0       0x68 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00020dc0                __sinit
- .text.__sfp    0x00020e28       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00020e28                __sfp
+                0x00020d70       0x2c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00020d70                __sfmoreglue
+ .text.__sinit  0x00020d9c       0x68 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00020d9c                __sinit
+ .text.__sfp    0x00020e04       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00020e04                __sfp
  .text._fwalk_reent
-                0x00020ea4       0x42 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fwalk.o)
-                0x00020ea4                _fwalk_reent
- *fill*         0x00020ee6        0x2 
+                0x00020e80       0x42 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fwalk.o)
+                0x00020e80                _fwalk_reent
+ *fill*         0x00020ec2        0x2 
  .text._malloc_r
-                0x00020ee8       0xc0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-mallocr.o)
-                0x00020ee8                _malloc_r
+                0x00020ec4       0xc0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-mallocr.o)
+                0x00020ec4                _malloc_r
  .text.__sfputc_r
-                0x00020fa8       0x2a /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00020f84       0x2a /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
  .text.__sfputs_r
-                0x00020fd2       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
-                0x00020fd2                __sfputs_r
- *fill*         0x00020ff6        0x2 
+                0x00020fae       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00020fae                __sfputs_r
+ *fill*         0x00020fd2        0x2 
  .text._vfprintf_r
-                0x00020ff8      0x238 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
-                0x00020ff8                _vfiprintf_r
-                0x00020ff8                _vfprintf_r
+                0x00020fd4      0x238 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00020fd4                _vfiprintf_r
+                0x00020fd4                _vfprintf_r
  .text._printf_common
-                0x00021230       0xdc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
-                0x00021230                _printf_common
+                0x0002120c       0xdc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x0002120c                _printf_common
  .text._printf_i
-                0x0002130c      0x244 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
-                0x0002130c                _printf_i
- .text._sbrk_r  0x00021550       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-sbrkr.o)
-                0x00021550                _sbrk_r
- .text.__sread  0x00021574       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
-                0x00021574                __sread
+                0x000212e8      0x244 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x000212e8                _printf_i
+ .text._sbrk_r  0x0002152c       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-sbrkr.o)
+                0x0002152c                _sbrk_r
+ .text.__sread  0x00021550       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
+                0x00021550                __sread
  .text.__swrite
-                0x0002159c       0x38 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
-                0x0002159c                __swrite
- .text.__sseek  0x000215d4       0x2c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
-                0x000215d4                __sseek
+                0x00021578       0x38 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
+                0x00021578                __swrite
+ .text.__sseek  0x000215b0       0x2c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
+                0x000215b0                __sseek
  .text.__sclose
-                0x00021600        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
-                0x00021600                __sclose
+                0x000215dc        0xc /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-stdio.o)
+                0x000215dc                __sclose
  .text.__swbuf_r
-                0x0002160c       0xb0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-wbuf.o)
-                0x0002160c                __swbuf_r
+                0x000215e8       0xb0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-wbuf.o)
+                0x000215e8                __swbuf_r
  .text._write_r
-                0x000216bc       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-writer.o)
-                0x000216bc                _write_r
+                0x00021698       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-writer.o)
+                0x00021698                _write_r
  .text.__swsetup_r
-                0x000216e4       0xec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-wsetup.o)
-                0x000216e4                __swsetup_r
+                0x000216c0       0xec /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-wsetup.o)
+                0x000216c0                __swsetup_r
  .text._close_r
-                0x000217d0       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-closer.o)
-                0x000217d0                _close_r
+                0x000217ac       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-closer.o)
+                0x000217ac                _close_r
  .text.__sflush_r
-                0x000217f4      0x10c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fflush.o)
-                0x000217f4                __sflush_r
+                0x000217d0      0x10c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fflush.o)
+                0x000217d0                __sflush_r
  .text._fflush_r
-                0x00021900       0x58 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fflush.o)
-                0x00021900                _fflush_r
+                0x000218dc       0x58 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fflush.o)
+                0x000218dc                _fflush_r
  .text._lseek_r
-                0x00021958       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-lseekr.o)
-                0x00021958                _lseek_r
+                0x00021934       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-lseekr.o)
+                0x00021934                _lseek_r
  .text.__swhatbuf_r
-                0x00021980       0x4c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-makebuf.o)
-                0x00021980                __swhatbuf_r
+                0x0002195c       0x4c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-makebuf.o)
+                0x0002195c                __swhatbuf_r
  .text.__smakebuf_r
-                0x000219cc       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-makebuf.o)
-                0x000219cc                __smakebuf_r
- .text.memchr   0x00021a48       0x16 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memchr-stub.o)
-                0x00021a48                memchr
+                0x000219a8       0x7c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-makebuf.o)
+                0x000219a8                __smakebuf_r
+ .text.memchr   0x00021a24       0x16 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-memchr-stub.o)
+                0x00021a24                memchr
  .text.__malloc_lock
-                0x00021a5e        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-mlock.o)
-                0x00021a5e                __malloc_lock
+                0x00021a3a        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-mlock.o)
+                0x00021a3a                __malloc_lock
  .text.__malloc_unlock
-                0x00021a60        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-mlock.o)
-                0x00021a60                __malloc_unlock
- *fill*         0x00021a62        0x2 
- .text._free_r  0x00021a64       0x98 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-freer.o)
-                0x00021a64                _free_r
- .text._read_r  0x00021afc       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-readr.o)
-                0x00021afc                _read_r
+                0x00021a3c        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-mlock.o)
+                0x00021a3c                __malloc_unlock
+ *fill*         0x00021a3e        0x2 
+ .text._free_r  0x00021a40       0x98 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-freer.o)
+                0x00021a40                _free_r
+ .text._read_r  0x00021ad8       0x28 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-readr.o)
+                0x00021ad8                _read_r
  .text._fstat_r
-                0x00021b24       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fstatr.o)
-                0x00021b24                _fstat_r
+                0x00021b00       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-fstatr.o)
+                0x00021b00                _fstat_r
  .text._isatty_r
-                0x00021b48       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-isattyr.o)
-                0x00021b48                _isatty_r
- .text._close   0x00021b6c       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(close.o)
-                0x00021b6c                _close
- .text._fstat   0x00021b7c       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(fstat.o)
-                0x00021b7c                _fstat
- .text._isatty  0x00021b8c       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(isatty.o)
-                0x00021b8c                _isatty
- .text._lseek   0x00021b9c       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(lseek.o)
-                0x00021b9c                _lseek
- .text._read    0x00021bac       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(read.o)
-                0x00021bac                _read
- .text._sbrk    0x00021bbc       0x1c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(sbrk.o)
-                0x00021bbc                _sbrk
+                0x00021b24       0x24 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-isattyr.o)
+                0x00021b24                _isatty_r
+ .text._close   0x00021b48       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(close.o)
+                0x00021b48                _close
+ .text._fstat   0x00021b58       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(fstat.o)
+                0x00021b58                _fstat
+ .text._isatty  0x00021b68       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(isatty.o)
+                0x00021b68                _isatty
+ .text._lseek   0x00021b78       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(lseek.o)
+                0x00021b78                _lseek
+ .text._read    0x00021b88       0x10 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(read.o)
+                0x00021b88                _read
+ .text._sbrk    0x00021b98       0x1c /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(sbrk.o)
+                0x00021b98                _sbrk
  *(.init)
- .init          0x00021bd8        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crti.o
-                0x00021bd8                _init
- .init          0x00021bdc        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtn.o
+ .init          0x00021bb4        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crti.o
+                0x00021bb4                _init
+ .init          0x00021bb8        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtn.o
  *(.fini)
- .fini          0x00021be4        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crti.o
-                0x00021be4                _fini
- .fini          0x00021be8        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtn.o
+ .fini          0x00021bc0        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crti.o
+                0x00021bc0                _fini
+ .fini          0x00021bc4        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -1802,109 +1801,110 @@ END GROUP
  *(.dtors)
  *(.rodata*)
  .rodata.str1.1
-                0x00021bf0        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-impure.o)
- *fill*         0x00021bf2        0x2 
+                0x00021bcc        0x2 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-impure.o)
+ *fill*         0x00021bce        0x2 
  .rodata._global_impure_ptr
-                0x00021bf4        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-impure.o)
-                0x00021bf4                _global_impure_ptr
+                0x00021bd0        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-impure.o)
+                0x00021bd0                _global_impure_ptr
  .rodata.process_drone
-                0x00021bf8       0x28 _build/process_drone.o
+                0x00021bd4       0x28 _build/process_drone.o
  .rodata.set_mode_type
-                0x00021c20       0x28 _build/process_packet.o
+                0x00021bfc       0x28 _build/process_packet.o
  .rodata.process_packet
-                0x00021c48       0xc4 _build/process_packet.o
+                0x00021c24       0xc4 _build/process_packet.o
  .rodata.str1.4
-                0x00021d0c       0x11 _build/uart.o
- *fill*         0x00021d1d        0x3 
+                0x00021ce8       0x11 _build/uart.o
+ *fill*         0x00021cf9        0x3 
  .rodata.str1.4
-                0x00021d20       0x28 _build/twi.o
- .rodata.test   0x00021d48       0x28 _build/inv_mpu.o
-                0x00021d48                test
+                0x00021cfc       0x28 _build/twi.o
+ .rodata.test   0x00021d24       0x28 _build/inv_mpu.o
+                0x00021d24                test
  .rodata.str1.4
-                0x00021d70       0xa6 _build/inv_mpu.o
- *fill*         0x00021e16        0x2 
- .rodata.hw     0x00021e18        0xc _build/inv_mpu.o
-                0x00021e18                hw
- .rodata.reg    0x00021e24       0x1e _build/inv_mpu.o
-                0x00021e24                reg
- *fill*         0x00021e42        0x2 
- .rodata        0x00021e44       0x4b _build/inv_mpu_dmp_motion_driver.o
- *fill*         0x00021e8f        0x1 
+                0x00021d4c       0xa6 _build/inv_mpu.o
+ *fill*         0x00021df2        0x2 
+ .rodata.hw     0x00021df4        0xc _build/inv_mpu.o
+                0x00021df4                hw
+ .rodata.reg    0x00021e00       0x1e _build/inv_mpu.o
+                0x00021e00                reg
+ *fill*         0x00021e1e        0x2 
+ .rodata        0x00021e20       0x4b _build/inv_mpu_dmp_motion_driver.o
+ *fill*         0x00021e6b        0x1 
  .rodata.dmp_memory
-                0x00021e90      0xbf6 _build/inv_mpu_dmp_motion_driver.o
- *fill*         0x00022a86        0x2 
+                0x00021e6c      0xbf6 _build/inv_mpu_dmp_motion_driver.o
+ *fill*         0x00022a62        0x2 
  .rodata.str1.4
-                0x00022a88      0x126 _build/mpu_wrapper.o
- *fill*         0x00022bae        0x2 
+                0x00022a64      0x126 _build/mpu_wrapper.o
+ *fill*         0x00022b8a        0x2 
  .rodata.str1.4
-                0x00022bb0       0x27 _build/app_error.o
- *fill*         0x00022bd7        0x1 
+                0x00022b8c       0x27 _build/app_error.o
+ *fill*         0x00022bb3        0x1 
  .rodata.str1.4
-                0x00022bd8        0x5 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_asin.o)
+                0x00022bb4        0x5 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_asin.o)
                                   0x9 (size before relaxing)
- *fill*         0x00022bdd        0x3 
+ *fill*         0x00022bb9        0x3 
  .rodata.str1.4
-                0x00022be0        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_sqrt.o)
+                0x00022bbc        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-w_sqrt.o)
                                   0x5 (size before relaxing)
+ *fill*         0x00022bc4        0x4 
  .rodata.atanlo
-                0x00022be8       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
+                0x00022bc8       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
  .rodata.atanhi
-                0x00022c08       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
- .rodata        0x00022c28       0x80 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divsf3.o)
- .rodata        0x00022ca8       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(mulsf3.o)
- .rodata        0x00022ce8       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divdf3.o)
- .rodata        0x00022d28       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(muldf3.o)
+                0x00022be8       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_atan.o)
+ .rodata        0x00022c08       0x80 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divsf3.o)
+ .rodata        0x00022c88       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(mulsf3.o)
+ .rodata        0x00022cc8       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(divdf3.o)
+ .rodata        0x00022d08       0x40 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/libgcc.a(muldf3.o)
  .rodata.__sf_fake_stdin
-                0x00022d68       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00022d68                __sf_fake_stdin
+                0x00022d48       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00022d48                __sf_fake_stdin
  .rodata.__sf_fake_stdout
-                0x00022d88       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00022d88                __sf_fake_stdout
+                0x00022d68       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00022d68                __sf_fake_stdout
  .rodata.__sf_fake_stderr
-                0x00022da8       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
-                0x00022da8                __sf_fake_stderr
+                0x00022d88       0x20 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-findfp.o)
+                0x00022d88                __sf_fake_stderr
  .rodata.str1.1
-                0x00022dc8       0x11 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
+                0x00022da8       0x11 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf.o)
  .rodata.str1.1
-                0x00022dd9       0x22 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x00022db9       0x22 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
  *(.eh_frame*)
- *fill*         0x00022dfb        0x1 
- .eh_frame      0x00022dfc        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
-                0x00022dfc                . = ALIGN (0x4)
+ *fill*         0x00022ddb        0x1 
+ .eh_frame      0x00022ddc        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
+                0x00022ddc                . = ALIGN (0x4)
 
-.glue_7         0x00022dfc        0x0
- .glue_7        0x00022dfc        0x0 linker stubs
+.glue_7         0x00022ddc        0x0
+ .glue_7        0x00022ddc        0x0 linker stubs
 
-.glue_7t        0x00022dfc        0x0
- .glue_7t       0x00022dfc        0x0 linker stubs
+.glue_7t        0x00022ddc        0x0
+ .glue_7t       0x00022ddc        0x0 linker stubs
 
-.vfp11_veneer   0x00022dfc        0x0
- .vfp11_veneer  0x00022dfc        0x0 linker stubs
+.vfp11_veneer   0x00022ddc        0x0
+ .vfp11_veneer  0x00022ddc        0x0 linker stubs
 
-.v4_bx          0x00022dfc        0x0
- .v4_bx         0x00022dfc        0x0 linker stubs
+.v4_bx          0x00022ddc        0x0
+ .v4_bx         0x00022ddc        0x0 linker stubs
 
-.iplt           0x00022dfc        0x0
- .iplt          0x00022dfc        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
+.iplt           0x00022ddc        0x0
+ .iplt          0x00022ddc        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
 
-.ARM.extab      0x00022dfc        0x0
+.ARM.extab      0x00022ddc        0x0
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x00022dfc                . = ALIGN (0x4)
-                0x00022dfc                __exidx_start = .
+                0x00022ddc                . = ALIGN (0x4)
+                0x00022ddc                __exidx_start = .
 
-.ARM.exidx      0x00022dfc        0x8
+.ARM.exidx      0x00022ddc        0x8
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
- .ARM.exidx     0x00022dfc        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/crt0.o
- .ARM.exidx     0x00022e04        0x0 _build/gcc_startup_nrf51.o
+ .ARM.exidx     0x00022ddc        0x8 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/crt0.o
+ .ARM.exidx     0x00022de4        0x0 _build/gcc_startup_nrf51.o
                                   0x8 (size before relaxing)
-                0x00022e04                . = ALIGN (0x4)
-                0x00022e04                __exidx_end = .
-                0x00022e04                __etext = .
+                0x00022de4                . = ALIGN (0x4)
+                0x00022de4                __exidx_end = .
+                0x00022de4                __etext = .
 
-.rel.dyn        0x00022e04        0x0
- .rel.iplt      0x00022e04        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
+.rel.dyn        0x00022de4        0x0
+ .rel.iplt      0x00022de4        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
 
-.data           0x20002000       0xb0 load address 0x00022e04
+.data           0x20002000       0xb0 load address 0x00022de4
                 0x20002000                __data_start__ = .
  *(vtable)
  *(.data*)
@@ -1925,7 +1925,7 @@ END GROUP
                 0x2000206c                txd_available
  *fill*         0x2000206d        0x3 
  .data.st       0x20002070       0x2c _build/inv_mpu.o
- .data.gyro_orientation.6725
+ .data.gyro_orientation.6724
                 0x2000209c        0x9 _build/mpu_wrapper.o
  .data.__fdlib_version
                 0x200020a5        0x1 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libm.a(lib_a-s_lib_ver.o)
@@ -1952,10 +1952,10 @@ END GROUP
                 0x200020b0                . = ALIGN (0x4)
                 0x200020b0                __data_end__ = .
 
-.igot.plt       0x200020b0        0x0 load address 0x00022eb4
+.igot.plt       0x200020b0        0x0 load address 0x00022e94
  .igot.plt      0x200020b0        0x0 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/armv6-m/crtbegin.o
 
-.bss            0x200020b0      0x444 load address 0x00022eb4
+.bss            0x200020b0      0x43c load address 0x00022e94
                 0x200020b0                . = ALIGN (0x4)
                 0x200020b0                __bss_start__ = .
  *(.bss*)
@@ -2016,7 +2016,7 @@ END GROUP
  .bss.prom      0x20002150       0x10 _build/baro.o
  .bss.data      0x20002160        0x3 _build/baro.o
  *fill*         0x20002163        0x1 
- .bss.data.6721
+ .bss.data.6720
                 0x20002164        0x2 _build/baro.o
  *fill*         0x20002166        0x2 
  .bss.initTime  0x20002168        0x4 _build/baro.o
@@ -2067,7 +2067,7 @@ END GROUP
  .bss.heap_end.4167
                 0x200021c8        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libnosys.a(sbrk.o)
  *(COMMON)
- COMMON         0x200021cc      0x2a3 _build/in4073.o
+ COMMON         0x200021cc      0x29b _build/in4073.o
                 0x200021cc                say
                 0x200021ce                psi
                 0x200021d0                sensor_fifo_count
@@ -2087,35 +2087,34 @@ END GROUP
                 0x200023d8                sp
                 0x200023dc                new_addr
                 0x200023e0                ble_tx_queue
-                0x20002464                ae
-                0x2000246c                sr
-                0x2000246e                demo_done
- *fill*         0x2000246f        0x1 
- COMMON         0x20002470       0x70 _build/log.o
-                0x20002470                write_data
-                0x200024a8                read_data
- COMMON         0x200024e0        0x5 _build/uart.o
-                0x200024e0                p
- *fill*         0x200024e5        0x3 
- COMMON         0x200024e8        0x8 _build/baro.o
-                0x200024e8                D2
-                0x200024ec                D1
- COMMON         0x200024f0        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-reent.o)
-                0x200024f0                errno
-                0x200024f4                . = ALIGN (0x4)
-                0x200024f4                __bss_end__ = .
+                0x20002464                sr
+                0x20002466                demo_done
+ *fill*         0x20002467        0x1 
+ COMMON         0x20002468       0x70 _build/log.o
+                0x20002468                write_data
+                0x200024a0                read_data
+ COMMON         0x200024d8        0x5 _build/uart.o
+                0x200024d8                p
+ *fill*         0x200024dd        0x3 
+ COMMON         0x200024e0        0x8 _build/baro.o
+                0x200024e0                D2
+                0x200024e4                D1
+ COMMON         0x200024e8        0x4 /home/shruthi/courses/emb_rts_lab/team17/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv6-m/libc_nano.a(lib_a-reent.o)
+                0x200024e8                errno
+                0x200024ec                . = ALIGN (0x4)
+                0x200024ec                __bss_end__ = .
 
-.heap           0x200024f8      0x800
-                0x200024f8                __end__ = .
-                0x200024f8                end = __end__
+.heap           0x200024f0      0x800
+                0x200024f0                __end__ = .
+                0x200024f0                end = __end__
  *(.heap*)
- .heap          0x200024f8      0x800 _build/gcc_startup_nrf51.o
-                0x200024f8                __HeapBase
-                0x20002cf8                __HeapLimit = .
+ .heap          0x200024f0      0x800 _build/gcc_startup_nrf51.o
+                0x200024f0                __HeapBase
+                0x20002cf0                __HeapLimit = .
 
-.stack_dummy    0x200024f8      0x800
+.stack_dummy    0x200024f0      0x800
  *(.stack*)
- .stack         0x200024f8      0x800 _build/gcc_startup_nrf51.o
+ .stack         0x200024f0      0x800 _build/gcc_startup_nrf51.o
                 0x20004000                __StackTop = (ORIGIN (RAM) + LENGTH (RAM))
                 0x20003800                __StackLimit = (__StackTop - SIZEOF (.stack_dummy))
                 0x20004000                PROVIDE (__stack, __StackTop)

@@ -1,10 +1,10 @@
-// XXX: Need to change the values
+// XXX: Check this
 #define MIN_RPM 200 // Minimal speed to let the rotor turn due to internal friction
 #define MAX_RPM	700 
 
 /* RPMs */
 #define RPM_STEP	10
-#define HOVER_RPM	400
+#define HOVER_RPM	400		// XXX: Check this
 #define HOVER_LIFT_FORCE	107 // 4*400^2/6000
 
 #define MIN_LIFT 0 // negative lift does not occur

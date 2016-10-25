@@ -55,10 +55,6 @@ void sendJsPacket()
 {
 	unsigned int i;
 	
-	// XXX: Test
-	//int axis[6] = {32767, -32768, 30689, 258, 0, 7778787};
-	//scale_joystick_values(&axis[0]);
-	
 	struct packet_t p;
 	/* check up on JS
  	*/

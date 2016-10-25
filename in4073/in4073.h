@@ -33,8 +33,6 @@
 bool demo_done;
 
 // Control
-// XXX: Is ae[] required?
-int16_t ae[4];
 void run_filters_and_control();
 
 // Timers

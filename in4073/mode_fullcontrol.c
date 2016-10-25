@@ -56,7 +56,6 @@ void full_control_mode()
 
 			if (lift_force > 10) 
 			{
-				// XXX: Find range
 				rollrate_setpoint = drone.controlgain_p1 * (roll_s - (drone.phi/15));
 				rollrate_setpoint2 = drone.controlgain_p2 * (-drone.sp/6);
 				roll_moment = rollrate_setpoint + rollrate_setpoint2;

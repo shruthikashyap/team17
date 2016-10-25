@@ -178,8 +178,8 @@ void check_log_tele_flags()
 
 void reset_drone()
 {
-	// XXX: Set mode as SAFE_MODE and clear all flags
-	drone.current_mode = SAFE_MODE; // XXX: Test
+	// Set mode as SAFE_MODE and clear all flags
+	drone.current_mode = SAFE_MODE;
 	drone.stop = 0;
 	drone.change_mode = 0;
 	
@@ -527,7 +527,6 @@ void full_control_mode()
 
 			if (lift_force > 10) 
 			{
-				// XXX: Find range
 				rollrate_setpoint = drone.controlgain_p1 * (roll_s - (drone.phi/15));
 				rollrate_setpoint2 = drone.controlgain_p2 * (-drone.sp/6);
 				roll_moment = rollrate_setpoint + rollrate_setpoint2;
@@ -646,17 +645,10 @@ void process_drone()
 		switch (drone.current_mode)
 		{
 			case SAFE_MODE:
-					// XXX: Test
-					//ae[0] = ae[1] = ae[2] = ae[3] = 100;
 					safe_mode();
 					break;
 			case PANIC_MODE:
-					// XXX: Test
-					//ae[0] = ae[1] = ae[2] = ae[3] = 500;
-					//printf("\nDrone motor values before: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					panic_mode();
-					// XXX: Test
-					//printf("\nDrone motor values after: %3d %3d %3d %3d\n", ae[0], ae[1], ae[2], ae[3]);
 					break;
 			case MANUAL_MODE:
 					manual_mode();
@@ -671,7 +663,7 @@ void process_drone()
 					calibration_mode();
 					break;
 			default :
-					// XXX: Needs to be handled
+					safe_mode();
 					break;
 		}
 	}

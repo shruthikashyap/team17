@@ -60,12 +60,9 @@ void UART0_IRQHandler(void)
 	{
 		NRF_UART0->EVENTS_ERROR = 0;
 		printf("uart error: %lu\n", NRF_UART0->ERRORSRC);
-		
-		// XXX: Test cable disconnection
-		nrf_gpio_pin_toggle(RED);
 	}
 
-	// XXX: Receive in struct order and handle acknowledgement
+	// Receive in struct order and handle acknowledgement
 	if(rx_queue.count)
 	{
 		cable_disconnect_flag = 0;
@@ -88,7 +85,6 @@ void UART0_IRQHandler(void)
 			}
 			else
 			{
-				// XXX: Packet error - Send NACK
 				nack_flag = 1;
 				send_packet_ack(ACK_FAILURE);
 				//printf("Send NACK %d!\n", ch);
@@ -111,7 +107,6 @@ void UART0_IRQHandler(void)
 			}
 			else
 			{
-				// XXX: Packet error - Send NACK
 				if(nack_flag == 0)
 				{
 					nack_flag = 1;
@@ -140,7 +135,6 @@ void UART0_IRQHandler(void)
 		}
 		else
 		{
-			// XXX: Packet error - Send NACK
 			if(nack_flag == 0)
 			{
 				nack_flag = 1;

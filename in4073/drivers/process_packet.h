@@ -1,6 +1,5 @@
 #include "../command_types.h"
 
-// XXX: Need to change the values
 #define MAX_LIFT	128
 #define MAX_PITCH	128
 #define MAX_ROLL	128
@@ -18,7 +17,7 @@
 #define MIN_CONTROLGAIN_P1 0
 #define MIN_CONTROLGAIN_P2 0
 
-#define KEYBOARD_STEP 2
+#define KEYBOARD_STEP 1
 #define KEYBOARD_CONTROL_STEP 1
 
 void process_packet(struct packet_t packet);
