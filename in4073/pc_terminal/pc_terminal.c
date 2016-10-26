@@ -40,7 +40,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
  */
 int main(int argc, char **argv)
 {
-	char c;
+	char c,d;
 	int ret_1=0;
 	pthread_t pthread_dequeue;
 	pthread_t pthread_receive;
@@ -86,6 +86,13 @@ int main(int argc, char **argv)
 	{
 		if ((c = term_getchar_nb()) != -1) 
 		{
+			if ((int)c == KEY_ESCAPE)
+			{
+				if ((d = term_getchar_nb()) == -1)
+				{
+					sendKeyEscape();
+				}
+			}
 			sendKeyPacket(c);
 		}
 

@@ -187,3 +187,15 @@ void sendKeyPacket(char key)
 		enqueue(p);
 	}
 }
+
+// bit dirty but ok
+void sendKeyEscape()
+{
+	struct packet_t p;
+
+	p.command = MODE_TYPE;
+	p.value = ABORT;
+	
+	compute_crc(&p);
+	enqueue(p);
+}
