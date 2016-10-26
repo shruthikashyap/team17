@@ -110,6 +110,11 @@ void yaw_control_mode()
 			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
 			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
 
+			ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+			ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
+			ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+			ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
+			
 			if (drone.joy_lift > 5)
 			{
 				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];

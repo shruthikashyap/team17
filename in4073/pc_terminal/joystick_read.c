@@ -92,12 +92,24 @@ void sendJsPacket()
 	scale_joystick_values(&axis[0]);
 	
 	// button for PANIC_MODE
-	#if 1
+	#if 0
 	if (button[0] == 1)
 	{
 		//printf("Panic button pressed!\n");
 		p.command = MODE_TYPE;
 		p.value = PANIC_MODE;
+		compute_crc(&p);
+		enqueue(p);
+		return;
+	}	
+	#endif
+	
+	#if 1
+	if (button[0] == 1)
+	{
+		//printf("Panic button pressed!\n");
+		p.command = MODE_TYPE;
+		p.value = ABORT;
 		compute_crc(&p);
 		enqueue(p);
 		return;

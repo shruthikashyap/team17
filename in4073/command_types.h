@@ -23,6 +23,7 @@
 #define JOY_PITCH	0x07
 #define JOY_YAW		0x08
 #define JOY_LIFT	0x09
+#define ABORT		0x0A
 #define LOG 		0x30
 
 #define KEY_CONTROL_YAW	0x10

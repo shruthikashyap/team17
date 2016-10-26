@@ -39,10 +39,10 @@ void manual_mode()
 		__disable_irq();
 
 		// joystick goes from -127 to 128. key_lift goes from -127 to 128 so they weigh the same
-		lift_force   = drone.joy_lift  + drone.key_lift;
-		roll_moment  = (signed char)drone.joy_roll  + (signed char)drone.key_roll;
-		pitch_moment = (signed char)drone.joy_pitch + (signed char)drone.key_pitch;
-		yaw_moment   = (signed char)drone.joy_yaw   + (signed char)drone.key_yaw;
+		lift_force   = drone.joy_lift;//  + drone.key_lift;
+		roll_moment  = (signed char)drone.joy_roll;//  + (signed char)drone.key_roll;
+		pitch_moment = (signed char)drone.joy_pitch;// + (signed char)drone.key_pitch;
+		yaw_moment   = (signed char)drone.joy_yaw;//   + (signed char)drone.key_yaw;
 
 		// Enable UART interrupts
 		__enable_irq();
@@ -68,6 +68,11 @@ void manual_mode()
 		ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
 		ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
 		ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
+		
+		ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+		ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
+		ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+		ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);		
 		
 		if (drone.joy_lift > 5)
 		{

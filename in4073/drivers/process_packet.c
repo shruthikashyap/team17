@@ -18,6 +18,7 @@ bool log_active_flag = false;
 bool height_control_flag = false;
 bool raw_mode_flag = false;
 bool imu_init_flag = true;
+bool abort_flag = false;
 
 /*------------------------------------------------------------------
  * process_key -- process command keys
@@ -110,10 +111,22 @@ void set_mode_type(char value)
 	
 	// Don't change mode if drone is not in safe mode
 	// Accept change to safe and panic modes during other modes
-	if(drone.current_mode == SAFE_MODE || value == PANIC_MODE || (value == SAFE_MODE && drone.ae[0] == 0 && drone.ae[1] == 0 && drone.ae[2] == 0 && drone.ae[3] == 0))
+	if(drone.current_mode == SAFE_MODE || value == PANIC_MODE || value == ABORT || (value == SAFE_MODE && drone.ae[0] == 0 && drone.ae[1] == 0 && drone.ae[2] == 0 && drone.ae[3] == 0))
 	{
 		switch(value)
 		{
+			case ABORT:
+						abort_flag = true;
+						if(drone.current_mode == SAFE_MODE)
+						{
+							send_packet_ack(ACK_SUCCESS);
+							break;
+						}
+				
+						drone.current_mode = PANIC_MODE;
+						drone.change_mode = 1;
+						send_packet_ack(ACK_SUCCESS);
+						break;
 			case SAFE_MODE:
 						drone.current_mode = SAFE_MODE;
 						drone.change_mode = 1;
