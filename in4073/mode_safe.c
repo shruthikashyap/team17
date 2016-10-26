@@ -35,6 +35,7 @@ void safe_mode()
 			{
 				drone.stop = 1;
 				abort_flag = false;
+				return;
 			}
 			
 			control_loop_flag = false;
@@ -43,6 +44,7 @@ void safe_mode()
 				//nrf_gpio_pin_toggle(RED);
 				drone.stop = 1;
 				//printf("Warning! Battery critically low!\n");
+				return;
 			}
 
 			// Check battery level
@@ -71,6 +73,7 @@ void safe_mode()
 				//printf("Inside safe mode - log upload\n");
 				log_upload();
 				drone.stop = 1;
+				return;
 			}
 		}
 		else
