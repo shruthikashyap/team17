@@ -90,13 +90,13 @@ void sendKeyPacket(char key)
 
 		case 'D':
 			p.command = KEY_ROLL;
-			p.value = INCREASE;
+			p.value = DECREASE;
 			p_flag = 1;
 			break;
 
 		case 'C':
 			p.command = KEY_ROLL;
-			p.value = DECREASE;
+			p.value = INCREASE;
 			p_flag = 1;
 			break;
 
@@ -114,13 +114,13 @@ void sendKeyPacket(char key)
 
 		case 'q':
 			p.command = KEY_YAW;
-			p.value = DECREASE;
+			p.value = INCREASE;
 			p_flag = 1;
 			break;
 
 		case 'w':
 			p.command = KEY_YAW;
-			p.value = INCREASE;
+			p.value = DECREASE;
 			p_flag = 1;
 			break;
 

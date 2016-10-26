@@ -40,7 +40,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
  */
 int main(int argc, char **argv)
 {
-	char c,d;
+	char c, d;
 	int ret_1=0;
 	pthread_t pthread_dequeue;
 	pthread_t pthread_receive;

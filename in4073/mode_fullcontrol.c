@@ -13,7 +13,7 @@ void full_control_mode()
 {
 	//printf("In FULL_CONTROL_MODE\n");
 
-	uint32_t ae_[4];
+	int ae_[4];
 	int rollrate_setpoint;
 	int rollrate_setpoint2;
 	int roll_s;
@@ -88,6 +88,7 @@ void full_control_mode()
 			yaw   = (int)(DRONE_YAW_CONSTANT/16 * yaw_moment);
 
 			//calculate_rotor_speeds(lift, pitch, roll, yaw);
+			//printf("lift %d | roll %d | pitch %d | yaw %d\n", lift, roll, pitch, yaw);
 			
 			if(drone.joy_lift < 5)
 			{
@@ -100,11 +101,15 @@ void full_control_mode()
 			ae_[1] = 0.25*(lift - 2*roll  + yaw);
 			ae_[2] = 0.25*(lift - 2*pitch - yaw);
 			ae_[3] = 0.25*(lift + 2*roll  + yaw);
+			
 
 			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
 			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
 			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
 			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
+			
+			//printf("%3ld %3ld %3ld %3ld \n", ae_[0], ae_[1], ae_[2], ae_[3]);
+
 			
 			ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
 			ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);

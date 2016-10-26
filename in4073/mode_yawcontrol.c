@@ -13,7 +13,7 @@ void yaw_control_mode()
 {
 	//printf("In YAW_CONTROL_MODE\n");
 
-	uint32_t ae_[4];
+	int ae_[4];
 	int yawrate_setpoint;
 	int yaw_error;
 

@@ -25,11 +25,13 @@ void safe_mode()
 	drone.joy_roll = 0;
 	drone.joy_pitch = 0;
 	drone.joy_yaw = 0;
-		
+	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
 		if(control_loop_flag == true)
 		{	
+			control_loop_flag = false;
+			
 			// Check ABORT flag
 			if(abort_flag == true)
 			{
@@ -38,7 +40,6 @@ void safe_mode()
 				return;
 			}
 			
-			control_loop_flag = false;
 			if(batt_low_flag == true)
 			{
 				//nrf_gpio_pin_toggle(RED);
