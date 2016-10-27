@@ -21,10 +21,10 @@ void safe_mode()
 	drone.key_roll = 0;
 	drone.key_pitch = 0;
 	drone.key_yaw = 0;
-	drone.joy_lift = 0;
-	drone.joy_roll = 0;
-	drone.joy_pitch = 0;
-	drone.joy_yaw = 0;
+	//drone.joy_lift = 0;
+	//drone.joy_roll = 0;
+	//drone.joy_pitch = 0;
+	//drone.joy_yaw = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
