@@ -72,6 +72,7 @@ void read_baro(void)
 			loop_count = 0;
 			break;
 	}
+	nrf_delay_us(50);
 }
 
 void baro_init(void)
@@ -85,5 +86,3 @@ void baro_init(void)
 	}
 
 }
-
-

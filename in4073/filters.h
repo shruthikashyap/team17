@@ -18,7 +18,10 @@
 #define KALMAN_C1 63 // 1/256
 #define KALMAN_C3 2 // 1.234567901234568e-04
 
+#define MOVING_AVERAGE_SIZE 10
+
 void butterworth();
 void kalman();
+void moving_average();
 
 #endif

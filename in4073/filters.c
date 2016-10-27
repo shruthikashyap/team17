@@ -18,6 +18,8 @@ q14 q14theta, q14phi, q14psi = 0;
 q14 q14sp, q14sq, q14sr;
 q14 q14sax, q14say, q14saz;
 
+int ma_numbers[10] = {0,0,0,0,0,0,0,0,0,0};
+
 // first order butterworth
 void butterworth()
 {
@@ -77,4 +79,23 @@ void kalman()
 	theta = q2normal(q14theta);
 	phi   = q2normal(q14phi);
 	psi   = q2normal(q14psi);
+}
+
+void moving_average()
+{
+	ma_numbers[0] = pressure;
+
+	int sum = 0;
+
+	for (int i=0; i<MOVING_AVERAGE_SIZE; i++)
+	{
+		sum += ma_numbers[i];
+	}
+
+	pressure = sum/MOVING_AVERAGE_SIZE;
+
+	for (int i=1; i<MOVING_AVERAGE_SIZE; i++)
+	{
+		ma_numbers[i] = ma_numbers[i-1];
+	}
 }
