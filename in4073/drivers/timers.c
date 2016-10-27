@@ -13,7 +13,7 @@
  
 static bool TIMER2_flag;
 static uint32_t global_time;
-static uint8_t log_timer = 0;
+static uint8_t batt_timer = 0;
 static uint8_t control_loop_timer = 0;
 static uint8_t telemetry_timer = 0;
 static uint32_t heartbeat_counter = 0;
@@ -53,7 +53,7 @@ void timers_init(void)
 void TIMER2_IRQHandler(void)
 {
 	if (NRF_TIMER2->EVENTS_COMPARE[0])
-    {
+    {		
 		if(control_loop_timer % 2 == 0) //200Hz
 		{
 			control_loop_flag = true;
@@ -61,25 +61,25 @@ void TIMER2_IRQHandler(void)
 			control_loop_timer = 0;
 		}
 		control_loop_timer++;
-		
-		if(log_timer % 2 == 0) //200Hz
+
+		if(batt_timer % 1 == 0) //200Hz
 		{
-			log_flag = true;
-			//printf("Timer log = %d\n", log_timer);
-			log_timer = 0;
+			TIMER2_flag = true;
+			//printf("Timer log = %d\n", batt_timer);
+			batt_timer = 0;
 		}
-		log_timer++;
-			
+		batt_timer++;
+
 		if(telemetry_timer % 200 == 0) //2Hz
 		{
 			telemetry_flag = true;
 			//printf("Timer telemetry = %d\n", telemetry_timer);
 			telemetry_timer = 0;
 
-			//if (cable_disconnect_flag == 0)	
-			//	cable_disconnect_flag = 1;
-			//else if (cable_disconnect_flag == 1)
-			//	cable_disconnect_flag = 2;
+			if (cable_disconnect_flag == 0)	
+				cable_disconnect_flag = 1;
+			else if (cable_disconnect_flag == 1)
+				cable_disconnect_flag = 2;
 
 		}
 		telemetry_timer++;
@@ -95,8 +95,11 @@ void TIMER2_IRQHandler(void)
 
 	if (NRF_TIMER2->EVENTS_COMPARE[1])
     {
+		log_flag = true;
+		control_loop_flag_raw = true;
+		//printf("Timer=%ld\n", get_time_us());
 		NRF_TIMER2->CC[1] += TIMER_PERIOD;
-		TIMER2_flag = true;
+		//TIMER2_flag = true;
 		NRF_TIMER2->EVENTS_COMPARE[1] = 0;
     }
 

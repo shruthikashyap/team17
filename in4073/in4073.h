@@ -36,7 +36,7 @@ bool demo_done;
 void run_filters_and_control();
 
 // Timers
-#define TIMER_PERIOD	50000 //50000us=50ms=20Hz (MAX 16bit, 65ms)
+#define TIMER_PERIOD	2000 //50000us=50ms=20Hz (MAX 16bit, 65ms)
 void timers_init(void);
 uint32_t get_time_us(void);
 bool check_timer_flag(void);
@@ -166,6 +166,7 @@ extern uint32_t new_addr;
 extern uint32_t new_addr_write;
 extern bool log_flag;
 extern bool control_loop_flag;
+extern bool control_loop_flag_raw;
 extern bool batt_low_flag;
 extern bool telemetry_flag;
 extern bool log_upload_flag;

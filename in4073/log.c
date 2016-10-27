@@ -34,10 +34,10 @@ void update_log()
 	write_data.sax 				= drone.sax;
 	write_data.say 				= drone.say;
 	write_data.saz 				= drone.saz;
+	write_data.controlgain_yaw  = drone.phi;
+	write_data.controlgain_p1 	= drone.theta;
+	write_data.controlgain_p2 	= drone.psi;
 #if 0
-	write_data.controlgain_yaw  = drone.controlgain_yaw;
-	write_data.controlgain_p1 	= drone.controlgain_p1;
-	write_data.controlgain_p2 	= drone.controlgain_p2;
 	write_data.pressure 		= drone.pressure;
 	write_data.bat_volt 		= bat_volt;
 #endif
@@ -116,9 +116,9 @@ void log_upload()
 			//uart_put_16bit(1232);
 			uart_put_16bit(read_data.saz);
 			//uart_put_16bit(16884);
-			//uart_put_16bit(read_data.controlgain_yaw);
-			//uart_put_16bit(read_data.controlgain_p1);
-			//uart_put_16bit(read_data.controlgain_p2);
+			uart_put_16bit(read_data.controlgain_yaw);
+			uart_put_16bit(read_data.controlgain_p1);
+			uart_put_16bit(read_data.controlgain_p2);
 			//uart_put_32bit(read_data.pressure);
 			//uart_put_16bit(read_data.bat_volt);
 			//uart_put_16bit(574);

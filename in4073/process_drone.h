@@ -17,7 +17,7 @@
 
 /* RPMs */
 #define RPM_STEP	10
-#define HOVER_RPM	400		// XXX: Check this
+#define HOVER_RPM	450		// XXX: Check this
 #define HOVER_LIFT_FORCE	107 // 4*400^2/6000
 
 // Drone specific constants for lift roll yaw pitch
@@ -33,7 +33,7 @@
 #define DRONE_MANUAL_YAW_CONSTANT 3000 // 10000*128 = 12800000 = 12 800 000
 
 // Battery threshold level
-#define BATT_THRESHOLD 400//1050 // XXX: Need to update this
+#define BATT_THRESHOLD 1050 // XXX: Need to update this
 
 void process_drone();
 void reset_drone();
@@ -42,6 +42,7 @@ void panic_mode();
 void manual_mode();
 void yaw_control_mode();
 void full_control_mode();
+void full_control_mode_raw();
 void calibration_mode();
 void raw_mode();
 void log_upload();

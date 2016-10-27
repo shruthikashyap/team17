@@ -24,6 +24,7 @@ void send_packet_to_pc(struct packet_t p);
 
 bool log_flag = false;
 bool control_loop_flag = false;
+bool control_loop_flag_raw = false;
 bool telemetry_flag = false;
 bool batt_low_flag = false;
 uint32_t counter = 0;
@@ -58,6 +59,7 @@ void read_sensor()
 		{
 			get_raw_sensor_data();
 			butterworth();
+			kalman();
 		}
 		else
 		{
@@ -674,7 +676,10 @@ void process_drone()
 					yaw_control_mode();
 					break;
 			case FULL_CONTROL_MODE:
-					full_control_mode();
+					if(raw_mode_flag == true)
+						full_control_mode_raw();
+					else
+						full_control_mode();
 					break;
 			case CALIBRATION_MODE:
 					calibration_mode();

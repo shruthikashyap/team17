@@ -284,40 +284,40 @@ void get_log(uint8_t ch)
 				log_byte_count++;
 				//printf("saz: %d\n",log_line.saz);
 				break;
-#if 0
-			case 42:
+			case 18:
 				shift_16 = (int16_t)ch;		
 				log_line.controlgain_yaw = log_line.controlgain_yaw | shift_16;		// bits 0-7 of controlgain_yaw
 				log_byte_count++;
 				break;
-			case 43:
+			case 19:
 				shift_16 = (int16_t)ch;		
 				log_line.controlgain_yaw = log_line.controlgain_yaw | (shift_16<<8); // bits 8-15 of controlgain_yaw
 				log_byte_count++;
 				//printf("sax: %d\n",log_line.sax);
 				break;
-			case 44:		
+			case 20:		
 				shift_16 = (int16_t)ch;
 				log_line.controlgain_p1 = log_line.controlgain_p1 | shift_16;		// bits 0-7 of controlgain_p1
 				log_byte_count++;
 				break;
-			case 45:	
+			case 21:	
 				shift_16 = (int16_t)ch;	
 				log_line.controlgain_p1 = log_line.controlgain_p1 | (shift_16<<8);	// bits 8-15 of controlgain_p1
 				log_byte_count++;
 				//printf("say: %d\n",log_line.say);
 				break;
-			case 46:	
+			case 22:	
 				shift_16 = (int16_t)ch;	
 				log_line.controlgain_p2 = log_line.controlgain_p2 | shift_16;		// bits 0-7 of controlgain_p2
 				log_byte_count++;
 				break;
-			case 47:		
+			case 23:		
 				shift_16 = (int16_t)ch;
 				log_line.controlgain_p2 = log_line.controlgain_p2 | (shift_16<<8);	// bits 8-15 of controlgain_p2
 				log_byte_count++;
 				//printf("saz: %d\n",log_line.saz);
 				break;
+#if 0
 			case 48:
 				shift_32 = (int32_t)ch;
 				log_line.pressure = log_line.pressure|shift_32;					// bits 0-7 of pressure
@@ -354,7 +354,7 @@ void get_log(uint8_t ch)
 				//printf("bat_volt: %d\n",log_line.bat_volt);
 				break;
 #endif
-			case 18:
+			case 24:
 				if (uch == LOG_LINE_END)
 				{
 					//printf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n", 
@@ -373,9 +373,10 @@ void get_log(uint8_t ch)
 						log_line.sax, log_line.say, log_line.saz, log_line.controlgain_yaw, log_line.controlgain_p1,
 						log_line.controlgain_p2, log_line.pressure, log_line.bat_volt);*/
 					
-					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+					fprintf(fp, "%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
 						log_line.current_time, log_line.current_mode, log_line.sp, log_line.sq, log_line.sr, 
-						log_line.sax, log_line.say, log_line.saz);
+						log_line.sax, log_line.say, log_line.saz, log_line.controlgain_yaw, log_line.controlgain_p1,
+						log_line.controlgain_p2);
 					fclose(fp);
 				}
 				log_byte_count = 0;

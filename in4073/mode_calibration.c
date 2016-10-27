@@ -8,7 +8,9 @@
  */
 
 #include "modes.h"
+#include "filters.h"
 void send_telemetry_data();
+extern bool raw_mode_flag;
 
 void calibration_mode()
 {
@@ -47,7 +49,8 @@ void calibration_mode()
 
 		if (check_sensor_int_flag()) 
 		{
-			get_dmp_data();
+			//get_dmp_data();
+			get_raw_sensor_data();
 			//printf("%6d %6d %6d | ", sp, sq, sr);
 			//printf("%6d %6d %6d \n", sax, say, saz);
 			nrf_delay_ms(1);
@@ -71,7 +74,17 @@ void calibration_mode()
  
 		if (check_sensor_int_flag()) 
 		{
-			get_dmp_data();
+			if (raw_mode_flag == true)
+			{
+				get_raw_sensor_data();
+				butterworth();
+				kalman();
+			}
+			else
+			{
+				get_dmp_data();
+			}
+
 			//printf("%6d %6d %6d | ", sp, sq, sr);
 			//printf("%6d %6d %6d \n", sax, say, saz);
 			nrf_delay_ms(1);

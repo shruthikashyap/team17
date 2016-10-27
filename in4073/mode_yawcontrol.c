@@ -27,7 +27,7 @@ void yaw_control_mode()
 	drone.controlgain_yaw = 2;
 	drone.controlgain_height = 1;
 	//drone.key_lift = 20; // XXX: For testing
-	drone.joy_lift = 100; // XXX: For testing
+	//drone.joy_lift = 100; // XXX: For testing
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
@@ -74,7 +74,7 @@ void yaw_control_mode()
 
 			if (lift_force > 10) 
 			{
-				yaw_error = (int)(yawrate_setpoint - (drone.sr/24));
+				yaw_error = (int)(yawrate_setpoint - (drone.sr/12));
 				//yaw_error = -(int)(yawrate_setpoint - (drone.sr/24));
 
 				// yaw error in range of -255 to 256 (although the extremes probably wont happen)
@@ -89,7 +89,7 @@ void yaw_control_mode()
 			lift  = DRONE_LIFT_CONSTANT * lift_force;
 			roll  = 0; // no roll or pitch in yaw mode
 			pitch = 0;
-			yaw   = (int)(DRONE_YAW_CONSTANT/4 * yaw_moment); // misschien deze drone constant aanpassen voor yaw mode
+			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment); // misschien deze drone constant aanpassen voor yaw mode
 
 			//calculate_rotor_speeds(lift, pitch, roll, yaw);
 			

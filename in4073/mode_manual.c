@@ -23,7 +23,7 @@ void manual_mode()
 	int roll;
 	int yaw;
 	
-	drone.joy_lift = 100; // XXX: For testing
+	//drone.joy_lift = 100; // XXX: For testing
 
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
