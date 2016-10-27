@@ -48,6 +48,7 @@ void read_sensor()
 	{
 		adc_request_sample();
 		//read_baro();
+		//moving_average();
 		nrf_delay_ms(1);
 
 		clear_timer_flag();

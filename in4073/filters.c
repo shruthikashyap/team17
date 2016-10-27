@@ -1,5 +1,6 @@
 /*------------------------------------------------------------------
- *  filters.c -- File includes the butterworth filter and the kalman filter
+ *  filters.c -- File includes the butterworth filter, the kalman filter and
+                 the moving average filter
  *
  *  October 2016
  *------------------------------------------------------------------
@@ -18,7 +19,7 @@ q14 q14theta, q14phi, q14psi = 0;
 q14 q14sp, q14sq, q14sr;
 q14 q14sax, q14say, q14saz;
 
-int ma_numbers[10] = {0,0,0,0,0,0,0,0,0,0};
+int ma_numbers[MOVING_AVERAGE_SIZE] = {0};
 
 // first order butterworth
 void butterworth()
@@ -46,7 +47,7 @@ void butterworth()
 	saz = q2normal(y[5][1]);
 }
 
-// not working yet
+// works little bit
 void kalman()
 {
 	q14sp = normal2q(sp);
@@ -81,6 +82,7 @@ void kalman()
 	psi   = q2normal(q14psi);
 }
 
+// calculate average for barometer pressure
 void moving_average()
 {
 	ma_numbers[0] = pressure;
