@@ -12,7 +12,7 @@
  *  sensor values from the MPU. It controls the drone with two P controllers
  *  for the pitch and roll.
  *
- *  Author : Everybody
+ *  Author : Shruthi Kashyap (with mods by Kars and Evelyn)
  *------------------------------------------------------------------
  */
 void full_control_mode()
@@ -30,8 +30,7 @@ void full_control_mode()
 	int yaw_moment;
 	int lift_force;
 	int lift, roll, pitch, yaw;
-	
-	
+
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{	
 		// check for cable disconnection

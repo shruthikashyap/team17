@@ -79,22 +79,22 @@ int main(int argc, char **argv)
 
 	term_puts("Type ^C to exit\n");
 
-	/* discard any incoming text
-	 */
+	// discard any incoming text
 	while ((c = rs232_getchar_nb()) != -1)
 		fputc(c,stderr);
 	
-	/* send & receive
-	 */
+	// send & receive
 	for (;;) 
 	{
 		if ((c = term_getchar_nb()) != -1) 
 		{
+			// When you press an arrow key, it is equivalent to an input from three keys simultaneously
+			// The first key is an escape command, so check for the second command.
 			if ((int)c == KEY_ESCAPE)
 			{
 				if ((d = term_getchar_nb()) == -1)
 				{
-					sendKeyEscape();				// Read two consecutive times for ESC key			
+					sendKeyEscape();			
 				}
 			}
 			sendKeyPacket(c);						// Send keyboard value

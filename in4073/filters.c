@@ -3,14 +3,15 @@
  *------------------------------------------------------------------
  */
 
-
 #include "fixed.h"
 #include "filters.h"
 #include "in4073.h"
 
+// initial values for butterworth filter
 q14 x[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 q14 y[6][2] = {{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0}};
 
+// initial values and declarations for the kalman filter
 q14 drift_sp, drift_sq, drift_sr = 0;
 q14 q14theta, q14phi, q14psi = 0;
 q14 q14sp, q14sq, q14sr;
@@ -46,7 +47,7 @@ void butterworth()
 		y[i][0] = y[i][1];
 	}
 
-	// convert back to integer so we can use the values 
+	// converting the filtered values back to integer so we can use them 
 	sp  = q2normal(y[0][1]);
 	sq  = q2normal(y[1][1]);
 	sr  = q2normal(y[2][1]);

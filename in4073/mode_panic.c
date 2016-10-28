@@ -11,11 +11,11 @@ void send_telemetry_data();
  *  void panic_mode
  *
  *  This function is the panic mode for the ES. In panic mode, the rotor speeds
- *  are set to a fixed RPM which represents hovering. When falling, the drone will 
- *  therefor stop falling and start hovering. After two seconds of hovering the 
- *  drone will come down graduatly to make sure touch down occurs.
- *  In panic mode, the red LED is on. After touch down, the drone switches
- *  back to safe mode.
+ *  are set to a fixed RPM which represents hovering. When falling, the drone will, 
+ *  therefore, stop falling and start hovering. After two seconds of hovering the 
+ *  drone will come down graduatly to make sure touch-down occurs.
+ *  In panic mode, the red LED is on. After touch-down, the drone switches
+ *  to safe mode.
  *
  *  Author : Shruthi Kasyap
  *------------------------------------------------------------------

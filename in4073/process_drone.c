@@ -44,14 +44,14 @@ void read_sensor()
 	drone.sax = 0;
 	drone.say = 0;
 	drone.saz = 0;
-	//drone.pressure = 0;
+	drone.pressure = 0;
 	
 	// Read sensor data
 	if(check_timer_flag()) 
 	{
 		adc_request_sample();
-		//read_baro();
-		//moving_average();
+		read_baro();
+		moving_average();
 		nrf_delay_ms(1);
 
 		clear_timer_flag();
@@ -83,8 +83,7 @@ void read_sensor()
 	drone.phi = phi - drone.offset_phi;
 	drone.theta = theta - drone.offset_theta;
 	drone.psi   = psi   - drone.offset_psi;
-	//drone.pressure = pressure - drone.offset_pressure ;
-	//drone.pressure = pressure;
+	drone.pressure = pressure - drone.offset_pressure;
 	__enable_irq();
 	
 	// If battery voltage is too low, go to panic mode
@@ -119,7 +118,6 @@ void read_battery_level()
 	// If battery voltage is too low, go to panic mode
 	if(bat_volt <= BATT_THRESHOLD && drone.current_mode != SAFE_MODE)
 	{
-		//printf("Battery low!\n");
 		drone.current_mode = PANIC_MODE;
 		drone.change_mode = 1;
 		batt_low_flag = true;
@@ -172,12 +170,12 @@ void send_telemetry_data()
  *
  *  Function checks if we need to update the log or send telemetry.
  *
- *  Author : Evelyn 
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void check_log_tele_flags()
 {
-	// Update log ?
+	// Update log
 	if(log_flag == true && batt_low_flag == false && log_active_flag == true)
 	{
 		// Clear log flag
@@ -204,7 +202,7 @@ void check_log_tele_flags()
  *
  *  Function resets all the drone variables.
  *
- *  Author : Evelyn 
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void reset_drone()

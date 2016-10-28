@@ -9,7 +9,7 @@
 /*------------------------------------------------------------------
  *  q14 q_mul
  *
- *  This function multiplies two Q14 numbers with eachother
+ *  This function multiplies two Q14 numbers 
  *
  *  Author : Kars Heinen
  *------------------------------------------------------------------
@@ -52,5 +52,5 @@ q14 normal2q(int16_t x)
  */
 int16_t q2normal(q14 x)
 {
-	return x / (1 << QNUMBER); // divide by 2^Q
+	return x / (1 << QNUMBER); 		// divide by 2^Q
 }

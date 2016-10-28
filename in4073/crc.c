@@ -11,9 +11,10 @@
 /*------------------------------------------------------------------
  *  void compute_crc
  *
- *  This function computes the CRC value by a 5th degree polynoom.
+ *  This function computes the CRC value for the command and the value
+ *  byte using a 5th degree polynomial
  *
- *  Author : Evenlyn
+ *  Author : Evelyn Rashmi Jeyachandra
  *------------------------------------------------------------------
  */
 void compute_crc(struct packet_t * packet)
@@ -37,6 +38,10 @@ void compute_crc(struct packet_t * packet)
 		crc_value <<= 1;
 	}
 
+	// Four bit-remainder from the command byte is concatenated with
+	// four bit-remainder from the value byte and is assigned to the 
+	// CRC byte of the packet
+
 	crc = (crc_command & MASK) | ((crc_value & MASK)>>4) ;
 	packet->crc = crc;
 }
@@ -44,8 +49,8 @@ void compute_crc(struct packet_t * packet)
 /*------------------------------------------------------------------
  *  void check_crc
  *
- *  This function recalculates the CRC for the packet to see if it matches
- *  the CRC with was given by the packet.
+ *  This function recalculates the CRC for command byte and the value byte
+ *  to see if it matches the CRC that was sent with the packet.
  *
  *  Author : Evelyn Rashmi Jeyachandra
  *------------------------------------------------------------------
@@ -55,6 +60,5 @@ int check_crc(struct packet_t check_packet)
 	struct packet_t p;
 	p = check_packet;
 	compute_crc(&check_packet);
-	//printf("Input CRC : %d, Check CRC: %d\n", p.crc, check_packet.crc );
 	return (check_packet.crc == p.crc)? 0 : 1; 
 }

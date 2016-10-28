@@ -9,7 +9,7 @@
  *  void yaw_control_mode
  *
  *  This is the yaw controlled mode for the ES. You can control the yaw-rate
- *  with this mode. Uses a P controller for control
+ *  with this mode. Uses a P controller
  *
  *  Author : Kars Heinen 
  *------------------------------------------------------------------
