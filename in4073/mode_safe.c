@@ -1,9 +1,5 @@
 /*------------------------------------------------------------------
  *  mode_safe.c
- *
- *  Defines the safe mode of the drone
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -11,6 +7,16 @@
 extern bool raw_mode_flag;
 extern bool imu_init_flag;
 
+/*------------------------------------------------------------------
+ *  void safe_mode
+ *
+ *  This is the safe state for the drone (zero rotor RPM). When the
+ *  drone is in this mode, all commands from the PC terminal are 
+ *  ignored
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void safe_mode()
 {
 	//printf("In SAFE_MODE\n");
