@@ -307,7 +307,7 @@ void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
  *  Checks which state are we in and sets the corresponding mode.
  *  This function is called from int main();
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void process_drone()
