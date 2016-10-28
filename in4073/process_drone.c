@@ -130,7 +130,7 @@ void read_battery_level()
  *
  *  Sends the telemetry data to the PC. Send it byte by byte.
  *
- *  Author : Evelyn 
+ *  Author : Shruthi Kashyap 
  *------------------------------------------------------------------
  */
 void send_telemetry_data()
