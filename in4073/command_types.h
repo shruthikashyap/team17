@@ -4,7 +4,6 @@
  *  Defines the command types, mode types, log and telemetry packet
  *	structures.
  *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -33,15 +32,15 @@
 #define TELEMETRY_DATA	0x13
 
 /* Mode Types */
-#define SAFE_MODE		0x20
-#define PANIC_MODE		0x29
-#define MANUAL_MODE		0x22
+#define SAFE_MODE			0x20
+#define PANIC_MODE			0x29
+#define MANUAL_MODE			0x22
 #define YAW_CONTROL_MODE	0x23
 #define FULL_CONTROL_MODE	0x24
 #define CALIBRATION_MODE	0x25
 #define HEIGHT_CONTROL_MODE	0x26
 #define WIRELESS_MODE		0x27
-#define RAW_MODE		0x28
+#define RAW_MODE			0x28
 
 /* Log */
 #define LOG_UPLOAD		0x31
@@ -89,29 +88,15 @@ struct log
 {
 	uint32_t current_time;
 	char current_mode;
-	int16_t joy_lift;
-	int16_t joy_roll;
-	int16_t joy_pitch;
-	int16_t joy_yaw;
-	int16_t key_lift;
-	int16_t key_roll;
-	int16_t key_pitch;
-	int16_t key_yaw;
-	int16_t ae_0;
-	int16_t ae_1;
-	int16_t ae_2;
-	int16_t ae_3;
 	int16_t sp;
 	int16_t sq;
 	int16_t sr;
 	int16_t sax;
 	int16_t say;
 	int16_t saz;
-	int16_t controlgain_yaw;
-	int16_t controlgain_p1;
-	int16_t controlgain_p2;
-	int32_t pressure;
-	uint16_t bat_volt;
+	int16_t phi;
+	int16_t theta;
+	int16_t psi;
 };
 
 struct telemetry

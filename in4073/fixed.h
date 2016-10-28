@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------
- *  filters.c -- File defines functions and constaints for fixed point arithmetic implementation.
- *               We're using a Q14 number format
+ *  fixed.h -- File defines functions and constaints for fixed point 
+ *			   arithmetic implementation. We're using a Q14 number 
+ *			   format
  *
- *  October 2016
  *------------------------------------------------------------------
  */
 
@@ -13,7 +13,7 @@
 
 #define QNUMBER 14
 
-typedef int32_t q14; // holds 32bit
+typedef int32_t q14; 				// holds 32bit
 
 q14 q_mul(q14 a, q14 b);
 q14 normal2q (int16_t x);

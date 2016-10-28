@@ -1,10 +1,5 @@
 /*------------------------------------------------------------------
  *  joystick_read.c
- *
- *  Reads the joystick values. Creates a packet with the scaled
- *	values and adds it to the tranmission queue.
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -31,21 +26,27 @@ char scale_axis[6];
 int axis[6];
 int button[12];
 
+/*------------------------------------------------------------------
+ *  void scale_joystick_values
+ *
+ *  Scale down the values coming in from the joystick. The incoming
+ *  values are scaled down from the orginial range of [-32768, 32767] 
+ *  to a new range of [-128, 127]
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void scale_joystick_values(int axis[6])
 {
-	//printf("In scale_joystick_values\n");
 	int i;
 	int OldRange = 65535;
 	int NewRange = 255;
 	int OldMax = 32767;
 	int OldMin = -32768;
-	//int NewMax = 127;
 	int NewMin = -128;
 	
 	for(i = 0; i < 6; i++)
-	{
-		//scale_axis[i] = (axis[i] + 32768) * 255 / 65535;
-		
+	{		
 		if(axis[i] >= OldMin && axis[i] <= OldMax)
 		{
 			if (axis[i] == 0) 
@@ -56,24 +57,29 @@ void scale_joystick_values(int axis[6])
 			{
 				scale_axis[i] = (((axis[i] - OldMin) * NewRange) / OldRange) + NewMin;
 			}
-			//printf("scale_axis[%d] is %d, axis[%d] = %d\n", i, scale_axis[i], i, axis[i]);
 		}
 	}
 }
 
+/*------------------------------------------------------------------
+ *  void sendJsPacket
+ *
+ *  Read data from the joystick, scale the values down, organize
+ * 	into packets and queue them to be sent to the drone
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void sendJsPacket()
 {
 	unsigned int i;
 	
 	struct packet_t p;
-	/* check up on JS
- 	*/
+	// check up on JS
 	while (read(fd, &js, sizeof(struct js_event)) == 
 	       			sizeof(struct js_event))  {
 
-		/* register data
-		 */
-		// fprintf(stderr,".");
+		// register data
 		switch(js.type & ~JS_EVENT_INIT) {
 			case JS_EVENT_AXIS:
 				axis[js.number] = js.value;
@@ -92,58 +98,43 @@ void sendJsPacket()
 	scale_joystick_values(&axis[0]);
 	
 	// button for PANIC_MODE
-	#if 1
 	if (button[0] == 1)
 	{
-		//printf("Panic button pressed!\n");
 		p.command = MODE_TYPE;
 		p.value = PANIC_MODE;
 		compute_crc(&p);
 		enqueue(p);
 		return;
-	}	
-	#endif
-	
-	#if 0
-	if (button[0] == 1)
-	{
-		//printf("Panic button pressed!\n");
-		p.command = MODE_TYPE;
-		p.value = ABORT;
-		compute_crc(&p);
-		enqueue(p);
-		return;
-	}	
-	#endif
-		
+	}
+			
 	// Send joystick values
 	for (i = 0; i < 4; i++ )
 	{
 		switch (i)
 		{
 			case 0:
-				p.command = JOY_ROLL;
+				p.command = JOY_ROLL;						// Joystick roll
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
 
 			case 1:
-				p.command = JOY_PITCH;
+				p.command = JOY_PITCH;						// Joystick pitch
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
 
 			case 2:
-				p.command = JOY_YAW;
+				p.command = JOY_YAW;						// Joystick yaw
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
 				break;
 
-			case 3:
-				p.command = JOY_LIFT;
+			case 3:	
+				p.command = JOY_LIFT;						// Joystick lift
 				p.value = scale_axis[i];
 				compute_crc(&p);
 				enqueue(p);
@@ -153,7 +144,5 @@ void sendJsPacket()
 				break;
 		}
 		usleep(10000);
-		//printf("Values from joystick: %d , %d\n", p.command, p.value);
 	}
-	//usleep(20000);
 }

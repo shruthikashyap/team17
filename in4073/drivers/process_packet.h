@@ -5,7 +5,6 @@
  *	roll, pitch, yaw, control gains and keyboard step values, which
  *	are set by the user.
  *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -51,6 +50,5 @@ void set_joy_yaw(char value);
 
 /* Send acknowledgement */
 void send_packet_ack(int);
-//void send_packet_to_pc(struct packet_t p);
 
 #endif

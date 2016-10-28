@@ -3,7 +3,6 @@
  *
  *  Declarations for joystick read functions
  *
- *  June 2016
  *------------------------------------------------------------------
  */
 

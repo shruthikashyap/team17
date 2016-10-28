@@ -35,7 +35,13 @@ struct queue_t *queue;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /*----------------------------------------------------------------
- * main -- execute terminal
+ * 	main -- execute terminal
+ *
+ *	Creates threads to dequeue packets (to be sent to the drone), 
+ *	and receive packets from the drone. Reads joystick and keyboard 
+ *	values
+ *
+ *	Mods : Shruthi Kashyap  
  *----------------------------------------------------------------
  */
 int main(int argc, char **argv)
@@ -45,7 +51,6 @@ int main(int argc, char **argv)
 	pthread_t pthread_dequeue;
 	pthread_t pthread_receive;
 
-#if 1
 	if ((fd = open(JS_DEV, O_RDONLY)) < 0) {
 		perror("jstest");
 		exit(1);
@@ -54,7 +59,6 @@ int main(int argc, char **argv)
 	/* non-blocking mode
  	*/
 	fcntl(fd, F_SETFL, O_NONBLOCK);
-#endif
 	
 	term_puts("\nTerminal program - Embedded Real-Time Systems\n");
 
@@ -90,18 +94,14 @@ int main(int argc, char **argv)
 			{
 				if ((d = term_getchar_nb()) == -1)
 				{
-					sendKeyEscape();
+					sendKeyEscape();				// Read two consecutive times for ESC key			
 				}
 			}
-			sendKeyPacket(c);
+			sendKeyPacket(c);						// Send keyboard value
 		}
-
-		sendJsPacket();
-		
+		sendJsPacket();								// Send joystick values
 		usleep(20000);
 
-		//if((c = rs232_getchar_nb()) != -1) 
-		//	term_putchar(c);
 	}
 
 	term_exitio();

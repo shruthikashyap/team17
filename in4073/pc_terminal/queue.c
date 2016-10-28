@@ -1,12 +1,5 @@
 /*------------------------------------------------------------------
  *  queue.c
- *
- *  Implements the enqueue and dequeue functions for the
- *	transmission queue to send the packets to QR.
- *	Also processes the received packets from QR related to logging
- *	and telemetry.
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -35,6 +28,15 @@ extern struct telemetry tele_data;
 extern char filename[100];
 extern FILE *fp;
 
+/*------------------------------------------------------------------
+ *  struct queue_t* createQueue
+ *
+ *  Creates a queue, where packets can be stored, as and when they
+ *	arrive, to be sent to the QR
+ *
+ *  Author : Evelyn Rashmi Jeyachandra
+ *------------------------------------------------------------------
+ */
 struct queue_t* createQueue(int numelements)
 {
 	struct queue_t * q = (struct queue_t *)malloc(sizeof(struct queue_t));
@@ -47,7 +49,14 @@ struct queue_t* createQueue(int numelements)
 	return q;
 }
 
-
+/*------------------------------------------------------------------
+ *  void enqueue
+ *
+ *  Populates the queue with packets
+ *
+ *  Author : Evelyn Rashmi Jeyachandra
+ *------------------------------------------------------------------
+ */
 void enqueue(struct packet_t p)
 {	
 	pthread_mutex_lock(&mutex);
@@ -67,18 +76,22 @@ void enqueue(struct packet_t p)
 		queue->elements[queue->last].value = p.value;
 		queue->elements[queue->last].crc = p.crc;
 		queue->elements[queue->last].stop = STOP_BYTE;
-
-		//printf("Enqueued Packet values : %d, %d\n", queue->elements[queue->last].command, queue->elements[queue->last].value);
 	}
 
 	pthread_mutex_unlock(&mutex);
 }
 
+/*------------------------------------------------------------------
+ *  void process_dequeue
+ *
+ *  Dequeues packets from the queue and sends it to the QR
+ *
+ *  Author : Evelyn Rashmi Jeyachandra
+ *------------------------------------------------------------------
+ */
 void* process_dequeue(void* thread)
 {
 	struct packet_t *p = (struct packet_t*)malloc(sizeof(struct packet_t));
-	//int retry_count = 0;
-	//int time_out = 0;
 
 	while(1)
 	{
@@ -104,51 +117,6 @@ void* process_dequeue(void* thread)
 			
 			// Reset ack_received
 			ack_received = 2;
-			
-			//printf("Dequeued Packet values : %d, %d\n", p->command, p->value);
-
-			#if 0
-			// Check for ACK. If NACK - Resend from beginning. Timeout if nothing is received and retry again.
-			// Retry for PANIC_MODE - ack_received
-			// ACK SUCCESS = 0, FAILURE = 1
-			
-			if(p->command == MODE_TYPE && p->value == PANIC_MODE)
-			{
-				//printf("Inside panic mode retry logic!\n");
-				usleep(100000);
-				if(ack_received != ACK_SUCCESS)
-				{
-					for(retry_count = 0; retry_count < 3; retry_count++)
-					{
-						for(time_out = 0; time_out < 10 && ack_received == ACK_INVALID; time_out++);
-						{
-							usleep(200);
-						}
-						printf("Retry Ack for PANIC command received = %d\n", ack_received);
-
-						if(ack_received == ACK_SUCCESS)
-							break;
-						else
-						{
-							// Send data
-							rs232_putchar(p->start);
-							rs232_putchar(p->command);
-							rs232_putchar(p->value);
-							rs232_putchar(p->crc);
-							rs232_putchar(p->stop);
-							
-							// Reset ack_received
-							ack_received = 2;
-						}
-						usleep(100000);
-					}
-				}
-				else
-				{
-					printf("Ack for PANIC command received = %d\n", ack_received);
-				}
-			}
-			#endif
 		}
 
 		pthread_mutex_unlock(&mutex);
@@ -159,20 +127,17 @@ void* process_dequeue(void* thread)
 	free(p);
 }
 
+/*------------------------------------------------------------------
+ *  void process_receive_packets
+ *
+ *  Receives packets from the QR, which will be further used for 
+ *	telemetry/logging purposes
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void* process_receive_packets(void* thread)
 {
-	#if 0
-	char c;
-	while(1)
-	{
-		if((c = rs232_getchar_nb()) != -1) 
-			term_putchar(c);
-
-		//usleep(250);
-	}
-	#endif
-	
-	#if 1
 	// Receive telemetry data, log data, acknowledgement, etc.
 	struct packet_t p;
 	uint8_t ch;
@@ -180,24 +145,20 @@ void* process_receive_packets(void* thread)
 
 	fp = fopen(filename, "w+");
 	if (fp == NULL)
-		printf("Cannot open file!\n");
+		printf("Cannot open file!\n");							// Opens file for logging
 	fclose(fp);
 	
 	while(1)
 	{
 		if((ch = rs232_getchar_nb()) != -1)
 		{
-			//printf("%d\n", ch);
-			//if (ch == LOG_END)
-			//	log_start_flag = 0;							// reset log start flag
-
 			if(log_start_flag == 1)
 			{	
-				get_log(ch);
+				get_log(ch);									// Receive log from QR
 			}
 			else if(telemetry_rcv_flag == 1)
 			{
-				receive_telemetry_data(ch);
+				receive_telemetry_data(ch);						// Receive telemetry from QR
 			}
 			else
 			{
@@ -206,17 +167,11 @@ void* process_receive_packets(void* thread)
 					if(rcv_byte_count == 0)
 					{
 						p.start = ch;
-
-						// Start receiving
-						rcv_byte_count = 1;
+						rcv_byte_count = 1;						// Start receiving
 					}
 					else
 					{
-						// Packet error
-						//printf("Packet error: %d!\n", ch);
-
-						// Reset flags
-						rcv_byte_count = 0;
+						rcv_byte_count = 0;						// Reset flags
 					}
 				}
 				else if((unsigned char)ch == STOP_BYTE)
@@ -224,29 +179,19 @@ void* process_receive_packets(void* thread)
 					if(rcv_byte_count == 4)
 					{
 						p.stop = ch;
-
-						// Process packet
-						if (!check_crc(p))
+						if (!check_crc(p))						// Process packet
 						{
-							//printf("Packet received from QR - command = %d, value = %d\n", p.command, p.value);
 							if(p.command == ACK)
 							{
-								// Update a ack_received global variable
-								ack_received = p.value;
-								//printf("Updating global ack = %d\n", ack_received);
+								ack_received = p.value;			// Update a ack_received global variable
 							}
 							else if(p.command == LOG && p.value == LOG_START)
 							{
-								//printf("Log start\n");
 								log_start_flag = 1;
 							}
 							else if(p.command == TELEMETRY_DATA)
 							{
 								telemetry_rcv_flag = 1;
-							}
-							else
-							{
-								// Do nothing
 							}
 						}
 						else
@@ -254,12 +199,6 @@ void* process_receive_packets(void* thread)
 							printf("Packet error due to incorrect CRC\n");
 						}
 					}
-					else
-					{
-						// Packet error
-						//printf("Packet error: %d!\n", ch);
-					}
-
 					// Reset flag
 					rcv_byte_count = 0;
 
@@ -267,33 +206,24 @@ void* process_receive_packets(void* thread)
 				}
 				else if(rcv_byte_count == 1)
 				{
-					p.command = ch;
+					p.command = ch;								// Command byte received
 					rcv_byte_count++;
 				}
 				else if(rcv_byte_count == 2)
 				{
-					p.value = ch;
+					p.value = ch;								// Value byte received
 					rcv_byte_count++;
 				}
 				else if(rcv_byte_count == 3)
 				{
-					p.crc = ch;
+					p.crc = ch;									// CRC byte received
 					rcv_byte_count++;
 				}
 				else
 				{
-					// Packet error
-					//printf("Packet error: %d!\n", ch);
-
-					// Reset flag
 					rcv_byte_count = 0;
 				}
 			}
-			//else
-			//{
-			//	usleep(100000);
-			//}
 		}
 	}
-	#endif
 }

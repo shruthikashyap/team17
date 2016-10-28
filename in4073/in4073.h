@@ -19,7 +19,7 @@
 #include "inv_mpu_dmp_motion_driver.h"
 #include "ml.h"
 
-#define RED				22
+#define RED					22
 #define YELLOW				24
 #define GREEN				28
 #define BLUE				30
@@ -36,7 +36,7 @@ bool demo_done;
 void run_filters_and_control();
 
 // Timers
-#define TIMER_PERIOD	2000 //50000us=50ms=20Hz (MAX 16bit, 65ms)
+#define TIMER_PERIOD	2000 	//500 Hz 
 void timers_init(void);
 uint32_t get_time_us(void);
 bool check_timer_flag(void);
@@ -78,7 +78,7 @@ int16_t phi, theta, psi;
 int16_t sp, sq, sr;
 int16_t sax, say, saz;
 uint8_t sensor_fifo_count;
-void imu_init(bool dmp, uint16_t interrupt_frequency); // if dmp is true, the interrupt frequency is 100Hz - otherwise 32Hz-8kHz
+void imu_init(bool dmp, uint16_t interrupt_frequency); 
 void get_dmp_data(void);
 void get_raw_sensor_data(void);
 
@@ -110,10 +110,10 @@ void ble_send(void);
 // QR object
 struct qr_t
 {
-	char current_mode;	// Current mode of QR
-	int16_t change_mode;	// Flag to indicate change of mode
-	int16_t stop;			// Flag to stop QR
-	int16_t ae[4];		// Current ae[] values
+	char current_mode;			// Current mode of QR
+	int16_t change_mode;		// Flag to indicate change of mode
+	int16_t stop;				// Flag to stop QR
+	int16_t ae[4];				// Current ae[] values
 	
 	// Keyboard lift, roll, pitch and yaw values
 	int16_t key_lift;
@@ -127,6 +127,7 @@ struct qr_t
 	int16_t joy_pitch;
 	int16_t joy_yaw;
 	
+	// Calibration offset values
 	int16_t offset_sp;
     int16_t offset_sq;
     int16_t offset_sr;
@@ -138,6 +139,7 @@ struct qr_t
     int16_t offset_psi;
 	int32_t offset_pressure;
 	
+	// Sensor values
 	int16_t sp;
 	int16_t sq;
 	int16_t sr;
@@ -149,17 +151,18 @@ struct qr_t
 	int16_t psi;
 	int32_t pressure;
 
+	// Control gain values
 	int16_t controlgain_yaw;
 	int16_t controlgain_p1;
 	int16_t controlgain_p2;
 	int16_t controlgain_height;
 	
+	// Height control 
 	int32_t	height_control_pressure;
 	int16_t height_control_lift;
 };
 
 extern struct qr_t drone;
-
 extern struct log write_data;
 extern struct log read_data;
 extern uint32_t new_addr;

@@ -1,10 +1,5 @@
 /*------------------------------------------------------------------
  *  packet.c
- *
- *  Reads keyboard values. Creates packets and adds to the
- *	transmission queue.
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -15,11 +10,20 @@
 #include "../command_types.h"
 #include "../crc.h"
 
+/*------------------------------------------------------------------
+ *  void sendKeyPacket
+ *
+ *  Reads the keyboard values and queues it to be sent to the drone
+ *
+ *  Author : Evelyn Rashmi Jeyachandra
+ *------------------------------------------------------------------
+ */
 void sendKeyPacket(char key)
 {
 	struct packet_t p;
 	int p_flag = 0;
 
+	// Choose appropriate command and value to be sent
 	switch(key)
 	{
 		case '0':
@@ -159,7 +163,8 @@ void sendKeyPacket(char key)
 			p.value = DECREASE;
 			p_flag = 1;
 			break;
-		//Log
+
+		// For Log
 		case 'b':
 			p.command = LOG;
 			p.value = LOG_START;
@@ -177,18 +182,26 @@ void sendKeyPacket(char key)
 			p.value = LOG_UPLOAD;
 			p_flag = 1;
 			break;
+
 		default:
 			break;
 	}
-	if (p_flag == 1)
+	// Fill CRC byte and enqueue
+	if (p_flag == 1)					
 	{	
-		//printf("\n\nPacket values from keyboard: %d, %d\n", p.command, p.value);
 		compute_crc(&p);
 		enqueue(p);
 	}
 }
 
-// bit dirty but ok
+/*------------------------------------------------------------------
+ *  void sendKeyEscape
+ *
+ *  Sends the ABORT command to the drone
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 void sendKeyEscape()
 {
 	struct packet_t p;

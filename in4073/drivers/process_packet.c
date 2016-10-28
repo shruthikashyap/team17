@@ -1,10 +1,5 @@
 /*------------------------------------------------------------------
  *  process_packet.c
- *
- *  Processes the received packets from PC and updates the global
- * 	drone variables
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -13,66 +8,21 @@
 #include "in4073.h"
 #include "../crc.h"
 
-bool log_upload_flag = false;
-bool log_active_flag = false;
-bool height_control_flag = false;
-bool raw_mode_flag = false;
-bool imu_init_flag = true;
-bool abort_flag = false;
+bool log_upload_flag 		= false;
+bool log_active_flag 		= false;
+bool height_control_flag 	= false;
+bool raw_mode_flag 			= false;
+bool imu_init_flag 			= true;
+bool abort_flag 			= false;
 
 /*------------------------------------------------------------------
- * process_key -- process command keys
+ *  void send_packet_to_pc
+ *
+ *  Sends packet from QR to the PC
+ *
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
-void process_key(struct packet_t p) 
-{
-	printf("Received byte:%d, %d\n", p.command, p.value);
-	/*if(drone.current_mode == SAFE_MODE)
-	{
-		printf("\nIgnoring drone control commands in SAFE_MODE");
-		return;
-	}
-	else
-		printf("\nIn process_key");*/
-	
-	/*switch (c) 
-	{
-		case 'q':
-				ae[0] += 10;
-				break;
-		case 'a':
-				ae[0] -= 10;
-				if (ae[0] < 0) ae[0] = 0;
-				break;
-		case 'w':
-				ae[1] += 10;
-				break;
-		case 's':
-				ae[1] -= 10;
-				if (ae[1] < 0) ae[1] = 0;
-				break;
-		case 'e':
-				ae[2] += 10;
-				break;
-		case 'd':
-				ae[2] -= 10;
-				if (ae[2] < 0) ae[2] = 0;
-				break;
-		case 'r':
-				ae[3] += 10;
-				break;
-		case 'f':
-				ae[3] -= 10;
-				if (ae[3] < 0) ae[3] = 0;
-				break;
-		case 27:
-				demo_done = 1;
-				break;
-		default:
-				nrf_gpio_pin_toggle(RED);
-	}*/
-}
-
 void send_packet_to_pc(struct packet_t p)
 {
 	uart_put(p.start);
@@ -82,30 +32,38 @@ void send_packet_to_pc(struct packet_t p)
 	uart_put(p.stop);
 }
 
+/*------------------------------------------------------------------
+ *  void send_packet_ack
+ *
+ *  Sends ACK (acknowledgement for receiving a packet from PC to QR 
+ *	in good order) from QR to the PC
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void send_packet_ack(int ack)
-{
-	//printf("Ack value = %d\n", ack);
-	
+{	
 	struct packet_t p;
 	p.start = START_BYTE;
 	p.command = ACK;
 	p.value = ack;
 	compute_crc(&p);
 	p.stop = STOP_BYTE;
-	
-	#if 0
-	send_packet_to_pc(p);
-	#endif
 }
 
+/*------------------------------------------------------------------
+ *  void set_mode_type
+ *
+ *  Update global variable for the current mode, drone.current_mode
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_mode_type(char value)
 {
-	//printf("In set_mode_type - %d\n", value);
-	
 	// Return if drone is already in this mode
 	if(drone.current_mode == value)
 	{
-		//printf("Already in %d mode\n", value);
 		return;
 	}
 	
@@ -164,18 +122,23 @@ void set_mode_type(char value)
 						send_packet_ack(ACK_SUCCESS);
 						break;
 			default:
-						//printf("Invalid mode\n");
 						send_packet_ack(ACK_FAILURE);
+						break;
 		}
 	}
-	//else
-		//printf("Cannot change mode!\n");
 }
 
+/*------------------------------------------------------------------
+ *  void set_key_lift
+ *
+ *  Update global variable for lift value from keyboard, 
+ *	drone.key_lift
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_key_lift(char value)
-{
-	//printf("In set_key_lift - %d\n", value);
-	
+{	
 	if(value == 1)
 	{
 		drone.key_lift += KEYBOARD_STEP;
@@ -198,10 +161,17 @@ void set_key_lift(char value)
 	}
 }
 
+/*------------------------------------------------------------------
+ *  void set_key_roll
+ *
+ *  Update global variable for roll value from keyboard,
+ *	drone.key_roll
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_key_roll(char value)
-{
-	//printf("In set_key_roll - %d\n", value);
-	
+{	
 	if(value == 1)
 	{
 		drone.key_roll += KEYBOARD_STEP;
@@ -224,10 +194,17 @@ void set_key_roll(char value)
 	}
 }
 
+/*------------------------------------------------------------------
+ *  void set_key_pitch
+ *
+ *  Update global variable for pitch value from keyboard,
+ *	drone.key_pitch
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_key_pitch(char value)
 {
-	//printf("In set_key_pitch - %d\n", value);
-	
 	if(value == 1)
 	{
 		drone.key_pitch += KEYBOARD_STEP;
@@ -250,10 +227,17 @@ void set_key_pitch(char value)
 	}
 }
 
+/*------------------------------------------------------------------
+ *  void set_key_yaw
+ *
+ *  Update global variable for yaw value from keyboard,
+ *	drone.key_yaw
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_key_yaw(char value)
 {
-	//printf("In set_key_yaw - %d\n", value);
-	
 	if(value == 1)
 	{
 		drone.key_yaw += KEYBOARD_STEP;
@@ -276,11 +260,16 @@ void set_key_yaw(char value)
 	}
 }
 
-
+/*------------------------------------------------------------------
+ *  void set_key_control_yaw
+ *
+ *  Update global variable for yaw control gain, drone.controlgain_yaw
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 void set_key_control_yaw(char value)
-{
-	//printf("In set_key_control_yaw - %d\n", value);
-	
+{	
 	if(value == 1)
 	{
 		drone.controlgain_yaw += KEYBOARD_CONTROL_STEP;
@@ -301,15 +290,18 @@ void set_key_control_yaw(char value)
 	{
 		send_packet_ack(ACK_FAILURE);
 	}
-	
-	//printf("In drone.controlgain_yaw - %d\n", drone.controlgain_yaw);
 }
 
-
+/*------------------------------------------------------------------
+ *  void set_key_control_p1
+ *
+ *  Update global variable for control gain P1, drone.controlgain_p1
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 void set_key_control_p1(char value)
 {
-	//printf("In set_key_control_p1 - %d\n", value);
-	
 	if(value == 1)
 	{
 		drone.controlgain_p1 += KEYBOARD_CONTROL_STEP;
@@ -330,15 +322,18 @@ void set_key_control_p1(char value)
 	{
 		send_packet_ack(ACK_FAILURE);
 	}
-	
-	//printf("In drone.controlgain_p1 - %d\n", drone.controlgain_p1);
 }
 
-
+/*------------------------------------------------------------------
+ *  void set_key_control_p2
+ *
+ *  Update global variable for control gain P2, drone.controlgain_p2
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 void set_key_control_p2(char value)
-{
-	//printf("In set_key_control_p2 - %d\n", value);
-	
+{	
 	if(value == 1)
 	{
 		drone.controlgain_p2 += KEYBOARD_CONTROL_STEP;
@@ -359,66 +354,96 @@ void set_key_control_p2(char value)
 	{
 		send_packet_ack(ACK_FAILURE);
 	}
-	
-	//printf("In drone.controlgain_p2 - %d\n", drone.controlgain_p2);
 }
 
-
+/*------------------------------------------------------------------
+ *  void set_joy_lift
+ *
+ *  Update global variable for lift value from joystick,
+ *	drone.joy_lift
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_joy_lift(signed char value)
-{
-	//printf("In set_joy_lift - %d\n", value);
-	
+{	
 	drone.joy_lift = -value + 127;
-		
 	send_packet_ack(ACK_SUCCESS);
 }
 
+/*------------------------------------------------------------------
+ *  void set_joy_roll
+ *
+ *  Update global variable for roll value from joystick,
+ *	drone.joy_roll
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_joy_roll(char value)
 {
-	//printf("In set_joy_roll - %d\n", value);
-	
 	drone.joy_roll = value;
-	
 	send_packet_ack(ACK_SUCCESS);
 }
 
+/*------------------------------------------------------------------
+ *  void set_joy_pitch
+ *
+ *  Update global variable for pitch value from joystick,
+ *	drone.joy_pitch
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_joy_pitch(char value)
-{
-	//printf("In set_joy_pitch - %d\n", value);
-	
+{	
 	drone.joy_pitch = value;
-	
 	send_packet_ack(ACK_SUCCESS);
 }
 
+/*------------------------------------------------------------------
+ *  void set_joy_yaw
+ *
+ *  Update global variable for yaw value from joystick,
+ *	drone.joy_yaw
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void set_joy_yaw(char value)
 {
-	//printf("In set_joy_yaw - %d\n", value);
-	
 	drone.joy_yaw = value;
-	
 	send_packet_ack(ACK_SUCCESS);
 }
 
+/*------------------------------------------------------------------
+ *  void process_packet
+ *
+ *  Process the packets obtained from the PC and update the 
+ *	corresponding global variables
+ *
+ *  Author : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void process_packet(struct packet_t packet)
 {
-	//printf("Received byte:%d, %d\n", packet.command, packet.value);
-
-	#if 1
+	// Ignore any incoming packet if drone is in safe mode, except commands
+	// 	1) change to another mode
+	//	2) change to RAW mode
+	//	3) retrieve log 
 	if((drone.current_mode == SAFE_MODE && !(packet.command == RAW_MODE || packet.command == MODE_TYPE || packet.command == LOG)) || (drone.current_mode != SAFE_MODE && packet.command == RAW_MODE))
 	{
-		//printf("Ignoring drone control commands in SAFE_MODE");
 		return;
 	}
-	#endif
 
+	// Send Failure ACK if CRC check failed for the received packet
 	if(check_crc(packet))
 	{
-		//printf("CRC check failed = %d\n", packet.crc);
 		send_packet_ack(ACK_FAILURE);
 		return;
 	}
 	
+	// Assign packet value to the appropriate variable
 	switch (packet.command)
 	{
 		case MODE_TYPE:
@@ -458,20 +483,21 @@ void process_packet(struct packet_t packet)
 				set_key_control_p2(packet.value);
 				break;
 		case LOG:
-				if (packet.value == LOG_START)
+				// Start logging
+				if (packet.value == LOG_START)					
 				{
 					log_active_flag = true;
 					nrf_gpio_pin_toggle(GREEN);
-					//printf("Inside log start\n");
 				}
+				// Stop logging
 				else if (packet.value == LOG_STOP)
 				{
 					log_active_flag = false;
 					nrf_gpio_pin_toggle(GREEN);
 				}
+				// Upload log to PC only if in Safe mode
 				else if (packet.value == LOG_UPLOAD && drone.current_mode == SAFE_MODE)
 				{
-					//printf("Log upload command received\n");
 					log_upload_flag = true;
 				}
 				break;
@@ -481,23 +507,21 @@ void process_packet(struct packet_t packet)
 					height_control_flag = true;
 					drone.height_control_pressure = pressure;
 					drone.height_control_lift = drone.joy_lift;
-					//printf("In HEIGHT_CONTROL_MODE\n");
 				}
 				else
 				{
 					height_control_flag = false;
-					//printf("Exit HEIGHT_CONTROL_MODE\n");
 				}
 				break;
 		case RAW_MODE:
+				// Change to RAW from DMP mode
 				if(raw_mode_flag == false)
 				{
-					//printf("In RAW_MODE\n");
 					raw_mode_flag = true;
 				}
+				// Change to DMP from RAW mode
 				else
 				{
-					//printf("In DMP_MODE\n");
 					raw_mode_flag = false;
 				}
 				imu_init_flag = false;

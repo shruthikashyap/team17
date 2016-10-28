@@ -3,7 +3,6 @@
  *
  *  Declarations for queue related functions.
  *
- *  June 2016
  *------------------------------------------------------------------
  */
 

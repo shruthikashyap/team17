@@ -44,6 +44,15 @@ int _write(int file, const char * p_char, int len)
 	return len;
 }
 
+/*------------------------------------------------------------------
+ *  void UART0_IRQHandler
+ *
+ *  Receives packet from PC, checks if the bytes are in order, and
+ *	calls functions for further packet processing
+ *
+ *  Mods : Shruthi Kashyap
+ *------------------------------------------------------------------
+ */
 void UART0_IRQHandler(void)
 {
 	if (NRF_UART0->EVENTS_RXDRDY != 0)
@@ -70,7 +79,6 @@ void UART0_IRQHandler(void)
 	{
 		cable_disconnect_flag = 0;
 		char ch = dequeue(&rx_queue);
-		//printf("Received byte = %d\n", ch);
 
 		if((unsigned char)ch == START_BYTE)
 		{
@@ -78,11 +86,9 @@ void UART0_IRQHandler(void)
 			{
 				nack_flag = 0;
 			}
-			
 			if(rcv_byte_count == 0)
 			{
 				p.start = ch;
-				
 				// Start receiving
 				rcv_byte_count = 1;
 			}
@@ -90,7 +96,6 @@ void UART0_IRQHandler(void)
 			{
 				nack_flag = 1;
 				send_packet_ack(ACK_FAILURE);
-				//printf("Send NACK %d!\n", ch);
 				
 				// Reset flags
 				rcv_byte_count = 0;
@@ -101,9 +106,7 @@ void UART0_IRQHandler(void)
 			if(rcv_byte_count == 4)
 			{
 				p.stop = ch;
-				
 				// Process packet
-				//printf("Packet received from PC - command = %d, value = %d\n", p.command, (signed char)p.value);
 				if(drone.current_mode != PANIC_MODE)
 					process_packet(p);
 
@@ -114,24 +117,22 @@ void UART0_IRQHandler(void)
 				{
 					nack_flag = 1;
 					send_packet_ack(ACK_FAILURE);
-					//printf("Send NACK %d!\n", ch);
 				}
 			}
-
 			// Reset flag
 			rcv_byte_count = 0;
 		}
-		else if(rcv_byte_count == 1)
+		else if(rcv_byte_count == 1)							// Command byte
 		{
 			p.command = ch;
 			rcv_byte_count++;
 		}
-		else if(rcv_byte_count == 2)
+		else if(rcv_byte_count == 2)							// Value byte
 		{
 			p.value = ch;
 			rcv_byte_count++;
 		}
-		else if(rcv_byte_count == 3)
+		else if(rcv_byte_count == 3)							// CRC byte
 		{
 			p.crc = ch;
 			rcv_byte_count++;
@@ -142,9 +143,7 @@ void UART0_IRQHandler(void)
 			{
 				nack_flag = 1;
 				send_packet_ack(ACK_FAILURE);
-				//printf("Send NACK %d!\n", ch);
 			}
-			
 			// Reset flag
 			rcv_byte_count = 0;
 		}

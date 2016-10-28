@@ -4,7 +4,6 @@
  *  Defines some basic headers required by the drone mode
  *	controllers
  *
- *  June 2016
  *------------------------------------------------------------------
  */
 
