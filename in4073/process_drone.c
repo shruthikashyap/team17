@@ -265,10 +265,10 @@ void calculate_rotor_speeds(int lift, int pitch, int roll, int yaw)
 	ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
 	
 	// adjust for trimming
-	ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-	ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-	ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-	ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
+	ae_[0] += (drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+	ae_[1] += (drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
+	ae_[2] += (drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
+	ae_[3] += (drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
 	
 	// if the joystick throttle is up, the minimum rotor speeds should be MIN_RPM to keep the rotors spinning
 	if (drone.joy_lift > 5)
