@@ -17,7 +17,7 @@ void send_telemetry_data();
  *  In panic mode, the red LED is on. After touch-down, the drone switches
  *  to safe mode.
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void panic_mode()

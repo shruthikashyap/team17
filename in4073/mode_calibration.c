@@ -17,7 +17,7 @@ extern bool raw_mode_flag;
  *  The yellow led will be on during calibration. After calibration, the ES 
  *  switches back to safe mode.
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void calibration_mode()

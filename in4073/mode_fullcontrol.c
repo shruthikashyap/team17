@@ -118,7 +118,7 @@ void full_control_mode()
  *  sensor values from the MPU. Pitch and roll are controlled using 
  *  cascaded P controllers.
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void full_control_mode_raw()

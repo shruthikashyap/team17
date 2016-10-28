@@ -21,7 +21,7 @@ struct qr_t drone;
 
 /*------------------------------------------------------------------
  * main -- do the test
- * Written by I. Protonotarios, modified by Shruthi Kasyap
+ * Written by I. Protonotarios, modified by Shruthi Kashyap
  *------------------------------------------------------------------
  */
 int main(void)

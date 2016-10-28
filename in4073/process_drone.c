@@ -33,7 +33,7 @@ extern bool imu_init_flag;
  *  That is, the MPU (gyro+accelero), ADC (to check battery voltage) 
  *  and the barometer (pressure/height control)
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void read_sensor()
@@ -102,7 +102,7 @@ void read_sensor()
  *  This function reads the battery voltage. Used in functions where we 
  *  don't want to call read_sensor.
  *
- *  Author : Shruthi Kasyap
+ *  Author : Shruthi Kashyap
  *------------------------------------------------------------------
  */
 void read_battery_level()
