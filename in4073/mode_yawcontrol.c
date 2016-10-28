@@ -1,19 +1,21 @@
 /*------------------------------------------------------------------
  *  mode_yawcontrol.c
- *
- *  Defines the yaw control mode of the drone
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
 #include "modes.h"
 
+ /*------------------------------------------------------------------
+ *  void yaw_control_mode
+ *
+ *  This is the yaw controlled mode for the ES. You can control the yaw-rate
+ *  with this mode. Uses a P controller for control
+ *
+ *  Author : Kars Heinen 
+ *------------------------------------------------------------------
+ */
 void yaw_control_mode()
 {
-	//printf("In YAW_CONTROL_MODE\n");
-
-	int ae_[4];
 	int yawrate_setpoint;
 	int yaw_error;
 
@@ -22,15 +24,14 @@ void yaw_control_mode()
 
 	int lift, roll, pitch, yaw;
 	
-	//int pressure_error;
+	int pressure_error;
 
-	drone.controlgain_yaw = 2;
-	drone.controlgain_height = 1;
-	//drone.key_lift = 20; // XXX: For testing
-	//drone.joy_lift = 100; // XXX: For testing
+	// manually set the control gain for height control for now.
+	drone.controlgain_height = 1; 
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+		// check cable disconnection
 		if (cable_disconnect_flag == 2)
 		{	
 			cable_disconnect_flag = 1;
@@ -52,34 +53,25 @@ void yaw_control_mode()
 			yawrate_setpoint = (signed char)drone.joy_yaw;
 			__enable_irq();
 
-			#if 0
+			// height control testing in yaw mode
 			if(height_control_flag == true)
 			{
+				// while running height mode, exit from height mode when you touch the joystick throttle
 				if(drone.height_control_lift != drone.joy_lift)
 					height_control_flag = false;
 				else
 				{
+					// simple P control for height mode
 					pressure_error = pressure - drone.height_control_pressure;
 					lift_force = HOVER_LIFT_FORCE + ((int)drone.controlgain_height * pressure_error);
-					//printf("Lift force = %d, pressure_error = %d\n", lift_force, pressure_error);
 				}
 			}
-			#endif
 
-			// setpoint is keyboard + joystick, so in range of -127 to 128
-			// gyro is in 16 bit range with a max of 250deg/s 
-			// yaw rate of max 3000 seems decent (trial and error) so max of setpoint should be 3000
-			// 3000/128 = 23.43, so setpoints times 24 should be in decent range
-			// dividing sr by 24 to keep yaw_error a low number, so the controlgainnumber doesnt have to be so small
-
+			// only allow control when joystick throttle is up
 			if (lift_force > 10) 
 			{
 				yaw_error = (int)(yawrate_setpoint - (drone.sr/12));
-				//yaw_error = -(int)(yawrate_setpoint - (drone.sr/24));
-
-				// yaw error in range of -255 to 256 (although the extremes probably wont happen)
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
-				//printf("yaw moment:  %d \n", yaw_moment);
 			}
 			else
 			{
@@ -89,53 +81,19 @@ void yaw_control_mode()
 			lift  = DRONE_LIFT_CONSTANT * lift_force;
 			roll  = 0; // no roll or pitch in yaw mode
 			pitch = 0;
-			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment); // misschien deze drone constant aanpassen voor yaw mode
+			yaw   = (int)(DRONE_YAW_CONSTANT/8 * yaw_moment);
 
-			//calculate_rotor_speeds(lift, pitch, roll, yaw);
-			
-			if ((signed char)drone.joy_lift < 5)
+			if (drone.joy_lift < 5)
 			{
 				pitch = 0;
 				roll  = 0;
 				yaw   = 0;
 			}
 
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
+			// calculate rotor speeds
+			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-
-			ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
-
-			// setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
-
-			//printf("%3d %3d %3d %3d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-
+			// update rotor speeds
 			run_filters_and_control();
 			
 			// Update log and telemetry if corresponding flags are set
@@ -144,6 +102,4 @@ void yaw_control_mode()
 		else
 			nrf_delay_us(10);
 	}
-	
-	//printf("Exit YAW_CONTROL_MODE\n");
 }

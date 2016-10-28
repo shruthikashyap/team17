@@ -1,9 +1,5 @@
 /*------------------------------------------------------------------
  *  mode_calibration.c
- *
- *  Defines the calibartion mode of the drone
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -12,10 +8,20 @@
 void send_telemetry_data();
 extern bool raw_mode_flag;
 
+/*------------------------------------------------------------------
+ *  void calibration_mode
+ *
+ *  This function is the calibration mode for the ES. It calibrates the
+ *  drone sensor values (gyroscope, accelerometer and pressure sensor).
+ *  It averages a number a sensor values, which will be the offset of the sensor.
+ *  The yellow led will be on during calibration. After calibration, the ES 
+ *  switches back to safe mode.
+ *
+ *  Author : Shruthi Kasyap
+ *------------------------------------------------------------------
+ */
 void calibration_mode()
-{
-	//printf("In CALIBRATION_MODE\n");
-	
+{	
 	nrf_gpio_pin_toggle(YELLOW);
 
     int samples = 500;
@@ -31,34 +37,41 @@ void calibration_mode()
 	int sum_pressure = 0;
 	int i;
 
+	// send telemetry manually because we don't check for timer flags in this mode
 	send_telemetry_data();
 	
+	// first 20 seconds are junk values so wait 20 seconds
 	if(get_time_us() < 20000000)
 		nrf_delay_ms(20000);
 	
-	// Discard some samples to avoid junk data
+	// Discard some sensor values to avoid junk data
 	for(i = 0; i < 2500; i++)
 	{
 		if (check_timer_flag()) 
 		{
 			read_baro();
 			nrf_delay_ms(1);
-
 			clear_timer_flag();
 		}
 
 		if (check_sensor_int_flag()) 
 		{
-			//get_dmp_data();
-			get_raw_sensor_data();
-			//printf("%6d %6d %6d | ", sp, sq, sr);
-			//printf("%6d %6d %6d \n", sax, say, saz);
+			if (raw_mode_flag == true)
+			{
+				get_raw_sensor_data();
+				butterworth();
+				kalman();
+			}
+			else
+			{
+				get_dmp_data();
+			}
 			nrf_delay_ms(1);
 			clear_sensor_int_flag();
 		}
 	}
 
-    //for(i = 0; i < samples; i++)
+	// loop until we have enough samples to average
 	i = 0;
 	while(i < samples)
 	{
@@ -71,7 +84,7 @@ void calibration_mode()
 			
 			sum_pressure += pressure;
 		}
- 
+
 		if (check_sensor_int_flag()) 
 		{
 			if (raw_mode_flag == true)
@@ -85,8 +98,6 @@ void calibration_mode()
 				get_dmp_data();
 			}
 
-			//printf("%6d %6d %6d | ", sp, sq, sr);
-			//printf("%6d %6d %6d \n", sax, say, saz);
 			nrf_delay_ms(1);
 			clear_sensor_int_flag();
 			
@@ -104,9 +115,9 @@ void calibration_mode()
 		}
 		
 		nrf_delay_ms(1);
-    }
+	}
 	
-    drone.offset_sp = (int)(sum_sp / samples);
+	drone.offset_sp = (int)(sum_sp / samples);
 	drone.offset_sq = (int)(sum_sq / samples);
 	drone.offset_sr = (int)(sum_sr / samples);
 	drone.offset_sax = (int)(sum_sax / samples);
@@ -117,18 +128,10 @@ void calibration_mode()
 	drone.offset_psi = (int)(sum_psi / samples);
 	drone.offset_pressure = (int)(sum_pressure / samples);
 
-    //printf("New offsets found: \n");
-    //printf("i = %d, sp = %d, sq = %d, sr = %d \n", i, drone.offset_sp, drone.offset_sq, drone.offset_sr);
-	//printf("sax = %d, say = %d, saz = %d \n", drone.offset_sax, drone.offset_say, drone.offset_saz);
-	//printf("phi = %d, theta = %d, psi = %d \n", drone.offset_phi, drone.offset_theta, drone.offset_psi);
-	//printf("pressure = %ld \n", drone.offset_pressure);
-
-    drone.current_mode = SAFE_MODE;
-    drone.change_mode = 1;
+	drone.current_mode = SAFE_MODE;
+	drone.change_mode = 1;
 	
 	nrf_delay_ms(1);
 	
 	nrf_gpio_pin_toggle(YELLOW);
-    
-    //printf("Exit CALIBRATION_MODE\n");
 }

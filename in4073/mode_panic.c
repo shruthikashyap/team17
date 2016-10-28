@@ -1,20 +1,31 @@
 /*------------------------------------------------------------------
  *  mode_panic.c
- *
- *  Defines the panic mode of the drone
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
 #include "modes.h"
 void send_telemetry_data();
 
+
+ /*------------------------------------------------------------------
+ *  void panic_mode
+ *
+ *  This function is the panic mode for the ES. In panic mode, the rotor speeds
+ *  are set to a fixed RPM which represents hovering. When falling, the drone will 
+ *  therefor stop falling and start hovering. After two seconds of hovering the 
+ *  drone will come down graduatly to make sure touch down occurs.
+ *  In panic mode, the red LED is on. After touch down, the drone switches
+ *  back to safe mode.
+ *
+ *  Author : Shruthi Kasyap
+ *------------------------------------------------------------------
+ */
 void panic_mode()
 {
-	//printf("In PANIC_MODE\n");
+
 	nrf_gpio_pin_toggle(RED);
 	
+	// when one of the rotors speeds is not zero, start hovering
 	if(drone.ae[0] || drone.ae[1] || drone.ae[2] || drone.ae[3])
 	{
 		// Set moderate RPM values to the motors for hovering
@@ -24,10 +35,13 @@ void panic_mode()
 		drone.ae[3] = HOVER_RPM;
 	}
 	
+	// send manual telemetry data to display we entered panic mode.
 	send_telemetry_data();
+
+	// update the rotors speeds for hovering.
 	run_filters_and_control();
 	
-	// Stay in this mode for a few seconds
+	// Hover for 2 seconds
 	nrf_delay_ms(2000);
 	
 	// Gradually reduce RPM of the motors to 0.
@@ -50,6 +64,4 @@ void panic_mode()
 	drone.current_mode = SAFE_MODE;
 	drone.change_mode = 1;
 	nrf_gpio_pin_toggle(RED);
-	
-	//printf("Exit PANIC_MODE\n");
 }

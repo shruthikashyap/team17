@@ -1,9 +1,5 @@
 /*------------------------------------------------------------------
  *  crc.c
- *
- *  Computes and checks CRC values of packets
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
@@ -12,6 +8,14 @@
 #include "command_types.h"
 #include "crc.h"
 
+/*------------------------------------------------------------------
+ *  void compute_crc
+ *
+ *  This function computes the CRC value by a 5th degree polynoom.
+ *
+ *  Author : Evenlyn
+ *------------------------------------------------------------------
+ */
 void compute_crc(struct packet_t * packet)
 {
 	int i;
@@ -23,7 +27,7 @@ void compute_crc(struct packet_t * packet)
 	crc_value ^= packet->value;
 
 	for (i=0; i<8; i++)
-	{								
+	{
 		if (crc_command & MSB)
 			crc_command ^= CRC_POLY;
 		crc_command <<= 1;
@@ -35,10 +39,17 @@ void compute_crc(struct packet_t * packet)
 
 	crc = (crc_command & MASK) | ((crc_value & MASK)>>4) ;
 	packet->crc = crc;
-
 }
 
-
+/*------------------------------------------------------------------
+ *  void check_crc
+ *
+ *  This function recalculates the CRC for the packet to see if it matches
+ *  the CRC with was given by the packet.
+ *
+ *  Author : Evelyn Rashmi Jeyachandra
+ *------------------------------------------------------------------
+ */
 int check_crc(struct packet_t check_packet)
 {
 	struct packet_t p;

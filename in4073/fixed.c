@@ -1,14 +1,19 @@
 /*------------------------------------------------------------------
- *  filters.c -- File implements fixed point arithmetic calculations.
- *               We're using a Q14 number format
- *
- *  October 2016
+ *  fixed.c
  *------------------------------------------------------------------
  */
 
 #include <inttypes.h>
 #include "fixed.h"
 
+/*------------------------------------------------------------------
+ *  q14 q_mul
+ *
+ *  This function multiplies two Q14 numbers with eachother
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 q14 q_mul(q14 a, q14 b)
 {
 	q14 result;
@@ -22,11 +27,29 @@ q14 q_mul(q14 a, q14 b)
 	return result;
 }
 
+
+/*------------------------------------------------------------------
+ *  q14 normal2q
+ *
+ *  This function converts a 'normal' integer to a Q14 number
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 q14 normal2q(int16_t x)
 {
 	return x << QNUMBER;
 }
 
+
+/*------------------------------------------------------------------
+ *  int16_t q2normal
+ *
+ *  This function converts a Q14 number to a 16bit integer
+ *
+ *  Author : Kars Heinen
+ *------------------------------------------------------------------
+ */
 int16_t q2normal(q14 x)
 {
 	return x / (1 << QNUMBER); // divide by 2^Q

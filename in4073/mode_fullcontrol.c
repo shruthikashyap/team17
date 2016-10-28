@@ -1,19 +1,22 @@
 /*------------------------------------------------------------------
  *  mode_fullcontrol.c
- *
- *  Defines the full control mode of the drone
- *
- *  June 2016
  *------------------------------------------------------------------
  */
 
 #include "modes.h"
 
+ /*------------------------------------------------------------------
+ *  void full_control_mode
+ *
+ *  This function is the full mode control for the ES, using DMP 
+ *  sensor values from the MPU. It controls the drone with two P controllers
+ *  for the pitch and roll.
+ *
+ *  Author : Everybody
+ *------------------------------------------------------------------
+ */
 void full_control_mode()
 {
-	//printf("In FULL_CONTROL_MODE\n");
-
-	int ae_[4];
 	int rollrate_setpoint;
 	int rollrate_setpoint2;
 	int roll_s;
@@ -28,11 +31,10 @@ void full_control_mode()
 	int lift_force;
 	int lift, roll, pitch, yaw;
 	
-	//drone.joy_lift = 100; // XXX: For testing
-	//int count = 0;
 	
 	while(drone.change_mode == 0 && drone.stop == 0)
-	{
+	{	
+		// check for cable disconnection
 		if (cable_disconnect_flag == 2)
 		{
 			cable_disconnect_flag = 1;
@@ -41,6 +43,7 @@ void full_control_mode()
 			return;
 		}
 
+		// only control if the loop flag is enabled to be sure we are controlling at a certain frequency
 		if(control_loop_flag == true && batt_low_flag == false)
 		{
 			// Clear sensor flag
@@ -49,21 +52,19 @@ void full_control_mode()
 			// Read sensor data
 			read_sensor();
 			
+			// disable sensor interrupts and read sensor values
 			__disable_irq();
-			
-			lift_force   = drone.joy_lift;//  + drone.key_lift;
-			roll_s  = (signed char)drone.joy_roll;//  + (signed char)drone.key_roll;
-			pitch_s = (signed char)drone.joy_pitch;// + (signed char)drone.key_pitch;
-			yawrate_setpoint = (signed char)drone.joy_yaw;//   + (signed char)drone.key_yaw;			
-			
-			//lift_force = drone.joy_lift;
-			//roll_s = (signed char)drone.joy_roll;
-			//pitch_s = (signed char)drone.joy_pitch;
-			//yawrate_setpoint = (signed char)drone.joy_yaw;
+			lift_force = drone.joy_lift;
+			roll_s  = (signed char)drone.joy_roll;
+			pitch_s = (signed char)drone.joy_pitch;
+			yawrate_setpoint = (signed char)drone.joy_yaw;
 			__enable_irq();
 
-			if (lift_force > 10) 
+			// only control if the joystick throttle is up
+			if (lift_force > 10)
 			{
+				// P control for the angle, and a P controller for the angle rate
+				// The control outputs are then added up and fed intro the drone
 				rollrate_setpoint = drone.controlgain_p1 * (roll_s - (drone.phi/15));
 				rollrate_setpoint2 = drone.controlgain_p2 * (-drone.sp/6);
 				roll_moment = rollrate_setpoint + rollrate_setpoint2;
@@ -72,6 +73,7 @@ void full_control_mode()
 				pitchrate_setpoint2 = drone.controlgain_p2 * (drone.sq/6);
 				pitch_moment = pitchrate_setpoint + pitchrate_setpoint2;
 				
+				// simple yaw rate P control
 				yaw_error = (int)(yawrate_setpoint - (drone.sr/12));
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
 			}
@@ -86,10 +88,8 @@ void full_control_mode()
 			roll  = (int)(DRONE_ROLL_CONSTANT/50 * roll_moment);
 			pitch = (int)(DRONE_PITCH_CONSTANT/50 * pitch_moment);
 			yaw   = (int)(DRONE_YAW_CONSTANT/16 * yaw_moment);
-
-			//calculate_rotor_speeds(lift, pitch, roll, yaw);
-			//printf("lift %d | roll %d | pitch %d | yaw %d\n", lift, roll, pitch, yaw);
 			
+			// only allow control when the joystick throttle is up
 			if(drone.joy_lift < 5)
 			{
 				pitch = 0;
@@ -97,64 +97,10 @@ void full_control_mode()
 				yaw   = 0;
 			}
 
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
-			
+			// calculate the rotor speeds
+			calculate_rotor_speeds(lift, pitch, roll, yaw);
 
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-			
-			//printf("%3ld %3ld %3ld %3ld \n", ae_[0], ae_[1], ae_[2], ae_[3]);
-
-			
-			ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			
-			//printf("drone.joy_lift = %d\n", drone.joy_lift);
-			
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-			else
-			{
-				ae_[0] = 0;
-				ae_[1] = 0;
-				ae_[2] = 0;
-				ae_[3] = 0;
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
-
-			// setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
-
-			//printf("%5d %5d %5d | %5d %5d %5d \n", drone.sp, drone.sq, drone.sr, drone.sax, drone.say, drone.saz);;
-			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-			#if 0
-			if(count%100 == 0)
-			{
-				//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-				count = 0;
-			}
-			count++;
-			#endif
-
+			// update calculated rotor speeds.
 			run_filters_and_control();
 			
 			// Update log and telemetry if corresponding flags are set
@@ -163,16 +109,23 @@ void full_control_mode()
 		else
 			nrf_delay_us(10);
 	}
-
-	//printf("Exit FULL_CONTROL_MODE\n");
 }
 
+
+ /*------------------------------------------------------------------
+ *  void full_control_mode
+ *
+ *  This function is the full mode control for the ES, using RAW 
+ *  sensor values from the MPU. Pitch and roll are controlled using 
+ *  cascaded P controllers.
+ *
+ *  Author : Shruthi Kasyap
+ *------------------------------------------------------------------
+ */
 void full_control_mode_raw()
 {
-	//printf("In FULL_CONTROL_MODE\n");
 	nrf_gpio_pin_toggle(YELLOW);
 
-	int ae_[4];
 	int rollrate_setpoint;
 	int roll_s;
 	int pitchrate_setpoint;
@@ -184,12 +137,11 @@ void full_control_mode_raw()
 	int yaw_moment;
 	int lift_force;
 	int lift, roll, pitch, yaw;
-	
-	//drone.joy_lift = 100; // XXX: For testing
-	//int count = 0;
-	
+		
 	while(drone.change_mode == 0 && drone.stop == 0)
 	{
+
+		// check for cable disconnection
 		if (cable_disconnect_flag == 2)
 		{
 			cable_disconnect_flag = 1;
@@ -200,34 +152,31 @@ void full_control_mode_raw()
 
 		if(control_loop_flag_raw == true && batt_low_flag == false)
 		{
-			//printf("Timer=%ld\n", get_time_us());
-			// Clear sensor flag
 			control_loop_flag_raw = false;
 
 			// Read sensor data
 			read_sensor();
-			
+
+			// disable sensor interrupts and read sensor values			
 			__disable_irq();
-			
-			lift_force   = drone.joy_lift;//  + drone.key_lift;
-			roll_s  = (signed char)drone.joy_roll;//  + (signed char)drone.key_roll;
-			pitch_s = (signed char)drone.joy_pitch;// + (signed char)drone.key_pitch;
-			yawrate_setpoint = (signed char)drone.joy_yaw;//   + (signed char)drone.key_yaw;			
-			
-			//lift_force = drone.joy_lift;
-			//roll_s = (signed char)drone.joy_roll;
-			//pitch_s = (signed char)drone.joy_pitch;
-			//yawrate_setpoint = (signed char)drone.joy_yaw;
+			lift_force = drone.joy_lift;
+			roll_s  = (signed char)drone.joy_roll;
+			pitch_s = (signed char)drone.joy_pitch;
+			yawrate_setpoint = (signed char)drone.joy_yaw;			
 			__enable_irq();
 
+			// only control if the joystick throttle is up
 			if (lift_force > 10) 
 			{
+				// cascaded P control for roll/phi
 				rollrate_setpoint = drone.controlgain_p1 * (roll_s - (drone.phi/15));
 				roll_moment = drone.controlgain_p2 * (rollrate_setpoint - drone.sp/6);
 
+				// cascaded P control for pitch/theta
 				pitchrate_setpoint = drone.controlgain_p1 * (pitch_s - (drone.theta/15));
 				pitch_moment = drone.controlgain_p2 * (pitchrate_setpoint + drone.sq/6);
 				
+				// simple P control for yaw/sr
 				yaw_error = (int)(yawrate_setpoint - (drone.sr/12));
 				yaw_moment = (int)drone.controlgain_yaw*yaw_error;
 			}
@@ -243,9 +192,7 @@ void full_control_mode_raw()
 			pitch = (int)(DRONE_PITCH_CONSTANT/50 * pitch_moment);
 			yaw   = (int)(DRONE_YAW_CONSTANT/16 * yaw_moment);
 
-			//calculate_rotor_speeds(lift, pitch, roll, yaw);
-			//printf("lift %d | roll %d | pitch %d | yaw %d\n", lift, roll, pitch, yaw);
-			
+			// only allow control when the joystick throttle is up			
 			if(drone.joy_lift < 5)
 			{
 				pitch = 0;
@@ -253,64 +200,10 @@ void full_control_mode_raw()
 				yaw   = 0;
 			}
 
-			ae_[0] = 0.25*(lift + 2*pitch - yaw);
-			ae_[1] = 0.25*(lift - 2*roll  + yaw);
-			ae_[2] = 0.25*(lift - 2*pitch - yaw);
-			ae_[3] = 0.25*(lift + 2*roll  + yaw);
-			
+			// calculate rotor speeds
+			calculate_rotor_speeds(lift, pitch, roll, yaw);			
 
-			ae_[0] = ae_[0] < 0 ? 1 : (int)sqrt(ae_[0]);
-			ae_[1] = ae_[1] < 0 ? 1 : (int)sqrt(ae_[1]);
-			ae_[2] = ae_[2] < 0 ? 1 : (int)sqrt(ae_[2]);
-			ae_[3] = ae_[3] < 0 ? 1 : (int)sqrt(ae_[3]);
-			
-			//printf("%3ld %3ld %3ld %3ld \n", ae_[0], ae_[1], ae_[2], ae_[3]);
-
-			
-			ae_[0] += ((signed char)drone.key_lift + (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[1] += ((signed char)drone.key_lift - (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			ae_[2] += ((signed char)drone.key_lift - (signed char)drone.key_pitch - (signed char)drone.key_yaw);
-			ae_[3] += ((signed char)drone.key_lift + (signed char)drone.key_roll  + (signed char)drone.key_yaw);
-			
-			//printf("drone.joy_lift = %d\n", drone.joy_lift);
-			
-			if (drone.joy_lift > 5)
-			{
-				ae_[0] = ae_[0] < MIN_RPM ? MIN_RPM : ae_[0];
-				ae_[1] = ae_[1] < MIN_RPM ? MIN_RPM : ae_[1];
-				ae_[2] = ae_[2] < MIN_RPM ? MIN_RPM : ae_[2];
-				ae_[3] = ae_[3] < MIN_RPM ? MIN_RPM : ae_[3];
-			}
-			else
-			{
-				ae_[0] = 0;
-				ae_[1] = 0;
-				ae_[2] = 0;
-				ae_[3] = 0;
-			}
-
-			ae_[0] = ae_[0] > MAX_RPM ? MAX_RPM : ae_[0];
-			ae_[1] = ae_[1] > MAX_RPM ? MAX_RPM : ae_[1];
-			ae_[2] = ae_[2] > MAX_RPM ? MAX_RPM : ae_[2];
-			ae_[3] = ae_[3] > MAX_RPM ? MAX_RPM : ae_[3];	
-
-			// setting drone rotor speeds
-			drone.ae[0] = ae_[0];
-			drone.ae[1] = ae_[1];
-			drone.ae[2] = ae_[2];
-			drone.ae[3] = ae_[3];
-
-			//printf("%5d %5d %5d | %5d %5d %5d \n", drone.sp, drone.sq, drone.sr, drone.sax, drone.say, drone.saz);;
-			//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-			#if 0
-			if(count%100 == 0)
-			{
-				//printf("%3d %3d %3d %3d | %d %d | %d | %d %d | %d\n", drone.ae[0], drone.ae[1], drone.ae[2], drone.ae[3], drone.controlgain_p1, drone.controlgain_p2, drone.controlgain_yaw, drone.phi, drone.theta, bat_volt);
-				count = 0;
-			}
-			count++;
-			#endif
-
+			// update calculated rotor speeds
 			run_filters_and_control();
 			
 			// Update log and telemetry if corresponding flags are set
@@ -321,5 +214,4 @@ void full_control_mode_raw()
 	}
 
 	nrf_gpio_pin_toggle(YELLOW);
-	//printf("Exit FULL_CONTROL_MODE\n");
 }
